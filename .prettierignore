@@ -1,0 +1,12 @@
+.husky
+package.json
+yarn.lock
+
+# Ignore artifacts:
+/build
+/coverage
+
+**/.git
+**/.svn
+**/.hg
+**/node_modules
