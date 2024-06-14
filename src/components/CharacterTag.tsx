@@ -1,3 +1,7 @@
+"use client"
+import { useTheme } from "@mui/material/styles";
+
+// Emerail: ready to remove
 const CHARACTER_STYLES_MAP: Record<string, Record<string, string>> = {
   PM: { name: "PM", mainColor: "#9747FF", bgColor: "#DCC1FF" },
   FE: { name: "前端", mainColor: "#007DC3", bgColor: "#A9D1FF" },
@@ -5,10 +9,13 @@ const CHARACTER_STYLES_MAP: Record<string, Record<string, string>> = {
 };
 
 export const CharacterTag = ({ character }: { character: string }) => {
+  const theme = useTheme();
   return (
     <span
       style={{
-        backgroundColor: CHARACTER_STYLES_MAP[character].bgColor,
+        // backgroundColor: CHARACTER_STYLES_MAP[character].bgColor,
+        // Emerail: to use custom color -> theme.professionTags.pmBg
+        backgroundColor: theme.palette.common.white,
         padding: "6px 16px",
         marginRight: "6px",
         borderRadius: "20px",
