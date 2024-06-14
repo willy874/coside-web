@@ -6,6 +6,9 @@ export default createTheme({
     primary: {
       main: "#007DC3",
     },
+    common: {
+      black: "#343434",
+    }
   },
 });
 
