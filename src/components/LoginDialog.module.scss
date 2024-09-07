@@ -1,0 +1,52 @@
+.dialog {
+    width: 440px;
+    gap:20px;
+    border-radius: 20px !important;
+    .contentHead {
+        font-size:24px;
+        color: #007DC3;
+        font-weight: bold;
+        margin-bottom: 24px;
+    }
+    .contentText {
+        font-size:18px;
+        color: #4f4f4f
+    }
+}
+
+.center {
+    display:flex;
+    justify-content: center;
+}
+
+.dialogContent {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.buttonContainer {
+    display:flex;
+    justify-content: center;
+    .loginButton {
+        width: 287px;
+        height:52px;
+        margin: 0 24px 24px 24px;
+        border-radius: 20px;
+        font-size: 16px;
+        color:#4f4f4f
+    }
+}
+
+
+.image {
+    margin-top:36px;
+    width: 69px;
+    height:65px;
+}
+
+.googleIcon {
+    width:24px;
+    height:24px;
+    margin-right: 16px;
+}
