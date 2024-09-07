@@ -1,7 +1,10 @@
+import React from "react";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+
+
 
 import "./globals.css";
 import theme from "@/styles/theme";
@@ -21,11 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className} style={{ position: "relative" }}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
             <Topbar />
             {children}
+            
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
