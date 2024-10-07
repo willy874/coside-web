@@ -4,6 +4,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  Grid,
   Typography,
 } from "@mui/material";
 import Image from "next/image";
@@ -16,14 +17,16 @@ export interface ProjectCardProps {
   title: string;
   projectTag: string;
   characterTags: string[];
+  projectType: string;
+  projectDuration: string;
   projectOwner: string;
   projectOwnerAvatar: string;
 }
 
 const TEXT_MAP: Record<string, string> = {
-  REQUIRE_POSITION_1: "徵",
-  REQUIRE_POSITION_2: "求｜",
-  PROJECT_OWNER: "發起人｜",
+  REQUIRE_POSITION: "徵求｜",
+  REQUIRE_TYPE: "類型｜",
+  REQUIRE_DURATION: "時長｜",
   CHECK: "查看專案",
 };
 
@@ -37,6 +40,8 @@ export const ProjectCard = ({
     title,
     projectTag,
     characterTags,
+    projectType,
+    projectDuration,
     projectOwner,
     projectOwnerAvatar,
   } = projectCard;
@@ -46,9 +51,10 @@ export const ProjectCard = ({
     ));
 
   return (
+    <Grid item xs={1} sm={1} md={1} lg={1} spacing={1} >
     <Card
       className="project-card"
-      sx={{ width: "380px", borderRadius: "20px" }}
+      sx={{ borderRadius: "20px", minWidth: "320px" }}
     >
       <CardMedia
         component="img"
@@ -56,42 +62,7 @@ export const ProjectCard = ({
         sx={{ height: "190px", width: "100%" }}
       />
       <CardContent sx={{ padding: "24px" }}>
-        <ProjectTag projectTag={projectTag} />
-        <Typography
-          component="h2"
-          sx={{ fontSize: "24px", fontWeight: "700", margin: "16px 0" }}
-        >
-          {title}
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Typography
-            sx={{
-              width: "65px",
-              fontSize: "16px",
-              color: "#4F4F4F",
-              fontWeight: "700",
-              marginRight: "4px",
-              display: "flex",
-              justifyContent: "space-between",
-            }}
-          >
-            <span>{TEXT_MAP.REQUIRE_POSITION_1}</span>
-            <span>{TEXT_MAP.REQUIRE_POSITION_2}</span>
-          </Typography>
-          <Box sx={{ display: "flex" }}>{renderCharacterTag()}</Box>
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", marginTop: "16px" }}>
-          <Typography
-            sx={{
-              width: "65px",
-              fontSize: "16px",
-              color: "#4F4F4F",
-              fontWeight: "700",
-              marginRight: "4px",
-            }}
-          >
-            {TEXT_MAP.PROJECT_OWNER}
-          </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", marginBottom: "12px" }}>
           <Box
             sx={{
               height: "32px",
@@ -113,14 +84,62 @@ export const ProjectCard = ({
           </Box>
           <Typography sx={{ color: "#7C7C7C" }}>{projectOwner}</Typography>
         </Box>
+        <ProjectTag projectTag={projectTag} />
+        <Typography
+          component="h2"
+          sx={{ fontSize: "24px", fontWeight: "700", margin: "16px 0" }}
+        >
+          {title}
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Typography
+            sx={{
+              fontSize: "16px",
+              color: "#4F4F4F",
+              fontWeight: "700",
+              marginRight: "6px",
+            }}
+          >
+            <span>{TEXT_MAP.REQUIRE_POSITION}</span>
+          </Typography>
+          <Box sx={{ display: "flex" }}>{renderCharacterTag()}</Box>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", marginTop: "12px" }}>
+          <Typography
+            sx={{
+              fontSize: "16px",
+              color: "#4F4F4F",
+              fontWeight: "700",
+              marginRight: "6px",
+            }}
+          >
+            <span>{TEXT_MAP.REQUIRE_TYPE}</span>
+          </Typography>
+          <Box sx={{ color: "#7C7C7C" }}>{projectType}</Box>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center" ,marginTop: "12px", marginBottom: "12px" }}>
+          <Typography
+            sx={{
+              fontSize: "16px",
+              color: "#4F4F4F",
+              fontWeight: "700",
+              marginRight: "6px",
+            }}
+          >
+            <span>{TEXT_MAP.REQUIRE_DURATION}</span>
+          </Typography>
+          <Box sx={{ color: "#7C7C7C" }}>{projectDuration}</Box>
+        </Box>
+        
         <Button
           color="primary"
           variant="contained"
-          sx={{ width: "100%", color: "#FFFFFF" }}
+          sx={{ width: "100%", color: "#FFFFFF", borderRadius: "12px"}}
         >
           {TEXT_MAP.CHECK}
         </Button>
       </CardContent>
     </Card>
+    </Grid>
   );
 };

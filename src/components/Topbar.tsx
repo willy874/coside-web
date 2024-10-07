@@ -17,7 +17,7 @@ export const Topbar = () => {
   return (
     <Box
       sx={{
-        height: "108px",
+        height: "80px",
         width: "100%",
         padding: "0 11%",
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
@@ -26,11 +26,11 @@ export const Topbar = () => {
         alignItems: "center",
         position: "fixed",
         top: 0,
-        zIndex: 100,
-        
+        backgroundColor: "#FFFFFF",
+        zIndex: 10,
       }}
     >
-      <Image src="/theme-logo.svg" alt="Co-Side" width={232} height={57.5} />
+      <Image src="/theme-logo.svg" alt="Co-Side" width={174} height={40} />
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Typography>{TEXT_MAP.EXPLORE}</Typography>
         <Typography sx={{ marginLeft: "48px" }}>
