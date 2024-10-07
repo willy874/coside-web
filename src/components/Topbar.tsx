@@ -1,5 +1,10 @@
+import React from "react";
 import { Box, Typography } from "@mui/material";
 import Image from "next/image";
+
+import dynamic from "next/dynamic";
+import { LoginDialogProvider } from "@/contexts/LoginDialogContext";
+const Avatar  = dynamic(() => import("./Avatar"), { ssr: false });
 
 const TEXT_MAP: Record<string, string> = {
   EXPLORE: "探索新專案",
@@ -7,6 +12,8 @@ const TEXT_MAP: Record<string, string> = {
 };
 
 export const Topbar = () => {
+  // const { openDialog } = useLoginDialog();
+
   return (
     <Box
       sx={{
@@ -29,16 +36,21 @@ export const Topbar = () => {
         <Typography sx={{ marginLeft: "48px" }}>
           {TEXT_MAP.MY_PROJECTS}
         </Typography>
-        <Box
-          sx={{
-            height: "60px",
-            width: "60px",
-            marginLeft: "48px",
-            borderRadius: "50%",
-            backgroundColor: "#ECECEC",
-          }}
-        ></Box>
+        <LoginDialogProvider>
+          <Avatar />
+        </LoginDialogProvider>
+          {/* <Box
+            // onClick={() => openDialog()}
+            sx={{
+              height: "60px",
+              width: "60px",
+              marginLeft: "48px",
+              borderRadius: "50%",
+              backgroundColor: "#ECECEC",
+            }}
+          ></Box> */}
       </Box>
+      
     </Box>
   );
 };
