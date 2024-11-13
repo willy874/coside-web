@@ -59,6 +59,7 @@ const theme = createTheme({
       main: "#007DC3",
       dark: "#07689E",
       light: "#CBE8FF",
+      black: "#4F4F4F"
     },
     secondary: {
       main: "#BF8FFD",
@@ -76,7 +77,7 @@ const theme = createTheme({
       100: "#9A9A9A",
       200: "#D0D0D0",
       300: "#F8F8F8",
-    },
+    }
   },
   professionTags: {
     pmBg: "#DCC1FF",
