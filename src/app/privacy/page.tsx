@@ -2,7 +2,7 @@
 
 import styles from "../css/page.module.css";
 import theme from "@/styles/theme";
-import { Container, Box, Button, Link, Grid, Typography } from "@mui/material";
+import { Container, Box, Link, Typography } from "@mui/material";
 
 export default function Privacy() {
   return (
