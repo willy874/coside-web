@@ -78,7 +78,7 @@ const LoginSetting = () => {
       // 檢查是否有填完全部內容
       const bodyData = JSON.stringify({
         name: formData.name,
-        email: 'a17@gmail.com',
+        email: 'a20@gmail.com',
         emailPublic: formData.emailPublic,
         facebook: formData.facebook,
         isfacebookpublic: formData.facebookPublic,
@@ -92,7 +92,7 @@ const LoginSetting = () => {
       });
       try {
         const res = await axios.post(
-          `http://${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/signup`,
+          `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/signup`,
           bodyData,
           {
             headers: {
@@ -103,7 +103,6 @@ const LoginSetting = () => {
         );
         if(res.data.success) {
           setToken(res.data.data.token);
-          console.log(token, isAuthenticated)
           router.push("/")
         }else {
           console.log(res.data.message)
@@ -287,7 +286,7 @@ const LoginSetting = () => {
                               id="icon-button-file"
                               type="file"
                               onChange={async (event) => {
-                                const file = event.currentTarget.files[0];
+                                const file = event.currentTarget.files?.[0];
                                 const maxSize = 2 * 1024 * 1024;
                                 if (file.size > maxSize) {
                                   console.log("大小上限2MB");
@@ -306,9 +305,8 @@ const LoginSetting = () => {
                                 const data = new FormData();
                                 data.append("file", file);
                                 try {
-                                  console.log("do upload")
                                   const res = await axios.post(
-                                    `http://${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
+                                    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
                                     data,
                                     {
                                       headers: {
@@ -317,7 +315,6 @@ const LoginSetting = () => {
                                       },
                                     }
                                   );
-                                  console.log(res.data.data, 'path')
                                   setFormData({
                                     ...formData,
                                     imgPath: res.data.data,

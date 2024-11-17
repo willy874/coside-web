@@ -11,6 +11,8 @@ import Image from "next/image";
 import { alpha, styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import FormHelperText from "@mui/material/FormHelperText";
+import axios from "axios";
+import useLoginStore from "@/stores/loginStore";
 
 const StyledUploadWrapper = styled('div')(({ theme }) => ({
     position: "relative",
@@ -37,22 +39,23 @@ const StyledUploadWrapper = styled('div')(({ theme }) => ({
     },
 }));
 
-export default function UploadImage() {
+
+
+export default function UploadImage(props) {
     const inputRef = useRef<HTMLInputElement>(null);
     const [isHover, setIsHover] = useState(false);
     const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState('');
     const [previewImage, setPreviewImage] = useState('');
-
+    const { setToken, token, isAuthenticated } = useLoginStore();
     const stopDefault = (e: DragEvent<HTMLDivElement>) => {
         e.stopPropagation();
         e.preventDefault();
     };
 
-    const handleFile = (_file: File | null = null) => {
+    const handleFile = async(_file: File | null = null) => {
         setError('');
         setFile(_file);
-
         if (!_file) {
             setPreviewImage('');
             return;
@@ -62,6 +65,27 @@ export default function UploadImage() {
         fileReader.onload = function () {
             if (typeof this.result === 'string') setPreviewImage(this.result);
         };
+
+
+        const data = new FormData();
+        data.append("file", _file);
+        try {
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
+                data,
+                {
+                    headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            props.onData(res.data.data);
+            
+        }catch (e) {
+            console.error('upload error', e);
+        }
+
         fileReader.readAsDataURL(_file);
     };
 
@@ -70,8 +94,9 @@ export default function UploadImage() {
         handleFile(e.dataTransfer.files?.[0]);
     };
 
-    const handleChange: ChangeEventHandler<HTMLInputElement> = (e) =>
+    const handleChange: ChangeEventHandler<HTMLInputElement> = (e) => {
         handleFile(e.target.files?.[0]);
+    }
 
     return (
         <StyledUploadWrapper
