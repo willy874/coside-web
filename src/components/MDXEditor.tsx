@@ -28,7 +28,7 @@ const Wrapper = styled("div")(({ theme }) => ({
   padding: "16px 12px",
 
   ".mdxeditor-root-contenteditable > div": {
-    padding: "16px 0",
+    padding: "16px 12px",
     minHeight: "40vh",
   },
 }));

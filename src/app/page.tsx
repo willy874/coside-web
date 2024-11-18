@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import styles from "./page.module.css";
 import { ProjectCard, ProjectCardProps } from "@/components/ProjectCard";
+import HandleToken from "@/components/Auth/HandleToken";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 
@@ -68,6 +69,8 @@ export default function Home() {
         </Button>
       </Box>
       </Box>
+      <HandleToken />
+      
     </main>
   );
 }

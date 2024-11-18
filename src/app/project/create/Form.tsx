@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
+import useLoginStore from "@/stores/loginStore";
+
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled } from "@mui/material/styles";
@@ -16,11 +18,18 @@ import StepConnector, {
 } from "@mui/material/StepConnector";
 import TextField from "@mui/material/TextField";
 import Select from "@/components/Select";
+
+import { Formik, FieldArray } from "formik";
+import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
+
 import UploadImage from "@/components/UploadImage";
 import MDXEditor from "@/components/MDXEditor";
 import { jobPosition, projectType, titleType } from "@/constant";
 import useArray from "@/hooks/useArray";
+// type
 import type { PartnerType } from "./Form.type";
+import styles from "./Form.module.scss";
 
 const steps = ["專案基本資訊", "專案說明", "組員需求"];
 
@@ -55,6 +64,25 @@ const partnerNumberOption = Array.from({ length: 5 }, (_, index) => ({
 
 export default function Form() {
   const [activeStep, setActiveStep] = useState(0);
+  const [formState, setFormState] = useState({
+    title: "",
+    titleType: "",
+    projectType: "",
+  });
+
+  const [mkVariable, setMkVariable] = useState('aa11');
+  const { token } = useLoginStore();
+
+  useEffect(() => {
+    console.log(mkVariable);
+  }, [mkVariable])
+
+  const handleEditorChange = (markdown: string) => {
+    console.log(JSON.stringify(markdown))
+    
+    setMkVariable(markdown);
+  }
+
   const partners = useArray<PartnerType>({
     defaultValues: [{ id: "1", number: 1 }],
   });
@@ -72,6 +100,15 @@ export default function Form() {
       return preStep;
     });
   };
+
+  const getImgPath = (path: string) => {
+    console.log(path, ' 路徑')
+  }
+
+  // 使用 useEffect
+  // useEffect(() => {
+  //   console.log(formState);
+  // }, [formState]);
 
   return (
     <Box
@@ -111,142 +148,263 @@ export default function Form() {
           ))}
         </Stepper>
       </Box>
+      <Formik
+        initialValues={{
+          titleType: "",
+          projectType: "",
+          title: "",
+          projectRequirement: "",
+          partnerNumber: "",
+          projectDuration: "",
+          imgPath: "",
+          MKContent: "",
+          partners: [
+            { id: uuidv4(), number: 1, jobPosition: '', projectRequirement: '', members: [''] },
+          ],
+        }}
+        onSubmit={async(values) => {
+          const {
+            title,
+            projectType,
+            titleType,
+            projectDuration,
+            MKContent,
+            imgPath,
+            partners,
+          } = values;
+          const members = partners.flatMap((partner) => partner.members.map((member) =>( {
+            role: partner.jobPosition,
+            skill: partner.projectRequirement,
+            email :member,
+            group: partner.jobPosition
+          })));
+          const bodyData = {
+            name: title,
+            type: titleType,
+            duration: projectDuration,
+            backgroundimage: imgPath,
+            description: MKContent,
+            categories: [projectType],
+            members,
+            industry: "未分類",
+            tags: ["未分類"]
+            
+          }
+          console.log(bodyData, 'bodyData')
+          try {
+            await axios.post( `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/project`,
+              bodyData,
+              {
+                headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+                },
+              }
+            )
+          }catch(e) {
+            console.error(e, 'error');
+          }
 
-      {activeStep === 0 && (
-        <>
-          <Select
-            label="發起類型"
-            color="secondary"
-            options={titleType}
-            fullWidth
-          />
-          <Select
-            label="專案類型"
-            color="secondary"
-            options={projectType}
-            fullWidth
-          />
-          <TextField label="主題名稱" color="secondary" fullWidth />
-          <Select label="主題/產業類別" color="secondary" fullWidth />
-          <UploadImage />
-          <TextField
-            label="專案預計進行時間"
-            helperText="未填寫則自動帶入未定"
-            color="secondary"
-            fullWidth
-          />
-        </>
-      )}
 
-      {activeStep === 1 && (
-        <>
-          <Box
-            width="100%"
-            py={1.5}
-            px={3}
-            bgcolor="secondary.light"
-            border="1px solid"
-            borderColor="secondary.dark"
-            borderRadius="12px"
-          >
-            請盡量將構想 <b>有架構的描述</b>，讓其他人更了解你的想法
-          </Box>
-          <MDXEditor label="專案構想" markdown="" />
-        </>
-      )}
-
-      {activeStep === 2 && (
-        <>
-          {Array.isArray(partners.values) &&
-            partners.values.map((partner, index) => (
-              <Card key={partner.id}>
-                <Box alignSelf="flex-end">
-                  <IconButton onClick={() => partners.remove(index)}>
-                    <Image
-                      src="/delete.svg"
-                      alt="delete icon"
-                      width={24}
-                      height={24}
-                    />
-                  </IconButton>
-                </Box>
-                <Box display="flex" gap={2.5}>
+        }}
+      >
+        {(props) => (
+          <form onSubmit={props.handleSubmit} className={styles.form}>
+            <Box
+              width="100%"
+              mx="auto"
+              mb={10}
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              gap={4}
+            >
+              {activeStep === 0 && (
+                <>
                   <Select
-                    label="組員職位"
+                    label="發起類型"
                     color="secondary"
-                    options={jobPosition}
+                    options={titleType}
+                    value={props.values.titleType}
+                    onChange={props.handleChange}
+                    name="titleType"
                     fullWidth
                   />
                   <Select
-                    name="number"
-                    label="人數"
+                    label="專案類型"
                     color="secondary"
-                    options={partnerNumberOption}
-                    onChange={({ target }) => {
-                      const { name, value } = target;
-                      partners.update({ ...partner, [name]: value }, index);
-                    }}
+                    value={props.values.projectType}
+                    onChange={props.handleChange}
+                    options={projectType}
+                    name="projectType"
                     fullWidth
                   />
-                </Box>
-                <TextField
-                  label="能力要求"
-                  placeholder="若無，可不填"
-                  color="secondary"
-                  minRows={3}
-                  fullWidth
-                  multiline
-                />
-                {Array.from({ length: partner.number }, () => 0).map(
-                  (_, index) => (
-                    <TextField
-                      key={index}
-                      label="組員Email"
-                      placeholder="請輸入Email"
+                  <TextField
+                    label="主題名稱"
+                    color="secondary"
+                    fullWidth
+                    value={props.values.title}
+                    onChange={props.handleChange}
+                    name="title"
+                  />
+                  {/* <Select label="主題/產業類別" color="secondary" fullWidth /> */}
+                  <UploadImage onData={(path: string) => {
+                    props.setFieldValue('imgPath', path)
+                  }}/>
+                  <TextField
+                    label="專案預計進行時間"
+                    helperText="未填寫則自動帶入未定"
+                    color="secondary"
+                    value={props.values.projectDuration}
+                    onChange={props.handleChange}
+                    name="projectDuration"
+                    fullWidth
+                  />
+                </>
+              )}
+
+              {activeStep === 1 && (
+                <>
+                  <Box
+                    width="100%"
+                    py={1.5}
+                    px={3}
+                    bgcolor="secondary.light"
+                    border="1px solid"
+                    borderColor="secondary.dark"
+                    borderRadius="12px"
+                  >
+                    請盡量將構想 <b>有架構的描述</b>，讓其他人更了解你的想法
+                  </Box>
+                  {/* 取得Editor的值 */}
+                  <MDXEditor label="專案構想" markdown={mkVariable} onChange={(markdown: string) => {
+                    props.setFieldValue('MKContent', markdown)
+                  }}/>
+                </>
+              )}
+
+              {activeStep === 2 && (
+                <FieldArray name="partners">
+                {(arrayHelpers) => (
+                  <>
+                    {props.values.partners.map((partner, index) => (
+                        <Card key={index}>
+                          <Box alignSelf="flex-end">
+                            <IconButton onClick={() => {
+                              if(props.values.partners.length > 1) arrayHelpers.remove(index)
+                              }}>
+                              <Image
+                                src="/delete.svg"
+                                alt="delete icon"
+                                width={24}
+                                height={24}
+                              />
+                            </IconButton>
+                          </Box>
+                          <Box display="flex" gap={2.5}>
+                            <Select
+                              label="組員職位"
+                              color="secondary"
+                              options={jobPosition}
+                              value={props.values.partners[index].jobPosition}
+                              onChange={props.handleChange}
+                              name={`partners[${index}].jobPosition`} 
+                              fullWidth
+                            />
+                            <Select
+                              label="人數"
+                              color="secondary"
+                              options={partnerNumberOption}
+                              value={props.values.partners[index].number.toString()} 
+                              onChange={(e) => {
+                                props.handleChange(e);
+                                const updateNumber = parseInt(e.target.value, 10);
+                                const updateMembers = Array(updateNumber).fill('');
+                                props.setFieldValue(`partners[${index}].members`, updateMembers); 
+                              }}
+                              name= {`partners[${index}].number`}
+                              fullWidth
+                            />
+                          </Box>
+                          <TextField
+                            label="能力要求"
+                            placeholder="若無，可不填"
+                            color="secondary"
+                            value={props.values.partners[index].projectRequirement}
+                            onChange={props.handleChange}
+                            name={`partners[${index}].projectRequirement`}
+                            minRows={3}
+                            fullWidth
+                            multiline
+                          />
+                              {props.values.partners[index].members.map((_ ,emailIndex) => (
+                                <TextField
+                                  key={emailIndex}
+                                  label="組員Email"
+                                  placeholder="請輸入Email"
+                                  value= {props.values.partners[index].members[emailIndex]}
+                                  onChange={props.handleChange}
+                                  name={`partners[${index}].members[${emailIndex}]`}
+                                  color="secondary"
+                                  fullWidth
+                                />
+                              
+                              ))}
+                        </Card>
+                      ))}
+                    <Button
+                      size="large"
+                      variant="outlined"
                       color="secondary"
+                      startIcon={<AddCircleOutlineIcon />}
                       fullWidth
-                    />
-                  )
-                )}
-              </Card>
-            ))}
-          <Button
-            size="large"
-            variant="outlined"
-            color="secondary"
-            startIcon={<AddCircleOutlineIcon />}
-            fullWidth
-            onClick={() =>
-              partners.append({ id: Math.random().toString(), number: 1 })
-            }
-          >
-            新增職位
-          </Button>
-        </>
-      )}
+                      onClick={() => arrayHelpers.push({ id: uuidv4(),jobPosition: "", number: 1, projectRequirement: "", members: [""] })}
+                    >
+                      新增職位
+                    </Button>
+                  </>
 
-      <Box display="flex" width="100%" gap={2.5}>
-        <Button
-          size="large"
-          variant="outlined"
-          color="secondary"
-          fullWidth
-          onClick={handlePrevious}
-        >
-          取消
-        </Button>
-        <Button
-          size="large"
-          variant="contained"
-          color="secondary"
-          sx={{ color: "white" }}
-          endIcon={activeStep !== 2 && <ChevronRightIcon />}
-          fullWidth
-          onClick={handleNext}
-        >
-          {activeStep === 2 ? "發布" : "下一步"}
-        </Button>
-      </Box>
+                )}
+                </FieldArray>
+              )}
+              <Box display="flex" width="100%" gap={2.5}>
+                <Button
+                  size="large"
+                  variant="outlined"
+                  color="secondary"
+                  fullWidth
+                  onClick={handlePrevious}
+                >
+                  {activeStep === 0 ? "取消" : "上一步"}
+                </Button>
+                {activeStep !== 2 && (<Button
+                  size="large"
+                  variant="contained"
+                  color="secondary"
+                  sx={{ color: "white" }}
+                  endIcon={<ChevronRightIcon />}
+                  fullWidth
+                  onClick={handleNext}
+                  type="button"
+                >
+                  下一步     
+                </Button>)}
+                {activeStep === 2 && (<Button
+                  size="large"
+                  variant="contained"
+                  color="secondary"
+                  sx={{ color: "white" }}
+                  fullWidth
+                  onClick={handleNext}
+                  type="submit"
+                >
+                  發布
+                </Button>)}
+              </Box>
+            </Box>
+          </form>
+        )}
+      </Formik>
     </Box>
   );
 }
