@@ -11,9 +11,8 @@ export default function Privacy() {
         <Box sx={{
           width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: "87px", marginBottom: "44px"
         }}>
-          <Typography color={theme.palette.primary.dark
-          } sx={{ marginTop: "69px", marginBottom: "16px", fontWeight: "700", fontSize: "28px" }}>隱私權政策</Typography>
-          <Box sx={{ maxWidth: "805px", margin: "0 auto", borderRadius: "12px", padding: "32px", border: `1px solid ${theme.palette.grey[200]}` }}>
+          <Box sx={{ maxWidth: "805px", margin: "69px auto 0", borderRadius: "12px", padding: "32px", border: `1px solid ${theme.palette.grey[200]}` }}>
+            <Typography sx={{ mb: "32px", fontWeight: "700", fontSize: "28px", textAlign: "center" }}>隱私權政策</Typography>
             <Box>
               <Typography paragraph>
                 歡迎使用Co-Side（以下簡稱“本平台”）。我們非常重視您的隱私權，並致力於保護您的個人資料。請仔細閱讀以下隱私權政策，了解我們如何收集、使用和保護您的個人資料。

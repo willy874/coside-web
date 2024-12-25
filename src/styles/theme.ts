@@ -77,6 +77,7 @@ const theme = createTheme({
       100: "#9A9A9A",
       200: "#D0D0D0",
       300: "#F8F8F8",
+      400: "#7C7C7C",
     }
   },
   professionTags: {

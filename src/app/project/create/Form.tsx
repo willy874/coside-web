@@ -79,7 +79,7 @@ export default function Form() {
 
   const handleEditorChange = (markdown: string) => {
     console.log(JSON.stringify(markdown))
-    
+
     setMkVariable(markdown);
   }
 
@@ -162,7 +162,7 @@ export default function Form() {
             { id: uuidv4(), number: 1, jobPosition: '', projectRequirement: '', members: [''] },
           ],
         }}
-        onSubmit={async(values) => {
+        onSubmit={async (values) => {
           const {
             title,
             projectType,
@@ -172,10 +172,10 @@ export default function Form() {
             imgPath,
             partners,
           } = values;
-          const members = partners.flatMap((partner) => partner.members.map((member) =>( {
+          const members = partners.flatMap((partner) => partner.members.map((member) => ({
             role: partner.jobPosition,
             skill: partner.projectRequirement,
-            email :member,
+            email: member,
             group: partner.jobPosition
           })));
           const bodyData = {
@@ -188,20 +188,20 @@ export default function Form() {
             members,
             industry: "未分類",
             tags: ["未分類"]
-            
+
           }
           console.log(bodyData, 'bodyData')
           try {
-            await axios.post( `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/project`,
+            await axios.post(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/project`,
               bodyData,
               {
                 headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
                 },
               }
             )
-          }catch(e) {
+          } catch (e) {
             console.error(e, 'error');
           }
 
@@ -250,7 +250,7 @@ export default function Form() {
                   {/* <Select label="主題/產業類別" color="secondary" fullWidth /> */}
                   <UploadImage onData={(path: string) => {
                     props.setFieldValue('imgPath', path)
-                  }}/>
+                  }} />
                   <TextField
                     label="專案預計進行時間"
                     helperText="未填寫則自動帶入未定"
@@ -279,20 +279,20 @@ export default function Form() {
                   {/* 取得Editor的值 */}
                   <MDXEditor label="專案構想" markdown={mkVariable} onChange={(markdown: string) => {
                     props.setFieldValue('MKContent', markdown)
-                  }}/>
+                  }} />
                 </>
               )}
 
               {activeStep === 2 && (
                 <FieldArray name="partners">
-                {(arrayHelpers) => (
-                  <>
-                    {props.values.partners.map((partner, index) => (
+                  {(arrayHelpers) => (
+                    <>
+                      {props.values.partners.map((partner, index) => (
                         <Card key={index}>
                           <Box alignSelf="flex-end">
                             <IconButton onClick={() => {
-                              if(props.values.partners.length > 1) arrayHelpers.remove(index)
-                              }}>
+                              if (props.values.partners.length > 1) arrayHelpers.remove(index)
+                            }}>
                               <Image
                                 src="/delete.svg"
                                 alt="delete icon"
@@ -308,21 +308,21 @@ export default function Form() {
                               options={jobPosition}
                               value={props.values.partners[index].jobPosition}
                               onChange={props.handleChange}
-                              name={`partners[${index}].jobPosition`} 
+                              name={`partners[${index}].jobPosition`}
                               fullWidth
                             />
                             <Select
                               label="人數"
                               color="secondary"
                               options={partnerNumberOption}
-                              value={props.values.partners[index].number.toString()} 
+                              value={props.values.partners[index].number.toString()}
                               onChange={(e) => {
                                 props.handleChange(e);
                                 const updateNumber = parseInt(e.target.value, 10);
                                 const updateMembers = Array(updateNumber).fill('');
-                                props.setFieldValue(`partners[${index}].members`, updateMembers); 
+                                props.setFieldValue(`partners[${index}].members`, updateMembers);
                               }}
-                              name= {`partners[${index}].number`}
+                              name={`partners[${index}].number`}
                               fullWidth
                             />
                           </Box>
@@ -337,34 +337,34 @@ export default function Form() {
                             fullWidth
                             multiline
                           />
-                              {props.values.partners[index].members.map((_ ,emailIndex) => (
-                                <TextField
-                                  key={emailIndex}
-                                  label="組員Email"
-                                  placeholder="請輸入Email"
-                                  value= {props.values.partners[index].members[emailIndex]}
-                                  onChange={props.handleChange}
-                                  name={`partners[${index}].members[${emailIndex}]`}
-                                  color="secondary"
-                                  fullWidth
-                                />
-                              
-                              ))}
+                          {props.values.partners[index].members.map((_, emailIndex) => (
+                            <TextField
+                              key={emailIndex}
+                              label="組員Email"
+                              placeholder="請輸入Email"
+                              value={props.values.partners[index].members[emailIndex]}
+                              onChange={props.handleChange}
+                              name={`partners[${index}].members[${emailIndex}]`}
+                              color="secondary"
+                              fullWidth
+                            />
+
+                          ))}
                         </Card>
                       ))}
-                    <Button
-                      size="large"
-                      variant="outlined"
-                      color="secondary"
-                      startIcon={<AddCircleOutlineIcon />}
-                      fullWidth
-                      onClick={() => arrayHelpers.push({ id: uuidv4(),jobPosition: "", number: 1, projectRequirement: "", members: [""] })}
-                    >
-                      新增職位
-                    </Button>
-                  </>
+                      <Button
+                        size="large"
+                        variant="outlined"
+                        color="secondary"
+                        startIcon={<AddCircleOutlineIcon />}
+                        fullWidth
+                        onClick={() => arrayHelpers.push({ id: uuidv4(), jobPosition: "", number: 1, projectRequirement: "", members: [""] })}
+                      >
+                        新增職位
+                      </Button>
+                    </>
 
-                )}
+                  )}
                 </FieldArray>
               )}
               <Box display="flex" width="100%" gap={2.5}>
@@ -387,7 +387,7 @@ export default function Form() {
                   onClick={handleNext}
                   type="button"
                 >
-                  下一步     
+                  下一步
                 </Button>)}
                 {activeStep === 2 && (<Button
                   size="large"

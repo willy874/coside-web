@@ -11,9 +11,8 @@ export default function Privacy() {
         <Box sx={{
           width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: "87px", mb: "44px"
         }}>
-          <Typography color={theme.palette.primary.dark
-          } sx={{ marginTop: "69px", mb: "16px", fontWeight: "700", fontSize: "28px" }}>服務條款</Typography>
-          <Box sx={{ maxWidth: "805px", margin: "0 auto", borderRadius: "12px", padding: "32px", border: `1px solid ${theme.palette.grey[200]}` }}>
+          <Box sx={{ maxWidth: "805px", margin: "69px auto 0", borderRadius: "12px", padding: "32px", border: `1px solid ${theme.palette.grey[200]}` }}>
+            <Typography sx={{ mb: "32px", fontWeight: "700", fontSize: "28px", textAlign: "center" }}>服務條款</Typography>
             <Box>
               <Typography paragraph>
                 歡迎來到Co-Side！以下是使用本平台的服務條款（以下簡稱“本條款”）。請仔細閱讀，因為這些條款將構成您與Co-Side之間的法律協議。
@@ -147,7 +146,8 @@ export default function Privacy() {
                 <Box component="ul" sx={{ listStylePosition: "inside" }}>
                   <Box component="li">
                     電子郵件：<Link href="mailto:coside.service@gmail.com" sx={{
-                      color: `${theme.palette.primary.black}`, textDecoration: "none",
+                      color: `${theme.palette.primary.black}`,
+                      textDecoration: "none",
                       "&:hover": {
                         color: `${theme.palette.primary.main}`
                       }

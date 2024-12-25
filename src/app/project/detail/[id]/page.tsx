@@ -8,7 +8,6 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import UserInfoModal from "../../../../components/ProjectDetail/userInfoModal"; // 改為大寫開頭
-import LoadingLottie from "../../../../components/LoadingLottie"; // 改為大寫開頭
 
 interface ProjectCardProps {
   thumbnail: string;
@@ -83,7 +82,6 @@ export default function ProjectDetailPage() {
               <Typography sx={{ color: "#7C7C7C" }}>{projectOwner}</Typography>
             </Box>
           </Box>
-          <LoadingLottie />
         </Box>
       </main>
       <UserInfoModal

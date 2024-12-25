@@ -9,7 +9,9 @@ const nextConfig = {
       },
     ]
   },
-
+  images: {
+    domains: ['images.unsplash.com'], // 新增允許的圖片來源域名
+  },
 };
 
 export default nextConfig;
