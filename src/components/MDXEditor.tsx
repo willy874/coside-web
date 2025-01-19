@@ -1,6 +1,8 @@
 "use client";
 
 import type { ForwardedRef } from "react";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
 import {
   headingsPlugin,
   imagePlugin,
@@ -41,6 +43,12 @@ const Label = styled("label")(({ theme }) => ({
   background: "white",
 }));
 
+const OuterWrapper = styled("div")(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+}));
+
 function toolbarContents() {
   return (
     <>
@@ -55,35 +63,44 @@ function toolbarContents() {
 export default function MDXEditor({
   editorRef,
   label,
+  helperText,
+  error,
   ...props
 }: { editorRef?: ForwardedRef<MDXEditorMethods> | null } & MDXEditorProps & {
     label?: string;
+    helperText?: string;
+    error?: boolean;
   }) {
   return (
-    <Wrapper>
-      <Label>{label}</Label>
-      <InternalMDXEditor
-        plugins={[
-          toolbarPlugin({ toolbarContents }),
-          imagePlugin({
-            imageUploadHandler: () => {
-              return Promise.resolve("https://picsum.photos/300/200");
-            },
-            imageAutocompleteSuggestions: [
-              "https://picsum.photos/300/200",
-              "https://picsum.photos/300",
-            ],
-          }),
-          headingsPlugin(),
-          listsPlugin(),
-          linkDialogPlugin(),
-          quotePlugin(),
-          thematicBreakPlugin(),
-          markdownShortcutPlugin(),
-        ]}
-        {...props}
-        ref={editorRef}
-      />
-    </Wrapper>
+    <OuterWrapper>
+      <FormControl fullWidth={true} error={error}>
+        <Wrapper>
+          <Label>{label}</Label>
+          <InternalMDXEditor
+            plugins={[
+              toolbarPlugin({ toolbarContents }),
+              imagePlugin({
+                imageUploadHandler: () => {
+                  return Promise.resolve("https://picsum.photos/300/200");
+                },
+                imageAutocompleteSuggestions: [
+                  "https://picsum.photos/300/200",
+                  "https://picsum.photos/300",
+                ],
+              }),
+              headingsPlugin(),
+              listsPlugin(),
+              linkDialogPlugin(),
+              quotePlugin(),
+              thematicBreakPlugin(),
+              markdownShortcutPlugin(),
+            ]}
+            {...props}
+            ref={editorRef}
+          />
+        </Wrapper>
+        {helperText && <FormHelperText>{helperText}</FormHelperText>}
+      </FormControl>
+    </OuterWrapper>
   );
 }

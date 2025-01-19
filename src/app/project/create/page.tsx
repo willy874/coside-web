@@ -1,6 +1,10 @@
 import Typography from "@mui/material/Typography";
 import Form from "./Form";
 
+export const metadata: Metadata = {
+  title: "Create Project"
+};
+
 export default function CreateProject() {
   return (
     <main>
