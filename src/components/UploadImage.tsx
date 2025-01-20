@@ -17,8 +17,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import useLoginStore from "@/stores/loginStore";
 import theme from "@/styles/theme";
-import { get } from "http";
-import { filter } from "@mdxeditor/editor";
 
 const StyledUploadWrapper = styled('div')(({ theme }) => ({
   position: "relative",
@@ -30,14 +28,6 @@ const StyledUploadWrapper = styled('div')(({ theme }) => ({
   flexDirection: "column",
   borderRadius: 12,
   overflow: "hidden",
-  // transition: "color .15s, background .15s",
-  // cursor: "pointer",
-
-  // "&.is-hover": {
-  //   borderColor: theme.palette.secondary.dark,
-  //   background: alpha(theme.palette.secondary.dark, 0.1),
-  // },
-
   input: {
     display: "none",
   },
@@ -65,7 +55,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
@@ -96,7 +85,6 @@ const cosideDefaultImages = [
   "/default_img.png"
 ];
 
-// components
 const TabButton = ({ onClick, isActive, iconSrc, label }) => {
   return (
     <Button
@@ -148,7 +136,7 @@ const TabButton = ({ onClick, isActive, iconSrc, label }) => {
       <Typography
         sx={{
           lineHeight: "19px",
-          textTransform: "none", // 移除大寫樣式
+          textTransform: "none",
         }}>{label}</Typography>
     </Button>
   );
@@ -158,50 +146,61 @@ const ImageGrid = ({
   images,
   getImageSrc,
   getImageKey,
+  onImageClick,
   imageWidth = 135,
   imageHeight = 80,
-  onImageClick,
-  selected,
+  activeIndex,
+  setActiveIndex
 }) => {
+  const handleImageClick = (index: number, src: string) => {
+    setActiveIndex(index);
+    onImageClick(src);
+  };
+
   return (
     <Grid container spacing={1.5} sx={{ marginTop: "-11px" }}>
-      {images.map((item, index) => (
-        <Grid
-          item
-          xs={6}
-          sm={3}
-          key={getImageKey ? getImageKey(item) : item + index}
-        >
-          <Box
-            onClick={() => onImageClick && onImageClick(item)}
-            sx={{
-              overflow: "hidden",
-              cursor: "pointer",
-              width: imageWidth,
-              height: imageHeight,
-              borderRadius: "12px",
-              border: `1px solid ${theme.palette.grey[200]}`,
-              outline: `1px solid transparent`,
-              transition: "all 0.3s",
-              "&:hover": {
-                border: `1px solid ${theme.palette.secondary.main}`,
-                outline: `1px solid ${theme.palette.secondary.main}`,
-              },
-              ...(selected && {
-                border: `1px solid ${theme.palette.secondary.dark}`,
-                outline: `1px solid ${theme.palette.secondary.dark}`,
-              })
-            }}
+      {images.map((item, index) => {
+        const src = getImageSrc(item);
+        const isActive = activeIndex === index;
+
+        return (
+          <Grid
+            item
+            xs={6}
+            sm={3}
+            key={getImageKey ? getImageKey(item) : `${item}_${index}`}
           >
-            <StyledImage
-              src={getImageSrc(item)}
-              alt={`image ${index + 1}`}
-              width={imageWidth}
-              height={imageHeight}
-            />
-          </Box>
-        </Grid>
-      ))}
+            <Box
+              onClick={() => handleImageClick(index, src)}
+              sx={{
+                overflow: "hidden",
+                cursor: "pointer",
+                width: imageWidth,
+                height: imageHeight,
+                borderRadius: "12px",
+                border: `1px solid ${theme.palette.grey[200]}`,
+                outline: `1px solid transparent`,
+                transition: "all 0.3s",
+                "&:hover": {
+                  border: `1px solid ${theme.palette.secondary.main}`,
+                  outline: `1px solid ${theme.palette.secondary.main}`,
+                },
+                ...(isActive && {
+                  border: `1px solid ${theme.palette.secondary.dark}`,
+                  outline: `1px solid ${theme.palette.secondary.dark}`,
+                }),
+              }}
+            >
+              <StyledImage
+                src={src}
+                alt={`image ${index + 1}`}
+                width={imageWidth}
+                height={imageHeight}
+              />
+            </Box>
+          </Grid>
+        );
+      })}
     </Grid>
   );
 };
@@ -211,10 +210,6 @@ export default function UploadImage(props) {
   const [isHover, setIsHover] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState('');
-  const [searchValue, setSearchValue] = useState('');
-  const [filterValue, setFilterValue] = useState('');
-  const [previewImage, setPreviewImage] = useState('');
-  const [imageType, setImageType] = useState('upload');
   const { setToken, token, isAuthenticated } = useLoginStore();
 
   const stopDefault = (e: DragEvent<HTMLDivElement>) => {
@@ -226,13 +221,13 @@ export default function UploadImage(props) {
     setError('');
     setFile(_file);
     if (!_file) {
-      setPreviewImage('');
+      props.setPreviewImage('');
       return;
     }
 
     const fileReader = new FileReader();
     fileReader.onload = function () {
-      if (typeof this.result === 'string') setPreviewImage(this.result);
+      if (typeof this.result === 'string') props.setPreviewImage(this.result);
     };
 
     const data = new FormData();
@@ -250,6 +245,7 @@ export default function UploadImage(props) {
           }
         );
       props.onData(res.data.data);
+      console.log(res.data.data)
     } catch (e) {
       console.error('upload error', e);
     }
@@ -259,7 +255,8 @@ export default function UploadImage(props) {
 
   const deleteImage = () => {
     props.onData('');
-    setPreviewImage('');
+    props.setPreviewImage('');
+    props.setActiveIndex(null);
   }
 
   const handleDrop: DragEventHandler<HTMLDivElement> = (e) => {
@@ -272,60 +269,77 @@ export default function UploadImage(props) {
   }
 
   const handleSearchChange = (e) => {
-    setSearchValue(e.target.value);
+    props.setSearchValue(e.target.value);
   };
 
   const onSearch = (e) => {
     if (e.target.value.trim() === '') console.log('請輸入搜尋內容');
     else {
-      setFilterValue(e.target.value);
+      props.setFilterValue(e.target.value);
     };
   }
 
   const chooseImageType = (type: string) => {
-    setImageType(type);
+    props.onData('');
+    props.setPreviewImage('');
+    props.setImageType(type);
+    props.setActiveIndex(null);
   }
 
-  // Unsplash
-  // unsplash API: https://unsplash.com/developers
-  // 請使用自行申請的 API 來進行運作
   const api = 'https://api.unsplash.com/search/photos/';
   const accessKey = 'SsOq-D7E1wQ1TWdAR9UnbCrzKUOjHu1E5-0eAz9rKzM';
-
-  // #1 剩餘次數
-  // #2 讀取效果
-  // #3 展開的 Modal
-
-  const [unsplashImages, setUnsplashImages] = useState([]);
-  const [remaining, setRemaining] = useState(0);
-  const [photoUrl, setPhotoUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false);
-  const currentPage = useRef(1)
   const listRef = useRef(null);
 
-  const getSinglePhoto = (id) => {
-    (async () => {
-      const api = 'https://api.unsplash.com/photos/'
-      const result = await axios(`${api}${id}?client_id=${accessKey}`);
-      setPhotoUrl(result.data.urls.regular)
-      console.log(result, photoUrl);
-    })();
-  }
+  const chooseImage = async (src) => {
+    console.log(src, props.imageType);
+    if (props.imageType === 'unsplash') {
+      try {
+        // 下載圖片為 Blob
+        const response = await axios.get(src, {
+          responseType: "blob",
+        });
+
+        // 建立 File 對象
+        const blob = response.data;
+        const file = new File([blob], "image.jpg", { type: blob.type });
+
+        // 建立 FormData
+        const data = new FormData();
+        data.append("file", file);
+
+        // 上傳圖片到後端
+        const res = await axios.post(
+          `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        props.onData(res.data.data);
+        console.log(res.data.data);
+      } catch (e) {
+        console.error('upload error', e);
+      }
+    } else {
+      props.onData(src);
+    }
+  };
 
   const getPhotos = async (page = 1, isNew = true) => {
     try {
-      // 搜尋特定需要加入 query
       setIsLoading(true);
-      const result = await axios.get(`${api}?client_id=${accessKey}&query=${filterValue}&page=${page}`);
-      setUnsplashImages((preData) => {
-        console.log('更新資料觸發');
+      const result = await axios.get(`${api}?client_id=${accessKey}&query=${props.filterValue}&page=${page}`);
+      props.setUnsplashImages((preData) => {
         if (isNew) {
           return [...result.data.results];
         }
         return [...preData, ...result.data.results];
       });
-      currentPage.current = page; // 每次都需要確認當前頁
-      setRemaining(result.headers['x-ratelimit-remaining']);
+      props.currentPage.current = page;
       setTimeout(() => {
         setIsLoading(false);
       }, 500);
@@ -336,20 +350,24 @@ export default function UploadImage(props) {
 
   const scrollEvent = (evt) => {
     const target = evt.target;
-    const height = target.scrollHeight - target.clientHeight; // 滾動區塊的總高度
-    if (!isLoading && target.scrollTop >= height && filterValue !== '') {
-      currentPage.current++;
-      getPhotos(currentPage.current, false);
+    const height = target.scrollHeight - target.clientHeight;
+    if (!isLoading && target.scrollTop >= height && props.filterValue !== '') {
+      props.currentPage.current++;
+      getPhotos(props.currentPage.current, false);
     }
   };
 
   useEffect(() => {
-    if (filterValue === '') return;
+    if (props.filterValue === '') return;
+    if (props.currentPage.current > 1) {
+      // 不重新呼叫 API，保留現有內容
+      return;
+    }
     getPhotos(1, true);
-  }, [filterValue]);
+  }, [props.filterValue]);
 
   useEffect(() => {
-    if (imageType === 'unsplash' && listRef.current) {
+    if (props.imageType === 'unsplash' && listRef.current) {
       const scrollContainer = listRef.current;
       scrollContainer.addEventListener('scroll', scrollEvent);
 
@@ -359,7 +377,7 @@ export default function UploadImage(props) {
         }
       };
     }
-  }, [imageType, filterValue]);
+  }, [props.imageType, props.filterValue]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -374,24 +392,23 @@ export default function UploadImage(props) {
         }
       }>
         <Box sx={{
-          display: "flex", borderBottom: `
-        1px solid ${theme.palette.grey[200]}`
+          display: "flex", borderBottom: `1px solid ${theme.palette.grey[200]}`
         }}>
           <TabButton
             onClick={() => chooseImageType("upload")}
-            isActive={imageType === "upload"}
+            isActive={props.imageType === "upload"}
             iconSrc="/upload_icon.svg"
             label="從電腦上傳"
           />
           <TabButton
             onClick={() => chooseImageType("coside")}
-            isActive={imageType === "coside"}
+            isActive={props.imageType === "coside"}
             iconSrc="/coside_icon.svg"
             label="CoSide"
           />
           <TabButton
             onClick={() => chooseImageType("unsplash")}
-            isActive={imageType === "unsplash"}
+            isActive={props.imageType === "unsplash"}
             iconSrc="/unsplash_icon.svg"
             label="Unsplash"
           />
@@ -403,13 +420,12 @@ export default function UploadImage(props) {
             overflow: "hidden",
           }}
         >
-          {imageType === 'upload' && (<Box sx={{ width: "100%", height: "100%" }}>
-            <StyledUploadWrapper
-            >
+          {props.imageType === 'upload' && (<Box sx={{ width: "100%", height: "100%" }}>
+            <StyledUploadWrapper>
               {
-                previewImage
+                props.previewImage
                   ? (<Box sx={{ position: 'relative', width: '100%', height: '100%', padding: 0 }}>
-                    <Image src={previewImage} alt="upload image" fill style={{ objectFit: "cover" }} />
+                    <Image src={props.previewImage} alt="upload image" fill style={{ objectFit: "cover" }} />
                     <Box
                       sx={{
                         position: 'absolute',
@@ -432,8 +448,6 @@ export default function UploadImage(props) {
                   </Box>)
                   : (
                     <>
-                      {/* <Image src="/cloud-upload.svg" alt="upload image" width={59} height={59} /> */}
-                      {/* <Typography variant="body2" color="grey.500">圖片格式：jpg、png、jpeg</Typography> */}
                       <Typography variant="body2" color="grey.500" sx={{ lineHeight: 1.6 }}>圖片尺寸：1125 × 660 px</Typography>
                       <Typography variant="body2" color="grey.500" sx={{ lineHeight: 1.6 }}>檔案大小：小於 5 Mb</Typography>
                       <Button
@@ -458,16 +472,18 @@ export default function UploadImage(props) {
               <input type="file" ref={inputRef} accept=".jpg, .png, .jpeg" onChange={handleChange} />
             </StyledUploadWrapper>
           </Box>)}
-          {imageType === 'coside' && (
+          {props.imageType === 'coside' && (
             <Box sx={{ height: "260px", overflowY: "auto", overflowX: "hidden" }}>
               <ImageGrid
                 images={cosideDefaultImages}
                 getImageSrc={(item) => item}
-                onImageClick={(item) => handleImageClick(item)}
+                onImageClick={chooseImage}
+                activeIndex={props.activeIndex}
+                setActiveIndex={props.setActiveIndex}
               />
             </Box>
           )}
-          {imageType === 'unsplash' && (<Box sx={{ height: "100%" }}>
+          {props.imageType === 'unsplash' && (<Box sx={{ height: "100%" }}>
             <Search>
               <SearchIconWrapper>
                 <SearchIcon sx={{ color: theme.palette.grey[400] }} />
@@ -475,7 +491,7 @@ export default function UploadImage(props) {
               <StyledInputBase
                 placeholder="搜尋圖片..."
                 inputProps={{ 'aria-label': 'search' }}
-                value={searchValue} // 綁定 value
+                value={props.searchValue} // 綁定 value
                 onChange={handleSearchChange} // 處理輸入變化
                 onKeyDown={(e) => e.key === 'Enter' && onSearch(e)}
                 sx={{ color: theme.palette.grey[400] }}
@@ -483,10 +499,12 @@ export default function UploadImage(props) {
             </Search>
             <Box sx={{ height: "208px", overflowY: "auto", overflowX: "hidden", marginTop: 1.5 }} ref={listRef}>
               <ImageGrid
-                images={unsplashImages}
+                images={props.unsplashImages}
                 getImageSrc={(item) => item.urls.raw}
                 getImageKey={(item) => item.urls.raw}
-                onImageClick={(item) => handleImageClick(item)}
+                onImageClick={chooseImage}
+                activeIndex={props.activeIndex}
+                setActiveIndex={props.setActiveIndex}
               />
             </Box>
           </Box>)}

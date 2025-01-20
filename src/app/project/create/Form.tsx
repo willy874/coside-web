@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useLoginStore from "@/stores/loginStore";
 
@@ -72,6 +72,13 @@ export default function Form() {
 
   const [mkVariable, setMkVariable] = useState('aa11');
   const { token } = useLoginStore();
+  const [previewImage, setPreviewImage] = useState('');
+  const [imageType, setImageType] = useState('upload');
+  const [searchValue, setSearchValue] = useState('');
+  const [filterValue, setFilterValue] = useState('');
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [unsplashImages, setUnsplashImages] = useState<string[]>([]);
+  const currentPage = useRef(1)
 
   useEffect(() => {
     console.log(mkVariable);
@@ -104,11 +111,6 @@ export default function Form() {
   const getImgPath = (path: string) => {
     console.log(path, ' 路徑')
   }
-
-  // 使用 useEffect
-  // useEffect(() => {
-  //   console.log(formState);
-  // }, [formState]);
 
   return (
     <Box
@@ -248,9 +250,24 @@ export default function Form() {
                     name="title"
                   />
                   {/* <Select label="主題/產業類別" color="secondary" fullWidth /> */}
-                  <UploadImage onData={(path: string) => {
-                    props.setFieldValue('imgPath', path)
-                  }} />
+                  <UploadImage
+                    onData={(path: string) => {
+                      props.setFieldValue('imgPath', path)
+                    }}
+                    previewImage={previewImage}
+                    setPreviewImage={setPreviewImage}
+                    imageType={imageType}
+                    setImageType={setImageType}
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                    filterValue={filterValue}
+                    setFilterValue={setFilterValue}
+                    activeIndex={activeIndex}
+                    setActiveIndex={setActiveIndex}
+                    unsplashImages={unsplashImages}
+                    setUnsplashImages={setUnsplashImages}
+                    currentPage={currentPage}
+                  />
                   <TextField
                     label="專案預計進行時間"
                     helperText="未填寫則自動帶入未定"
