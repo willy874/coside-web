@@ -48,7 +48,6 @@ type FormValues = {
   titleType: string;
   projectDuration: string;
   MKContent: string;
-  imgPath: string;
   partners: object;
 };
 
@@ -93,13 +92,16 @@ export default function Form() {
 
   const [mkVariable, setMkVariable] = useState("aa11");
   const { token } = useLoginStore();
-  const [previewImage, setPreviewImage] = useState('');
-  const [imageType, setImageType] = useState('upload');
-  const [searchValue, setSearchValue] = useState('');
-  const [filterValue, setFilterValue] = useState('');
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [previewImage, setPreviewImage] = useState("");
+  const [imageType, setImageType] = useState("upload");
+  const [searchValue, setSearchValue] = useState("");
+  const [filterValue, setFilterValue] = useState("");
+  const [activeCosideIndex, setActiveCosideIndex] = useState<number | null>(-1);
+  const [activeUnsplashIndex, setActiveUnsplashIndex] = useState<number | null>(
+    -1
+  );
   const [unsplashImages, setUnsplashImages] = useState<string[]>([]);
-  const currentPage = useRef(1)
+  const currentPage = useRef(1);
 
   const theme = useTheme();
 
@@ -117,17 +119,56 @@ export default function Form() {
     defaultValues: [{ id: "1", number: 1 }],
   });
 
-  const step0ValidationSchema = z.object({
-    titleType: z.string().min(1, { message: "必選" }),
-    projectType: z.string().min(1, { message: "必選" }),
-    title: z.string().min(3, { message: "勿少於3個字" }).max(40, { message: "不多於40個字" }),
-    projectDuration: z.string().min(1, { message: "必選" }),
-  });
+  const step0ValidationSchema = z
+    .object({
+      titleType: z.string().min(1, { message: "必選" }),
+      projectType: z.string().min(1, { message: "必選" }),
+      title: z
+        .string()
+        .min(3, { message: "勿少於3個字" })
+        .max(40, { message: "不多於40個字" }),
+      projectDuration: z.string().min(1, { message: "必選" }),
+      imageType: z.string(),
+      bannerUpload: z.object({}).optional(),
+      bannerCoside: z.string().optional(),
+      bannerUnsplash: z.object({}).optional(),
+    })
+    .superRefine((data, ctx) => {
+      // 根據 imageType 判斷對應的物件是否存在
+      switch (data.imageType) {
+        case "upload":
+          if (!data.bannerUpload) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "請上傳圖片",
+              path: ["bannerUpload"],
+            });
+          }
+          break;
+        case "coside":
+          if (!data.bannerCoside) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "請選擇圖片",
+              path: ["bannerCoside"],
+            });
+          }
+          break;
+        case "unsplash":
+          if (!data.bannerUnsplash) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "請選擇圖片",
+              path: ["bannerUnsplash"],
+            });
+          }
+          break;
+      }
+    });
 
   const step1ValidationSchema = z.object({
-    MKContent: z.string().trim().min(10, { message: "必填" }),
+    MKContent: z.string().trim().min(10, { message: "字數不得小於 10 個字" }),
   });
-
 
   const step2ValidationSchema = z.object({
     partners: z
@@ -202,8 +243,189 @@ export default function Form() {
       goNextOrErrors(validateResult, setErrors);
     }
   };
-  const getImgPath = (path: string) => {
-    console.log(path, " 路徑");
+
+  const uploadImageBeforeSubmit = async (formValues, token) => {
+    try {
+      switch (formValues.imageType) {
+        case "upload": {
+          if (!formValues.bannerUpload) {
+            throw new Error("No file selected for upload");
+          }
+
+          const data = new FormData();
+          data.append("file", formValues.bannerUpload);
+
+          const response = await axios.post(
+            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
+            data,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+          return response.data.data;
+        }
+
+        case "coside": {
+          return formValues.bannerCoside;
+        }
+
+        case "unsplash": {
+          console.log(formValues.bannerUnsplash);
+          try {
+            // 原始圖片資訊
+            const imageUrl = formValues.bannerUnsplash.urls.raw;
+            const downloadUrl =
+              formValues.bannerUnsplash.links.download_location;
+
+            // 壓縮參數
+            let width = 1920;
+            let quality = 80; // 初始品質
+            const minQuality = 60; // 最低品質
+            const fileSizeLimit = 3 * 1024 * 1024; // 3MB
+
+            // 建立壓縮後的圖片 URL
+            function getCompressedUrl(url, width, quality) {
+              return `${url}?w=${width}&q=${quality}&fm=jpg&fit=max`;
+            }
+
+            // 用 axios 獲取圖片 Blob 並檢查大小
+            async function compressAndGetQuality(url) {
+              let compressedUrl = getCompressedUrl(url, width, quality);
+
+              while (true) {
+                const response = await axios.get(compressedUrl, {
+                  responseType: "blob",
+                });
+                const blob = response.data;
+
+                if (blob.size <= fileSizeLimit || quality <= minQuality) {
+                  // 返回確認後的 URL 和品質
+                  return { quality };
+                }
+
+                // 若大小不合格且品質未達最低，降低品質再試
+                quality -= 10;
+                compressedUrl = getCompressedUrl(url, width, quality);
+              }
+            }
+
+            // 獲取確認後的壓縮 URL 和品質
+            const { quality: finalQuality } =
+              await compressAndGetQuality(imageUrl);
+
+            // 使用 bannerUnsplash.links.download 獲取最終圖片
+            const finalDownloadUrl = `${downloadUrl}&w=${width}&q=${finalQuality}&fm=jpg&fit=max&client_id=${process.env.NEXT_PUBLIC_UNSPLASH_CLIENT_ID}`;
+
+            // 使用 axios 獲取最終圖片 Blob
+            const finalResponse = await axios.get(finalDownloadUrl, {
+              responseType: "blob",
+            });
+
+            console.log(finalResponse);
+            const file = new File(
+              [finalResponse.data],
+              `${formValues.bannerUnsplash.id}.jpg`,
+              { type: "image/jpeg" }
+            );
+            console.log(file);
+
+            // 建立 FormData 並上傳圖片
+            const data = new FormData();
+            data.append("file", file);
+
+            const res = await axios.post(
+              `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
+              data,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+            return res.data.data;
+          } catch (e) {
+            console.error("處理圖片或上傳時發生錯誤:", e);
+          }
+        }
+
+        default:
+          throw new Error("Invalid image type");
+      }
+    } catch (error) {
+      console.error("Image upload error:", error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (values, { setErrors, setSubmitting }) => {
+    try {
+      setSubmitting(true);
+
+      // 1. Validate the form data
+      const validateResult = await doValidate(values, step2ValidationSchema);
+      if (validateResult) {
+        setErrors(validateResult);
+        return;
+      }
+
+      // 2. Upload the image
+      const imgPath = await uploadImageBeforeSubmit(values, token);
+
+      // 3. Transform members data
+      const members = values.partners.flatMap((partner) =>
+        partner.members.map((member) => ({
+          role: partner.jobPosition,
+          skill: partner.projectRequirement || "",
+          email: member,
+          group: partner.jobPosition,
+        }))
+      );
+
+      // 4. Prepare the request body
+      const bodyData = {
+        name: values.title,
+        type: values.titleType,
+        duration: values.projectDuration,
+        backgroundimage: imgPath,
+        description: values.MKContent,
+        categories: [values.projectType],
+        members,
+        industry: "未分類",
+        tags: ["未分類"],
+      };
+
+      // 5. Submit the project
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/project`,
+        bodyData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // 6. Handle success (you might want to add navigation or success message here)
+      console.log("Project created successfully:", response.data);
+    } catch (error) {
+      console.error("Submit error:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 401) {
+        setErrors({ submit: "請重新登入" });
+      } else if (error.response?.status === 413) {
+        setErrors({ submit: "圖片檔案過大，請選擇較小的檔案" });
+      } else {
+        setErrors({ submit: "發生錯誤，請稍後再試" });
+      }
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -252,8 +474,11 @@ export default function Form() {
           projectRequirement: "",
           partnerNumber: "",
           projectDuration: "",
-          imgPath: "",
           MKContent: "",
+          imageType: "upload",
+          bannerUpload: undefined,
+          bannerCoside: "",
+          bannerUnsplash: undefined,
           partners: [
             {
               id: uuidv4(),
@@ -264,61 +489,7 @@ export default function Form() {
             },
           ],
         }}
-        onSubmit={async (values, {setErrors}) => {
-          const {
-            title,
-            projectType,
-            titleType,
-            projectDuration,
-            MKContent,
-            imgPath,
-            partners,
-          } = values;
-
-          const validateResult = await doValidate(
-            values,
-            step2ValidationSchema
-          );
-          console.log("validateResult submit step", validateResult);
-          if (validateResult) {
-            setErrors(validateResult); // 設定錯誤，Formik 會自動更新 UI
-            return;
-          }
-          const members = partners.flatMap((partner) =>
-            partner.members.map((member) => ({
-              role: partner.jobPosition,
-              skill: partner.projectRequirement,
-              email: member,
-              group: partner.jobPosition,
-            }))
-          );
-          const bodyData = {
-            name: title,
-            type: titleType,
-            duration: projectDuration,
-            backgroundimage: imgPath,
-            description: MKContent,
-            categories: [projectType],
-            members,
-            industry: "未分類",
-            tags: ["未分類"],
-          };
-          console.log(bodyData, ":bodyData ", token, ":token");
-          try {
-            await axios.post(
-              `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/project`,
-              bodyData,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-          } catch (e) {
-            console.error(e, "error");
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {(props) => (
           <FormFormik onSubmit={props.handleSubmit} className={styles.form}>
@@ -381,9 +552,6 @@ export default function Form() {
                   /> */}
                   {/* <Select label="主題/產業類別" color="secondary" fullWidth /> */}
                   <UploadImage
-                    onData={(path: string) => {
-                      props.setFieldValue('imgPath', path)
-                    }}
                     previewImage={previewImage}
                     setPreviewImage={setPreviewImage}
                     imageType={imageType}
@@ -392,11 +560,32 @@ export default function Form() {
                     setSearchValue={setSearchValue}
                     filterValue={filterValue}
                     setFilterValue={setFilterValue}
-                    activeIndex={activeIndex}
-                    setActiveIndex={setActiveIndex}
+                    activeCosideIndex={activeCosideIndex}
+                    setActiveCosideIndex={setActiveCosideIndex}
+                    activeUnsplashIndex={activeUnsplashIndex}
+                    setActiveUnsplashIndex={setActiveUnsplashIndex}
                     unsplashImages={unsplashImages}
                     setUnsplashImages={setUnsplashImages}
                     currentPage={currentPage}
+                    setFieldValue={props.setFieldValue}
+                    errorStatus={Boolean(
+                      imageType === "upload"
+                        ? props.errors?.bannerUpload
+                        : imageType === "coside"
+                          ? props.errors?.bannerCoside
+                          : imageType === "unsplash"
+                            ? props.errors?.bannerUnsplash
+                            : false
+                    )}
+                    helperText={
+                      imageType === "upload"
+                        ? props.errors?.bannerUpload
+                        : imageType === "coside"
+                          ? props.errors?.bannerCoside
+                          : imageType === "unsplash"
+                            ? props.errors?.bannerUnsplash
+                            : ""
+                    }
                   />
                   <Field
                     as={Select}
@@ -484,8 +673,14 @@ export default function Form() {
                               onChange={props.handleChange}
                               name={`partners[${index}].jobPosition`}
                               fullWidth
-                              error={Boolean(props.errors[`partners.${index}.jobPosition`] ?? false)}
-                              helperText={props.errors[`partners.${index}.jobPosition`] ?? ""}
+                              error={Boolean(
+                                props.errors[`partners.${index}.jobPosition`] ??
+                                  false
+                              )}
+                              helperText={
+                                props.errors[`partners.${index}.jobPosition`] ??
+                                ""
+                              }
                             />
                           </Box>
                           <TextField
@@ -537,10 +732,18 @@ export default function Form() {
                                         name={`partners[${index}].members[${emailIndex}]`}
                                         color="secondary"
                                         fullWidth
-                                        error={Boolean(props.errors[`partners.${index}.members.${emailIndex}`] ?? false)}
-                                        helperText={props.errors[`partners.${index}.members.${emailIndex}`] ?? ""}
+                                        error={Boolean(
+                                          props.errors[
+                                            `partners.${index}.members.${emailIndex}`
+                                          ] ?? false
+                                        )}
+                                        helperText={
+                                          props.errors[
+                                            `partners.${index}.members.${emailIndex}`
+                                          ] ?? ""
+                                        }
                                       />
-{/*                                       
+                                      {/*                                       
                                       <TextField
                                         // key={emailIndex}
                                         label="組員Email"
