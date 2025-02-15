@@ -1,0 +1,385 @@
+{
+  "global_tokens": {
+    "neutral": {
+      "10": {
+        "$value": "#1f1f1f",
+        "$type": "color"
+      },
+      "20": {
+        "$value": "#343434",
+        "$type": "color"
+      },
+      "30": {
+        "$value": "#4f4f4f",
+        "$type": "color"
+      },
+      "40": {
+        "$value": "#656565",
+        "$type": "color"
+      },
+      "50": {
+        "$value": "#7c7c7c",
+        "$type": "color"
+      },
+      "60": {
+        "$value": "#9a9a9a",
+        "$type": "color"
+      },
+      "70": {
+        "$value": "#b5b5b5",
+        "$type": "color"
+      },
+      "80": {
+        "$value": "#dcdcdc",
+        "$type": "color"
+      },
+      "90": {
+        "$value": "#ececec",
+        "$type": "color"
+      },
+      "95": {
+        "$value": "#f8f8f8",
+        "$type": "color"
+      },
+      "99": {
+        "$value": "#fcfcfc",
+        "$type": "color"
+      },
+      "100": {
+        "$value": "#ffffff",
+        "$type": "color"
+      }
+    },
+    "profession_tags": {
+      "bg_pm": {
+        "$value": "#dcc1ff",
+        "$type": "color"
+      },
+      "outline_pm": {
+        "$value": "#9747ff",
+        "$type": "color"
+      },
+      "bg_uiux": {
+        "$value": "#ffde9c",
+        "$type": "color"
+      },
+      "outline_uiux": {
+        "$value": "#f27f00",
+        "$type": "color"
+      },
+      "bg_ux": {
+        "$value": "#ffcbe4",
+        "$type": "color"
+      },
+      "outline_ux": {
+        "$value": "#f14296",
+        "$type": "color"
+      },
+      "bg_ui": {
+        "$value": "#fffb9c",
+        "$type": "color"
+      },
+      "outline_ui": {
+        "$value": "#ffa800",
+        "$type": "color"
+      },
+      "bg_frontend": {
+        "$value": "#a9d1ff",
+        "$type": "color"
+      },
+      "outline_frontend": {
+        "$value": "#007dc3",
+        "$type": "color"
+      },
+      "bg_backend": {
+        "$value": "#d1f1c2",
+        "$type": "color"
+      },
+      "outline_backend": {
+        "$value": "#54b153",
+        "$type": "color"
+      },
+      "bg_uxr": {
+        "$value": "#c4f2f2",
+        "$type": "color"
+      },
+      "outline_uxr": {
+        "$value": "#01b3da",
+        "$type": "color"
+      },
+      "bg_others": {
+        "$value": "#ececec",
+        "$type": "color"
+      },
+      "outline_others": {
+        "$value": "#656565",
+        "$type": "color"
+      },
+      "bg_fullstack": {
+        "$value": "#b5a9ff",
+        "$type": "color"
+      },
+      "outline_fullstack": {
+        "$value": "#3834d0",
+        "$type": "color"
+      }
+    },
+    "project_tags": {
+      "sideproject_pofile": {
+        "$value": "#93dc70",
+        "$type": "color"
+      },
+      "sideproject_implement": {
+        "$value": "#ff5d5d",
+        "$type": "color"
+      },
+      "sideproject_no_theme": {
+        "$value": "#6fb2ff",
+        "$type": "color"
+      }
+    },
+    "primary": {
+      "normal_blue": {
+        "$value": "#007dc3",
+        "$type": "color"
+      },
+      "normal_purple": {
+        "$value": "#bf8ffd",
+        "$type": "color"
+      },
+      "black": {
+        "$value": "{neutral.30}",
+        "$type": "color"
+      },
+      "dark_blue": {
+        "$value": "#07689e",
+        "$type": "color"
+      },
+      "light_blue": {
+        "$value": "#e3efff",
+        "$type": "color"
+      },
+      "dark_purple": {
+        "$value": "#9868d6",
+        "$type": "color"
+      },
+      "light_purple": {
+        "$value": "#f1e7ff",
+        "$type": "color"
+      },
+      "normal_gray": {
+        "$value": "{neutral.80}",
+        "$type": "color"
+      },
+      "white": {
+        "$value": "{neutral.100}",
+        "$type": "color"
+      },
+      "dark_gray": {
+        "$value": "{neutral.50}",
+        "$type": "color"
+      },
+      "light_gray": {
+        "$value": "{neutral.90}",
+        "$type": "color"
+      },
+      "extra_light_blue": {
+        "$value": "#f1f7ff",
+        "$type": "color"
+      },
+      "darker_gray": {
+        "$value": "{neutral.70}",
+        "$type": "color"
+      }
+    },
+    "status": {
+      "normal_red": {
+        "$value": "#ff5d5d",
+        "$type": "color"
+      },
+      "normal_green": {
+        "$value": "#72c371",
+        "$type": "color"
+      },
+      "darker_red": {
+        "$value": "#d32f2f",
+        "$type": "color"
+      },
+      "lighter_green": {
+        "$value": "#d1f1c2",
+        "$type": "color"
+      }
+    },
+    "project_banner_bg": {
+      "$value": "{primary.extra_light_blue}",
+      "$type": "color"
+    }
+  },
+  "component_tokens": {
+    "form": {
+      "text_default": {
+        "$value": "{primary.black}",
+        "$type": "color"
+      },
+      "border_default": {
+        "$value": "{primary.darker_gray}",
+        "$type": "color"
+      },
+      "border_error": {
+        "$value": "{status.darker_red}",
+        "$type": "color"
+      },
+      "helper_default": {
+        "$value": "{primary.dark_gray}",
+        "$type": "color"
+      },
+      "helper_error": {
+        "$value": "{status.darker_red}",
+        "$type": "color"
+      },
+      "placeholder_input": {
+        "$value": "{primary.darker_gray}",
+        "$type": "color"
+      },
+      "placeholder_dropdown": {
+        "$value": "{primary.dark_gray}",
+        "$type": "color"
+      },
+      "border_selected_blue": {
+        "$value": "{primary.normal_blue}",
+        "$type": "color"
+      },
+      "border_hover_blue": {
+        "$value": "{primary.normal_blue}",
+        "$type": "color"
+      },
+      "bg": {
+        "$value": "{primary.white}",
+        "$type": "color"
+      },
+      "options_bg_select_blue": {
+        "$value": "{primary.extra_light_blue}",
+        "$type": "color"
+      },
+      "radius": {
+        "$value": 12,
+        "$type": "number"
+      },
+      "mid_padding": {
+        "$value": 16,
+        "$type": "number"
+      },
+      "small_padding": {
+        "$value": 12,
+        "$type": "number"
+      }
+    },
+    "btn": {
+      "fill_bg_default_blue": {
+        "$value": "{primary.normal_blue}",
+        "$type": "color"
+      },
+      "fill_bg_default_purple": {
+        "$value": "{primary.normal_purple}",
+        "$type": "color"
+      },
+      "fill_bg_hover_blue": {
+        "$value": "{primary.dark_blue}",
+        "$type": "color"
+      },
+      "fill_bg_hover_purple": {
+        "$value": "{primary.dark_purple}",
+        "$type": "color"
+      },
+      "fill_text": {
+        "$value": "{primary.white}",
+        "$type": "color"
+      },
+      "fill_icon": {
+        "$value": "{primary.white}",
+        "$type": "color"
+      },
+      "fill_bg_clicked_blue": {
+        "$value": "{primary.normal_blue}",
+        "$type": "color"
+      },
+      "fill_bg_clicked_purple": {
+        "$value": "{primary.normal_purple}",
+        "$type": "color"
+      },
+      "outline_text_default_blue": {
+        "$value": "{primary.normal_blue}",
+        "$type": "color"
+      },
+      "outline_icon_default_blue": {
+        "$value": "{primary.normal_blue}",
+        "$type": "color"
+      },
+      "outline_bg_default": {
+        "$value": "{primary.white}",
+        "$type": "color"
+      },
+      "bg_hover_blue": {
+        "$value": "{primary.light_blue}",
+        "$type": "color"
+      },
+      "bg_hover_purple": {
+        "$value": "{primary.light_purple}",
+        "$type": "color"
+      },
+      "text_default_purple": {
+        "$value": "{primary.normal_purple}",
+        "$type": "color"
+      },
+      "icon_default_purple": {
+        "$value": "{primary.normal_purple}",
+        "$type": "color"
+      },
+      "text_hover_purple": {
+        "$value": "{primary.dark_purple}",
+        "$type": "color"
+      },
+      "text_hover_blue": {
+        "$value": "{primary.dark_blue}",
+        "$type": "color"
+      },
+      "icon_hover_purple": {
+        "$value": "{primary.dark_purple}",
+        "$type": "color"
+      },
+      "icon_hover_blue": {
+        "$value": "{primary.dark_blue}",
+        "$type": "color"
+      },
+      "radius": {
+        "$value": 12,
+        "$type": "number"
+      },
+      "padding_md": {
+        "$value": 16,
+        "$type": "number"
+      },
+      "padding_sm": {
+        "$value": 12,
+        "$type": "number"
+      }
+    },
+    "card": {
+      "bg": {
+        "$value": "{primary.white}",
+        "$type": "color"
+      },
+      "radius": {
+        "$value": 12,
+        "$type": "number"
+      }
+    }
+  },
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": [
+      "global_tokens",
+      "component_tokens"
+    ]
+  }
+}

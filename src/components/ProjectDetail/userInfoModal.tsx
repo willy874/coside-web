@@ -25,8 +25,8 @@ interface ProjectCardProps {
 const projectCardData: ProjectCardProps = { // 改名為 projectCardData 並加上型別註記
   thumbnail: "/project-card-thumbnail.png",
   title: "尋蔬食者 VegeFinder",
-  projectTag: "IMPLEMENTING",
-  characterTags: ["PM", "FE"],
+  projectTag: "專案落地",
+  characterTags: ["PM", "Frontend"],
   projectType: "app",
   projectDuration: "2 個月",
   projectOwner: "Alan",
@@ -103,7 +103,7 @@ const ProjectCardModal = ({
               }}>
                 {projectOwner}
               </Typography>
-              <CharacterTag key={'PD'} character={'PD'} />
+              <CharacterTag key={2} character={'UI/UX'} />
               <Typography variant="body1" paragraph sx={{
                 marginBottom: 0
               }}>
@@ -181,7 +181,7 @@ const ProjectCardModal = ({
                 flexDirection: 'column',
                 gap: 1
               }}>
-              <ProjectTag projectTag={'IMPLEMENTING'} />
+              <ProjectTag projectTag={'專案落地'} />
               <Typography variant="body1" component="h4" sx={{
                 marginBottom: 0,
                 fontWeight: 'bold'
@@ -195,7 +195,7 @@ const ProjectCardModal = ({
                 發起人
               </Typography>
             </Box>
-            <CharacterTag key={'PD'} character={'PD'} />
+            <CharacterTag key={1} character={'UI/UX'} />
           </Box>
           <Box
             sx={{
@@ -227,7 +227,7 @@ const ProjectCardModal = ({
                 gap: 1,
                 minWidth: 0,
               }}>
-              <ProjectTag projectTag={'INPROGRESS'} />
+              <ProjectTag projectTag={'純作品集'} />
               <Typography variant="body1" component="h4" sx={{
                 marginBottom: 0,
                 fontWeight: 'bold',
@@ -244,7 +244,7 @@ const ProjectCardModal = ({
                 參與者
               </Typography>
             </Box>
-            <CharacterTag key={'PD'} character={'PD'} />
+            <CharacterTag key={3} character={'UI/UX'} />
           </Box>
         </Box>
         <Box

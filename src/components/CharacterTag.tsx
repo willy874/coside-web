@@ -1,31 +1,58 @@
-"use client"
-import { useTheme } from "@mui/material/styles";
+"use client";
+import theme from "@/styles/theme";
 
 // Emerail: ready to remove
 const CHARACTER_STYLES_MAP: Record<string, Record<string, string>> = {
-  PM: { name: "PM", mainColor: "#9747FF", bgColor: "#DCC1FF" },
-  FE: { name: "前端", mainColor: "#007DC3", bgColor: "#A9D1FF" },
-  BE: { name: "後端", mainColor: "#54B153", bgColor: "#D1F1C2" },
-  PD: { name: "UIUX (PD)", mainColor: "#F27F00", bgColor: "#FFDE9C" }
+  PM: {
+    name: "PM",
+    mainColor: theme.profession_tags.outline_pm,
+    bgColor: theme.profession_tags.bg_pm,
+  },
+  Frontend: {
+    name: "前端",
+    mainColor: theme.profession_tags.outline_frontend,
+    bgColor: theme.profession_tags.bg_frontend,
+  },
+  Backend: {
+    name: "前端",
+    mainColor: theme.profession_tags.outline_backend,
+    bgColor: theme.profession_tags.bg_backend,
+  },
+  "UI/UX": {
+    name: "UIUX",
+    mainColor: theme.profession_tags.outline_uiux,
+    bgColor: theme.profession_tags.bg_uiux,
+  },
+  UI: {
+    name: "UI",
+    mainColor: theme.profession_tags.outline_ui,
+    bgColor: theme.profession_tags.bg_ui,
+  },
+  "UX Designer": {
+    name: "UX",
+    mainColor: theme.profession_tags.outline_ux,
+    bgColor: theme.profession_tags.bg_ux,
+  },
+  "UX": {
+    name: "UX",
+    mainColor: theme.profession_tags.outline_ux,
+    bgColor: theme.profession_tags.bg_ux,
+  }
 };
 
 export const CharacterTag = ({ character }: { character: string }) => {
-  const theme = useTheme();
   return (
     <span
       style={{
-        // backgroundColor: CHARACTER_STYLES_MAP[character].bgColor,
-        // Emerail: to use custom color -> theme.professionTags.pmBg
         backgroundColor: CHARACTER_STYLES_MAP[character].bgColor,
         padding: "6px 16px",
-        marginRight: "6px",
         borderRadius: "20px",
         fontSize: "14px",
         border: `1px solid ${CHARACTER_STYLES_MAP[character].mainColor}`,
         color: CHARACTER_STYLES_MAP[character].mainColor,
         display: "flex",
         alignItems: "center",
-        whiteSpace: "nowrap"
+        whiteSpace: "nowrap",
       }}
     >
       {CHARACTER_STYLES_MAP[character].name}

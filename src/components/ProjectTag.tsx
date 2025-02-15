@@ -1,3 +1,4 @@
+import theme from "@/styles/theme";
 import { Box } from "@mui/material";
 import LocalFireDepartmentOutlinedIcon from "@mui/icons-material/LocalFireDepartmentOutlined";
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
@@ -8,23 +9,59 @@ interface ProjectTagProps {
 }
 
 const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
-  IMPLEMENTING: {
+  "專案落地": {
     name: "專案落地",
     icon: (
       <LocalFireDepartmentOutlinedIcon
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: "#FF5D5D",
+    bgColor: theme.project_tags.sideproject_implement,
   },
-  INPROGRESS: {
-    name: "有主題 實作練習",
+  "純作品集": {
+    name: "純作品集",
     icon: (
       <EmojiObjectsIcon
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: "#93DC70",
+    bgColor: theme.project_tags.sideproject_pofile,
+  },
+  "主題未定": {
+    name: "主題未定",
+    icon: (
+      <EmojiObjectsIcon
+        sx={{ width: "18px", marginRight: "4px" }}
+      />
+    ),
+    bgColor: theme.project_tags.sideproject_no_theme,
+  },
+  "launch": {
+    name: "專案落地",
+    icon: (
+      <LocalFireDepartmentOutlinedIcon
+        sx={{ width: "18px", marginRight: "4px" }}
+      />
+    ),
+    bgColor: theme.project_tags.sideproject_implement,
+  },
+  "titled": {
+    name: "純作品集",
+    icon: (
+      <EmojiObjectsIcon
+        sx={{ width: "18px", marginRight: "4px" }}
+      />
+    ),
+    bgColor: theme.project_tags.sideproject_pofile,
+  },
+  "untitled": {
+    name: "主題未定",
+    icon: (
+      <EmojiObjectsIcon
+        sx={{ width: "18px", marginRight: "4px" }}
+      />
+    ),
+    bgColor: theme.project_tags.sideproject_no_theme,
   },
 };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { createTheme } from "@mui/material/styles";
+import { theme as figmaTheme } from './figmaTheme';
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -119,6 +120,7 @@ const theme = createTheme({
       },
     },
   },
+  ...figmaTheme
 });
 
 export default theme;
