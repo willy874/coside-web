@@ -78,7 +78,7 @@ const LoginSetting = () => {
       // 檢查是否有填完全部內容
       const bodyData = JSON.stringify({
         name: formData.name,
-        email: 'a20@gmail.com',
+        email: email,
         emailPublic: formData.emailPublic,
         facebook: formData.facebook,
         isfacebookpublic: formData.facebookPublic,
