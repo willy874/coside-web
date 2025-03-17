@@ -15,15 +15,15 @@ export default function SelectLabels({ value, onChange, id, name, label, error, 
   };
 
   const [positionArray, setPositionArray] = useState([
-    "UI Designer", 
-    "UX Designer", 
-    "(UI/UX)Product Designer", 
-    "User Researcher",
+    "UI 設計師", 
+    "UX 設計師", 
+    "UIUX/產品設計師", 
+    "使用者研究員",
     "前端工程師",
     "後端工程師",
     "全端工程師",
-    "PM(Project Manager)",
-    "其他職位"
+    "PM",
+    "其他"
   ]);
 
   useEffect(() => {
