@@ -45,13 +45,13 @@ export const theme = {
     "black": "#4f4f4f",
     "dark_blue": "#07689e",
     "light_blue": "#e3efff",
+    "extra_light_blue": "#f1f7ff",
     "dark_purple": "#9868d6",
     "light_purple": "#f1e7ff",
     "normal_gray": "#dcdcdc",
     "white": "#ffffff",
     "dark_gray": "#7c7c7c",
     "light_gray": "#ececec",
-    "extra_light_blue": "#f1f7ff",
     "darker_gray": "#b5b5b5"
   },
   "status": {

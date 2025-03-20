@@ -9,6 +9,15 @@ interface ProjectTagProps {
 }
 
 const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
+  "專案上線": {
+    name: "專案落地",
+    icon: (
+      <LocalFireDepartmentOutlinedIcon
+        sx={{ width: "18px", marginRight: "4px" }}
+      />
+    ),
+    bgColor: theme.project_tags.sideproject_implement,
+  },
   "專案落地": {
     name: "專案落地",
     icon: (
@@ -73,10 +82,14 @@ export const ProjectTag = ({ projectTag }: { projectTag: string }) => {
         padding: "6px 16px",
         borderRadius: "20px",
         fontSize: "14px",
+        lineHeight: "18px",
         color: "#FFFFFF",
         width: "fit-content",
         display: "flex",
         alignItems: "center",
+        "& svg": {
+          height: "18px",
+        }
       }}
     >
       {PROJECT_STYLES_MAP[projectTag].icon}

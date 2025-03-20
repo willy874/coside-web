@@ -1,22 +1,15 @@
 "use client";
 
-import { useParams } from 'next/navigation';
-import { useState, useEffect } from "react";
 import theme from "@/styles/theme";
-import styles from "../../../page.module.css";
+import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
 import { projectGetById } from "@/api/project";
-import { Box, Typography } from "@mui/material";
-import Image from "next/image";
+import { Box, Button } from "@mui/material";
 import UserInfoModal from "@/components/ProjectDetail/UserInfoModal";
+import MobileSwipeableDrawer from "@/components/MobileSwipeableDrawer";
+import ProjectAccordion from "@/components/ProjectDetail/ProjectAccordion";
+import ProjectHeader from "@/components/ProjectDetail/ProjectHeader";
 import ProjectInfo from "@/components/ProjectDetail/ProjectInfo";
-import { CharacterTag } from "@/components/CharacterTag";
-import { ProjectTag } from "@/components/ProjectTag";
-
-const TEXT_MAP: Record<string, string> = {
-  REQUIRE_TYPE: "專案類型｜",
-  REQUIRE_DURATION: "預計時長｜",
-  SPONSOR: "發  起  人｜",
-};
 
 interface ProjectCardProps {
   thumbnail: string;
@@ -46,7 +39,33 @@ export default function ProjectDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [groupedMembers, setGroupedMembers] = useState([]);
+  const [filterParams, setFilterParams] = useState(null);
 
+  const createMailtoLink = (project, userName) => {
+    const subject = `【${project.name}】Side project 合作詢問`;
+
+    const body = `Hi ${project.creator.name}，
+  
+  我是 {使用者名稱}，是 {使用者主要職位}
+  
+  我在 CoSide 上看到你發起的專案，對於(專案中感興趣的部分)特別感興趣/有共鳴，想進一步了解～
+  
+  我能協助的方向：
+  （技能＋具體貢獻）
+  （例：我有 2 年的資料分析經驗，能協助模型調校與數據視覺化呈現）
+  
+  方便的時間：
+  （可選 2-3 個時間或開放式詢問）
+  想請問以上哪個時間對你比較方便呢？或可提供你方便的時間
+  
+  希望有機會與你進一步交流，期待你的回覆！
+  
+  Best,
+  {使用者名稱}`;
+
+    return `mailto:${project.creator.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -57,7 +76,31 @@ export default function ProjectDetailPage() {
         const data = await projectGetById(id);
         if (data.success) {
           setProject(data.data);
-          console.log(data.data)
+          console.log(data.data);
+          const mergedMembers = [];
+          const roleCount = {};
+
+          data.data.members.forEach((member) => {
+            const existingMemberIndex = mergedMembers.findIndex(
+              (m) => m.role === member.role
+            );
+
+            if (existingMemberIndex === -1) {
+              // 只保留 role 並設置 count 為 1
+              roleCount[member.role] = 1;
+              mergedMembers.push({
+                role: member.role,
+                count: 1,
+              });
+            } else {
+              // 增加已存在角色的計數
+              roleCount[member.role]++;
+              mergedMembers[existingMemberIndex].count = roleCount[member.role];
+            }
+          });
+
+          console.log(mergedMembers);
+          setGroupedMembers(mergedMembers);
         } else {
           setError(data.message || "Failed to fetch project");
         }
@@ -102,125 +145,90 @@ export default function ProjectDetailPage() {
 
   return (
     <>
-      <div className={styles.main}>
-        <Box sx={{ width: "100%", maxWidth: "1224px" }}>
-          <Box sx={{ width: "100%", marginTop: "40px", marginBottom: "44px" }}>
-            <div
-              style={{ position: "relative", width: "100%", height: "449px" }}
-            >
-              <Image
-                src={`https://c105-13-115-215-106.ngrok-free.app/${project.background_path}`}
-                alt={project.name}
-                fill
-                sizes="100vw"
-                style={{ objectFit: "cover", borderRadius: "12px", border: `1px solid ${theme.neutral[80]}` }}
-              />
-            </div>
-            <Box
-              sx={{
-                padding: 5,
-                border: `1px solid ${theme.palette.grey[200]}`,
-                borderRadius: 3,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "top",
-                gap: 2.5,
-                marginBottom: 1.5,
-                mt: 3,
-              }}
-            >
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2.5,
-                  width: "50%",
-                }}
+      <Box sx={{ minHeight: "100vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            backgroundColor: {
+              xs: "#F1F7FF",
+              sm: "#F1F7FF",
+              md: "transparent",
+            },
+            padding: "80px 4% 0",
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+              maxWidth: "1224px",
+              marginTop: { xs: "28px", sm: "28px", md: "40px" },
+            }}
+          >
+            <ProjectHeader
+              project={project}
+              handleOpenModal={handleOpenModal}
+              groupedMembers={groupedMembers}
+            />
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: {
+              xs: "32px 4% 80px",
+              sm: "32px 4% 80px",
+              md: "0 4% 80px",
+            },
+          }}
+        >
+          <Box sx={{ width: "100%", maxWidth: "1224px" }}>
+            <ProjectInfo project={project} />
+          </Box>
+        </Box>
+        <UserInfoModal
+          userId={project.creator.id}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          {...projectCardData}
+        />
+        <MobileSwipeableDrawer
+          title={"查看徵求職位"}
+          content={
+            <>
+              <ProjectAccordion project={project} />
+              <a
+                href={createMailtoLink(project, "test")}
+                style={{ textDecoration: "none" }}
               >
-                <ProjectTag projectTag={project.type} />
-                <Typography
-                  variant="h4"
-                  component="h2"
+                <Button
+                  color="primary"
+                  variant="contained"
                   sx={{
-                    marginBottom: 0,
+                    width: "100%",
+                    color: theme.primary.white,
+                    bgcolor: theme.primary.normal_blue,
+                    borderRadius: "12px",
+                    textDecoration: "none",
                     fontWeight: "bold",
+                    padding: "10px 16px",
+                    fontSize: "16px",
+                    lineHeight: "19px",
+                    "&:hover": {
+                      bgcolor: theme.btn.fill_bg_hover_blue,
+                    },
                   }}
                 >
-                  {project.name}
-                </Typography>
-              </Box>
-              <Box sx={{ width: "50%" }}>
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: "12px" }}
-                >
-                  {project.members.map((member, index) => (
-                    <CharacterTag key={index} character={member.role} />
-                  ))}
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
-                  <Typography sx={{ fontSize: "16px", color: "#4F4F4F", marginRight: "6px" }}>
-                    <span>{TEXT_MAP.REQUIRE_TYPE}</span>
-                  </Typography>
-                  <Box sx={{ color: "#7C7C7C", fontWeight: "700" }}>
-                    {project.industry}
-                  </Box>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
-                  <Typography sx={{ fontSize: "16px", color: "#4F4F4F", marginRight: "6px" }}>
-                    <span>{TEXT_MAP.REQUIRE_DURATION}</span>
-                  </Typography>
-                  <Box sx={{ color: "#7C7C7C", fontWeight: "700" }}>
-                    {project.duration}
-                  </Box>
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
-                  <Typography sx={{ fontSize: "16px", color: "#4F4F4F", marginRight: "6px" }}>
-                    <span>{TEXT_MAP.SPONSOR}</span>
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      cursor: "pointer",
-                    }}
-                    onClick={handleOpenModal}
-                  >
-                    <Box
-                      sx={{
-                        height: "32px",
-                        width: "32px",
-                        borderRadius: "50%",
-                        overflow: "hidden",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginRight: "12px",
-                      }}
-                    >
-                      <Image
-                        src={`https://c105-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
-                        alt={project.creator.name}
-                        width={32}
-                        height={32}
-                      />
-                    </Box>
-                    <Typography sx={{ color: "#7C7C7C", fontWeight: "700" }}>
-                      {project.creator.name}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-          <ProjectInfo />
-        </Box>
-      </div>
-      <UserInfoModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        {...projectCardData}
-      />
+                  聯絡發起人
+                </Button>
+              </a>
+            </>
+          }
+        />
+      </Box>
     </>
   );
 }

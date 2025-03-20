@@ -1,74 +1,60 @@
 "use client";
 
+import MDXRenderer from "./MDXRenderer";
 import theme from "@/styles/theme";
-import Accordion from "@mui/material/Accordion";
-import AccordionActions from "@mui/material/AccordionActions";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Box, Button, Grid, Typography } from "@mui/material";
-import Image from "next/image";
-import { CharacterTag } from "@/components/CharacterTag";
-import { ProjectTag } from "@/components/ProjectTag";
-import { People } from "@mui/icons-material";
+import ProjectAccordion from "@/components/ProjectDetail/ProjectAccordion";
 
-interface AccordionInfo {
-  role: string;
-  people: number;
-  require: string;
-}
-
-const AccordionInfoList: AccordionInfo[] = [
-  {
-    role: "Frontend",
-    people: 2,
-    require: "切版",
-  },
-  {
-    role: "UI/UX",
-    people: 1,
-    require: "設計",
-  },
-  {
-    role: "PM",
-    people: 2,
-    require: "管理進度",
-  },
-];
-
-const ProjectInfo = () => {
+const ProjectInfo = ({ project }) => {
   return (
     <>
+      <Typography
+        variant="h5"
+        component="h2"
+        sx={{
+          display: { xs: "block", sm: "block", md: "none" },
+          fontWeight: "bold",
+          width: "100%",
+          color: theme.primary.normal_blue,
+          mb: 2,
+        }}
+      >
+        專案說明
+      </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={12} md={7}>
           <Box
             sx={{
               border: `1px solid ${theme.primary.normal_gray}`,
-              borderRadius: "20px",
-              padding: "32px 24px",
+              borderRadius: { xs: "12px", sm: "12px", md: "20px" },
+              padding: { xs: "32px", sm: "32px", md: "32px 24px" },
             }}
           >
-            <Typography variant="h5" component="h2" sx={{ fontWeight: "bold" }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              sx={{
+                display: { xs: "none", sm: "none", md: "block" },
+                fontWeight: "bold",
+                mb: 1.5,
+              }}
+            >
               專案說明
             </Typography>
-            <Box sx={{ minHeight: "50vh" }}>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque nobis at, provident, quidem quisquam deserunt, autem ipsum vel hic minus quas reiciendis repellat dolor blanditiis ea nihil beatae doloribus ab.
-              Praesentium deleniti veniam eligendi neque, architecto blanditiis, beatae quidem debitis voluptate, libero quis sed voluptatum pariatur fugit! Aspernatur, ex? Quo, modi temporibus? Rem facere ipsam fuga suscipit officiis assumenda numquam.
-              Quasi, tempore. Dicta nemo sunt quae saepe neque iure, impedit temporibus voluptatum tempore in sapiente aliquam fugiat necessitatibus doloribus rem pariatur quasi optio. Consequuntur a laboriosam officiis harum. Soluta, blanditiis?
-              Nam, optio ab aut unde expedita recusandae vitae odio ullam nemo. Maxime accusantium sit itaque. Esse asperiores, unde eaque ducimus, aspernatur sint consequuntur assumenda quia veniam, eligendi autem odit deserunt.
-              Adipisci porro iste facere, neque nulla dolorem minus error rerum cumque dicta at sit iusto quidem praesentium voluptatum laudantium odio ipsam inventore accusamus, deserunt nobis! Necessitatibus eius harum quia ab.
-              Ullam facilis, vitae ipsa soluta harum repellat nulla? Ratione laudantium dolore a. Perspiciatis deserunt magni repellat, totam, molestias minima sequi provident necessitatibus harum repellendus, velit quasi hic doloremque voluptatibus labore?
-              Veniam architecto perferendis reiciendis ad molestiae dolores placeat vitae harum. Nostrum dignissimos quis cupiditate blanditiis, voluptatem quod. Dolores, voluptas. Placeat odit in cum aliquam dignissimos tempore pariatur necessitatibus eaque mollitia.
-              Quo, iste. Possimus quas, distinctio dolorum non vitae commodi officia voluptatum! Fugiat tenetur autem qui distinctio laboriosam non! Laudantium error, harum facilis assumenda veritatis culpa neque possimus soluta mollitia repellat.
-              Qui libero ratione nisi doloremque maiores. Quos ab fuga rem. Minus impedit magnam nostrum mollitia unde provident quo numquam, accusamus facilis laboriosam. Eveniet vel necessitatibus, nihil omnis quas obcaecati itaque?
-              Id, magnam? Nesciunt similique eos voluptatem, id voluptatum at, tempore a quidem assumenda incidunt ab aspernatur adipisci! Alias nisi, exercitationem soluta modi eligendi provident sint fuga ut, asperiores voluptatum doloremque.
-              Unde asperiores reiciendis quaerat inventore exercitationem accusamus, necessitatibus nobis! Rem tempora expedita dolor molestiae error enim minima ducimus, esse eveniet deserunt ut ullam eius voluptates. Tempore ab dignissimos alias iste!
-              Voluptates sequi dolore distinctio, voluptatum incidunt sed quasi quam impedit quo et nemo. Magni suscipit in odit libero. Consectetur cumque dolor explicabo ullam maxime sint excepturi cum modi voluptas magnam?
-              Suscipit sit impedit repellendus delectus fuga corrupti, voluptas ab nesciunt inventore minima, quam iusto fugiat eveniet, tempore vitae. Ipsa, molestias inventore laboriosam minus aspernatur nesciunt! Soluta eligendi ut optio sapiente.
+            <Box>
+              <MDXRenderer content={project.description} />
             </Box>
           </Box>
         </Grid>
-        <Grid item xs={12} sm={12} md={5}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={5}
+          sx={{
+            display: { xs: "none", sm: "none", md: "block" },
+          }}
+        >
           <Box
             sx={{
               border: `1px solid ${theme.primary.normal_gray}`,
@@ -83,100 +69,46 @@ const ProjectInfo = () => {
             >
               徵求職位
             </Typography>
-            {AccordionInfoList.map((info, index) => (
-              <Accordion
-                sx={{
-                  boxShadow: "none",
-                  border: `1px solid ${theme.neutral[80]}`,
-                  borderRadius: "12px",
-                  marginBottom: "16px",
+            <ProjectAccordion project={project} />
 
-                  "&:first-of-type": {
-                    borderTopLeftRadius: "12px",
-                    borderTopRightRadius: "12px",
-                  },
-
-                  "&:last-of-type": {
-                    borderBottomLeftRadius: "12px",
-                    borderBottomRightRadius: "12px",
-                  },
-
-                  // Target the Accordion root
-                  "&.MuiAccordion-root": {
-                    padding: 0,
-                    "&:before": {
-                      display: "none",
-                    },
-                  },
-
-                  // Target the expanded summary root
-                  "& .MuiAccordionSummary-root.Mui-expanded": {
-                    minHeight: "auto",
-                  },
-
-                  "&.Mui-expanded:last-of-type": {
-                    marginBottom: "16px",
-                  }
-                }}
-                key={info.role}
-              >
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={`panel${index}-content`}
-                  id={`panel${index}-header`}
-                  sx={{
-                    padding: "0 32px",
-                    ".MuiAccordionSummary-content": {
-                      alignItems: "center",
-                      gap: "24px",
-                      margin: "24px 0",
-                    },
-                    ".MuiAccordionSummary-content.Mui-expanded": {
-                      margin: "24px 0",
-                    },
-                  }}
-                >
-                  <CharacterTag key={info.role} character={info.role} />
-                  <Typography
-                    component="span"
-                    sx={{
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {info.people}名
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails
-                  sx={{
-                    padding: "0 32px 24px",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle1"
-                    component="h3"
-                    sx={{
-                      fontWeight: "bold",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    能力要求
-                  </Typography>
-                  <Typography
-                    sx={{
-                      padding: "16px 12px",
-                      backgroundColor: theme.primary.extra_light_blue,
-                      borderRadius: "12px",
-                    }}
-                  >
-                    {info.require}
-                  </Typography>
-                </AccordionDetails>
-              </Accordion>
-            ))}
             <Button
+              component="a"
+              href={`mailto:${project.creator.email}?
+              subject=${encodeURIComponent(`【${project.name}】Side project 合作詢問`)}&
+              body=${encodeURIComponent(`Hi ${project.creator.name}，
+
+              我是 {使用者名稱}，是{使用者主要職位}
+
+              我在 CoSide 上看到你發起的專案，對於(專案中感興趣的部分)特別感興趣/有共鳴，想進一步了解～
+
+              我能協助的方向：
+              （技能＋具體貢獻）
+              （例：我有 2 年的資料分析經驗，能協助模型調校與數據視覺化呈現）
+
+              方便的時間：
+              （可選 2-3 個時間或開放式詢問）
+              想請問以上哪個時間對你比較方便呢？或可提供你方便的時間
+
+              希望有機會與你進一步交流，期待你的回覆！
+
+              Best,
+              {使用者名稱}`)}`}
               color="primary"
               variant="contained"
-              sx={{ width: "100%", color: "#FFFFFF", borderRadius: "12px" }}
+              sx={{
+                width: "100%",
+                color: theme.primary.white,
+                bgcolor: theme.primary.normal_blue,
+                borderRadius: "12px",
+                textDecoration: "none",
+                fontWeight: "bold",
+                padding: "10px 16px",
+                fontSize: "16px",
+                lineHeight: "19px",
+                "&:hover": {
+                  bgcolor: theme.btn.fill_bg_hover_blue,
+                },
+              }}
             >
               聯絡發起人
             </Button>

@@ -179,7 +179,7 @@ export default function Form() {
           // member: z
           // .array(z.string().email({message: "請輸入正確的電子郵件地址"})),
           members: z.array(
-            z.string().email({ message: "請輸入有效的 Email 地址" })
+            z.string().email({ message: "請輸入有效的 Email 地址" }).or(z.literal(""))
           ),
         })
       )
@@ -675,7 +675,7 @@ export default function Form() {
                               fullWidth
                               error={Boolean(
                                 props.errors[`partners.${index}.jobPosition`] ??
-                                  false
+                                false
                               )}
                               helperText={
                                 props.errors[`partners.${index}.jobPosition`] ??
@@ -725,7 +725,7 @@ export default function Form() {
                                         placeholder="請輸入Email"
                                         value={
                                           props.values.partners[index].members[
-                                            emailIndex
+                                          emailIndex
                                           ]
                                         }
                                         onChange={props.handleChange}
@@ -734,13 +734,15 @@ export default function Form() {
                                         fullWidth
                                         error={Boolean(
                                           props.errors[
-                                            `partners.${index}.members.${emailIndex}`
-                                          ] ?? false
+                                          `partners.${index}.members.${emailIndex}`
+                                          ] &&
+                                          props.values.partners[index].members[emailIndex] !== "" // 只有在非空值時才顯示錯誤
                                         )}
                                         helperText={
-                                          props.errors[
-                                            `partners.${index}.members.${emailIndex}`
-                                          ] ?? ""
+                                          (props.values.partners[index].members[emailIndex] !== "") ?
+                                            (props.errors[
+                                              `partners.${index}.members.${emailIndex}`
+                                            ] ?? "") : ""
                                         }
                                       />
                                       {/*                                       

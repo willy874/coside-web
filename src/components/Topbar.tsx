@@ -32,7 +32,7 @@ export const Topbar = () => {
       }}
     >
       <Link href="/">
-        <Image src="/theme-logo.svg" alt="Co-Side" width={174} height={40} />
+        <Image src="/theme-logo.svg" alt="Co-Side" width={174} height={40} priority />
       </Link>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Link href="/">

@@ -45,25 +45,77 @@ export const ProjectCard = ({
     ));
 
   return (
-    <Grid item xs={1} sm={1} md={1} lg={1}>
-      <Link href={`/project/detail/${project.id}`}>
+    <Grid item sx={{ height: "100%" }}>
+      <Link href={`/project/detail/${project.id}`} style={{ display: "block", height: "100%" }}>
         <Card
           className="project-card"
-          sx={{ borderRadius: "20px", minWidth: "320px" }}
+          sx={{
+            border: `solid 1px ${theme.primary.normal_gray}`, boxShadow: "none", borderRadius: "20px", minWidth: { xs: "auto", sm: "320px" }, width: "100%", height: "100%", minHeight: { xs: "474px", sm: "474px", md: "482px" }, display: "flex", flexDirection: "column"
+            , "&:hover": {
+              boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+            }
+          }}
         >
           <CardMedia
             component="img"
-            src={"https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png"}
+            src={project.background_Path
+              ? `https://c105-13-115-215-106.ngrok-free.app/${project.background_Path}`
+              : "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png"}
             sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.neutral[80]}` }}
+            onError={(e) => {
+              e.currentTarget.src = "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png";
+            }}
           />
-          <CardContent sx={{ padding: "24px" }}>
-            <ProjectTag projectTag={project.type} />
-            <Typography
-              component="h2"
-              sx={{ fontSize: "24px", fontWeight: "700", margin: "16px 0" }}
-            >
-              {project.name}
-            </Typography>
+
+          <CardContent sx={{ padding: "24px", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+            <Box sx={{ marginBottom: "auto" }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <ProjectTag projectTag={project.type} />
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Image
+                    src={`https://c105-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                    alt={project.creator.name}
+                    width={24}
+                    height={24}
+                    style={{
+                      display: "block",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                    }}
+                  />
+                  <Typography sx={{ color: "#7C7C7C" }}>{project.creator.name}</Typography>
+                </Box>
+              </Box>
+              <Typography
+                component="h2"
+                sx={{
+                  fontSize: "24px",
+                  fontWeight: "700",
+                  margin: "24px 0",
+                  lineHeight: "27px", // 控制行高
+                  height: "54px", // 確保正好 2 行
+                  display: "-webkit-box", // 讓 ellipsis 適用於多行
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 2, // 限制最多 2 行
+                  overflow: "hidden",
+                  textOverflow: "ellipsis", // 必須搭配 -webkit-box 才能生效
+                }}
+              >
+                {project.name}
+              </Typography>
+
+
+              <Typography
+                sx={{
+                  fontSize: "16px",
+                  color: `${theme.neutral[60]}`,
+                  fontWeight: "700",
+                  marginBottom: "24px",
+                }}
+              >
+                <span>{project.categories.join(" / ")}・{project.duration}</span>
+              </Typography>
+            </Box>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography
                 sx={{
@@ -79,73 +131,9 @@ export const ProjectCard = ({
                 {renderCharacterTag()}
               </Box>
             </Box>
-            <Box
-              sx={{ display: "flex", alignItems: "center", marginTop: "12px" }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "16px",
-                  color: "#4F4F4F",
-                  fontWeight: "700",
-                  marginRight: "6px",
-                }}
-              >
-                <span>{TEXT_MAP.REQUIRE_TYPE}</span>
-              </Typography>
-              <Box sx={{ color: "#7C7C7C" }}>{project.industry}</Box>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                marginTop: "12px",
-                marginBottom: "12px",
-              }}
-            >
-              <Typography
-                sx={{
-                  fontSize: "16px",
-                  color: "#4F4F4F",
-                  fontWeight: "700",
-                  marginRight: "6px",
-                }}
-              >
-                <span>{TEXT_MAP.REQUIRE_DURATION}</span>
-              </Typography>
-              <Box sx={{ color: "#7C7C7C" }}>{project.duration}</Box>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Box
-                sx={{
-                  height: "32px",
-                  width: "32px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: "12px",
-                }}
-              >
-                <Image
-                  src={`https://c105-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
-                  alt={project.creator.name}
-                  width={32}
-                  height={32}
-                />
-              </Box>
-              <Typography sx={{ color: "#7C7C7C" }}>{project.creator.name}</Typography>
-            </Box>
-            {/* <Button
-            color="primary"
-            variant="contained"
-            sx={{ width: "100%", color: "#FFFFFF", borderRadius: "12px"}}
-          >
-            {TEXT_MAP.CHECK}
-          </Button> */}
           </CardContent>
         </Card>
       </Link>
-    </Grid>
+    </Grid >
   );
 };
