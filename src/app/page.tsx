@@ -11,8 +11,13 @@ import FilterDropdownList from "@/components/FilterDropdownList";
 import { Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { projectGetByFilter } from "@/api/project";
+import { Suspense } from "react";
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
   const [nowPage, setNowPage] = useState(1);
   const [size, setSize] = useState(12);
   const [projects, setProjects] = useState<ProjectCardProps[]>([]);
@@ -186,7 +191,11 @@ export default function Home() {
           </Button>
         </Box>
       </Box>
-      <HandleToken />
+      <Suspense>
+        <HandleToken />
+
+      </Suspense>
+      {/* <ServerHandleToken searchParams={searchParams}/> */}
     </main>
   );
 }

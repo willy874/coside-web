@@ -1,5 +1,6 @@
 import Typography from "@mui/material/Typography";
 import Form from "./Form";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Create Project",
