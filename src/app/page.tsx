@@ -4,8 +4,10 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import { ProjectCard, ProjectCardProps } from "@/components/ProjectCard";
 import HandleToken from "@/components/Auth/HandleToken";
+import ServerHandleToken from "@/components/Auth/ServerHandleToken";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import { Suspense } from "react";
 
 const mockProjectCard: ProjectCardProps[] = [
 {
@@ -40,7 +42,11 @@ const mockProjectCard: ProjectCardProps[] = [
 },
 ];
 
-export default function Home() {
+export default function Home({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
   return (
     <main className={styles.main}>
       <Box sx={{ maxWidth: "1280px" }}>
@@ -69,8 +75,11 @@ export default function Home() {
         </Button>
       </Box>
       </Box>
-      <HandleToken />
-      
+      <Suspense>
+        <HandleToken />
+
+      </Suspense>
+      {/* <ServerHandleToken searchParams={searchParams}/> */}
     </main>
   );
 }

@@ -298,7 +298,7 @@ export default function UploadImage({
   useEffect(() => {
     if (filterValue === "" || currentPage.current > 1) return;
     getPhotos(1, true);
-  }, [filterValue]);
+  }, [filterValue, currentPage]);
 
   useEffect(() => {
     if (imageType === "unsplash" && listRef.current) {
@@ -438,6 +438,7 @@ export default function UploadImage({
                       檔案大小：小於 5 Mb
                     </Typography>
                     <Button
+                      component="div"
                       size="large"
                       variant="outlined"
                       color="secondary"
@@ -488,7 +489,7 @@ export default function UploadImage({
                   inputProps={{ "aria-label": "search" }}
                   value={searchValue} // 綁定 value
                   onChange={handleSearchChange} // 處理輸入變化
-                  onKeyDown={(e) => e.key === "Enter" && onSearch(e)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && onSearch(e)}
                   sx={{ color: theme.palette.grey[400] }}
                 />
               </Search>

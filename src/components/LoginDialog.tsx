@@ -1,17 +1,11 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTitle, Button, TextField, Box, Typography } from "@mui/material";
-import React from "react";
-import styles from "./LoginDialog.module.scss"
-import axios from "axios";
-
+import styles from "./LoginDialog.module.scss";
+import Image from "next/image";
 export const LoginDialog = ({
     open, onClose
-}) => {
-    // const { open, closeDialog } = useLoginDialog();
-    // google 登入按鈕
-    
-    
+}: { open: boolean, onClose: () => void }) => {
 
 
     const handleGoogleLogin = async() => {
@@ -36,9 +30,9 @@ export const LoginDialog = ({
     
 
     return (
-        <Dialog open={open} onClose={()=> {onClose()}}  classes={{ paper: styles.dialog }}>
+        <Dialog open={open} onClose={()=> {onClose()}}   classes={{ paper: styles.dialog }}>
             <DialogTitle className={styles.center}>
-                <img src="/Co-Side.png" alt=""  className={styles.image}/>
+                <Image src="/Co-Side.png" alt="" width={69} height={65}  className={styles.image}/>
             </DialogTitle>
             <DialogContent className={styles.dialogContent}>
                 <h3 className={styles.contentHead}>歡迎來到 Co-Side</h3>
@@ -49,7 +43,7 @@ export const LoginDialog = ({
                 <Button 
                     variant="outlined"
                     className={styles.loginButton}
-                    startIcon={<img src="/SSOIcon.png" alt="Google Icon" className={styles.googleIcon} />}
+                    startIcon={<Image src="/SSOIcon.png" alt="Google Icon" width={24} height={24} className={styles.googleIcon} />}
                     onClick= {handleGoogleLogin}
                     >
                         使用 Google 登入

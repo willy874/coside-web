@@ -25,6 +25,7 @@ declare module "@mui/material/styles" {
       othersOutline: string;
       extraLightBlue: string;
     };
+    
   }
 
   // allow configuration using `createTheme`
@@ -51,6 +52,9 @@ declare module "@mui/material/styles" {
       extraLightBlue?: string;
     };
   }
+  interface PaletteColor {
+    black?: string;
+  }
 }
 
 const theme = createTheme({
@@ -59,7 +63,7 @@ const theme = createTheme({
       main: "#007DC3",
       dark: "#07689E",
       light: "#CBE8FF",
-      black: "#4F4F4F"
+      // black: "#4F4F4F" as any,
     },
     secondary: {
       main: "#BF8FFD",

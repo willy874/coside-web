@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import useLoginStore from "@/stores/loginStore";
@@ -27,6 +26,9 @@ import {
   Form as FormFormik,
   FieldArray,
   ErrorMessage,
+  FormikHelpers,
+  FormikErrors,
+  getIn
 } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import { z } from "zod";
@@ -38,9 +40,21 @@ import MDXEditor from "@/components/MDXEditor";
 import { jobPosition, projectType, titleType, duration } from "@/constant";
 import useArray from "@/hooks/useArray";
 // type
-import type { PartnerType } from "./Form.type";
+// import type { PartnerType } from "./Form.type";
 import styles from "./Form.module.scss";
 import { convertSelectionToNode$ } from "@mdxeditor/editor";
+
+type  PartnerType  = {
+  id: string; 
+  number: number;
+  jobPosition: string;
+  projectRequirement: string;
+  members: string[];
+}
+
+type bannerUnsplash = {
+  [key: string]: any; 
+}
 
 type FormValues = {
   title: string;
@@ -48,7 +62,12 @@ type FormValues = {
   titleType: string;
   projectDuration: string;
   MKContent: string;
-  partners: object;
+  imageType: string;
+  bannerUpload: object | Blob | undefined;
+  bannerCoside: string;
+  bannerUnsplash: bannerUnsplash | undefined;
+  partners: PartnerType[];
+  submit: string;
 };
 
 const steps = ["專案基本資訊", "專案說明", "組員需求"];
@@ -105,6 +124,29 @@ export default function Form() {
 
   const theme = useTheme();
 
+  const initialValues:FormValues = {
+    titleType: "",
+    projectType: "",
+    title: "",
+    projectDuration: "",
+    MKContent: "",
+    imageType: "upload",
+    bannerUpload: undefined,
+    bannerCoside: "",
+    bannerUnsplash: undefined,
+    partners: [
+      {
+        id: uuidv4(),
+        number: 1,
+        jobPosition: "",
+        projectRequirement: "",
+        members: [""],
+      },
+    ],
+    submit: ""
+    
+  }
+
   useEffect(() => {
     console.log(mkVariable);
   }, [mkVariable]);
@@ -115,9 +157,9 @@ export default function Form() {
     setMkVariable(markdown);
   };
 
-  const partners = useArray<PartnerType>({
-    defaultValues: [{ id: "1", number: 1 }],
-  });
+  // const partners = useArray<PartnerType>({
+  //   defaultValues: [{ id: "1", number: 1 }],
+  // });
 
   const step0ValidationSchema = z
     .object({
@@ -196,7 +238,7 @@ export default function Form() {
   const doValidate = async (
     values: FormValues,
     validationSchema: any
-  ): Promise<object | boolean> => {
+  ): Promise<object | false> => {
     const formikSchema = toFormikValidationSchema(validationSchema);
     // const formikSchemaTest = validationSchema.safeParse(values);
     // if(!formikSchemaTest.success) {
@@ -206,18 +248,21 @@ export default function Form() {
     try {
       await formikSchema.validate(values);
       return false;
-    } catch (error) {
-      const errors: object = {};
-      error.inner.forEach((e) => {
+    } catch (error:any) {
+      const errors: Record<string, string> = {};
+      error.inner.forEach((e:any) => {
         console.log("舊的", error);
+        console.log(e.path)
         errors[e.path] = e.message;
+        console.log(e)
+        
       });
       console.log("errors: ", errors);
       return errors;
     }
   };
 
-  const goNextOrErrors = (validateResult, setErrors) => {
+  const goNextOrErrors = (validateResult:object | boolean, setErrors:any) => {
     console.log("validateResult", validateResult);
     if (validateResult === false) {
       if (activeStep === 2) {
@@ -230,7 +275,7 @@ export default function Form() {
     }
   };
 
-  const handleNext = async (values, setErrors) => {
+  const handleNext = async (values:FormValues, setErrors:any) => {
     if (activeStep === 0) {
       const validateResult = await doValidate(values, step0ValidationSchema);
       goNextOrErrors(validateResult, setErrors);
@@ -244,7 +289,7 @@ export default function Form() {
     }
   };
 
-  const uploadImageBeforeSubmit = async (formValues, token) => {
+  const uploadImageBeforeSubmit = async (formValues:FormValues, token:string) => {
     try {
       switch (formValues.imageType) {
         case "upload": {
@@ -253,7 +298,7 @@ export default function Form() {
           }
 
           const data = new FormData();
-          data.append("file", formValues.bannerUpload);
+          data.append("file", formValues.bannerUpload as Blob);
 
           const response = await axios.post(
             `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
@@ -274,7 +319,11 @@ export default function Form() {
 
         case "unsplash": {
           console.log(formValues.bannerUnsplash);
+          
           try {
+            if(!formValues.bannerUnsplash) {
+              throw new Error("No Unsplash image selected");
+            }
             // 原始圖片資訊
             const imageUrl = formValues.bannerUnsplash.urls.raw;
             const downloadUrl =
@@ -287,12 +336,12 @@ export default function Form() {
             const fileSizeLimit = 3 * 1024 * 1024; // 3MB
 
             // 建立壓縮後的圖片 URL
-            function getCompressedUrl(url, width, quality) {
+            const getCompressedUrl = (url:any, width:any, quality:any) => {
               return `${url}?w=${width}&q=${quality}&fm=jpg&fit=max`;
             }
 
             // 用 axios 獲取圖片 Blob 並檢查大小
-            async function compressAndGetQuality(url) {
+            const compressAndGetQuality = async(url:any) => {
               let compressedUrl = getCompressedUrl(url, width, quality);
 
               while (true) {
@@ -361,11 +410,12 @@ export default function Form() {
     }
   };
 
-  const handleSubmit = async (values, { setErrors, setSubmitting }) => {
+  const handleSubmit = async (values:FormValues, formikHelpers: FormikHelpers<FormValues>) => {
+    const { setErrors, setSubmitting } = formikHelpers
     try {
       setSubmitting(true);
 
-      // 1. Validate the form data
+      // 1. Validate the form data－
       const validateResult = await doValidate(values, step2ValidationSchema);
       if (validateResult) {
         setErrors(validateResult);
@@ -376,6 +426,9 @@ export default function Form() {
       const imgPath = await uploadImageBeforeSubmit(values, token);
 
       // 3. Transform members data
+      if(!values.partners) {
+        throw new Error("No partner");
+      }
       const members = values.partners.flatMap((partner) =>
         partner.members.map((member) => ({
           role: partner.jobPosition,
@@ -412,7 +465,7 @@ export default function Form() {
 
       // 6. Handle success (you might want to add navigation or success message here)
       console.log("Project created successfully:", response.data);
-    } catch (error) {
+    } catch (error:any) {
       console.error("Submit error:", error);
 
       // Handle specific error cases
@@ -467,28 +520,7 @@ export default function Form() {
         </Stepper>
       </Box>
       <Formik
-        initialValues={{
-          titleType: "",
-          projectType: "",
-          title: "",
-          projectRequirement: "",
-          partnerNumber: "",
-          projectDuration: "",
-          MKContent: "",
-          imageType: "upload",
-          bannerUpload: undefined,
-          bannerCoside: "",
-          bannerUnsplash: undefined,
-          partners: [
-            {
-              id: uuidv4(),
-              number: 1,
-              jobPosition: "",
-              projectRequirement: "",
-              members: [""],
-            },
-          ],
-        }}
+        initialValues={initialValues}
         onSubmit={handleSubmit}
       >
         {(props) => (
@@ -671,15 +703,17 @@ export default function Form() {
                               options={jobPosition}
                               value={props.values.partners[index].jobPosition}
                               onChange={props.handleChange}
-                              name={`partners[${index}].jobPosition`}
+                              name={`partners.${index}.jobPosition`}
                               fullWidth
                               error={Boolean(
-                                props.errors[`partners.${index}.jobPosition`] ??
-                                  false
+                                getIn(props.touched, `partners.${index}.jobPosition`) &&
+                                getIn(props.errors, `partners.${index}.jobPosition`)
                               )}
                               helperText={
-                                props.errors[`partners.${index}.jobPosition`] ??
-                                ""
+                                getIn(props.touched, `partners.${index}.jobPosition`) &&
+                                getIn(props.errors, `partners.${index}.jobPosition`)
+                                  ? getIn(props.errors, `partners.${index}.jobPosition`)
+                                  : ""
                               }
                             />
                           </Box>
@@ -729,19 +763,16 @@ export default function Form() {
                                           ]
                                         }
                                         onChange={props.handleChange}
-                                        name={`partners[${index}].members[${emailIndex}]`}
+                                        name={`partners.${index}.members[${emailIndex}]`}
                                         color="secondary"
                                         fullWidth
-                                        error={Boolean(
-                                          props.errors[
-                                            `partners.${index}.members.${emailIndex}`
-                                          ] ?? false
-                                        )}
-                                        helperText={
-                                          props.errors[
-                                            `partners.${index}.members.${emailIndex}`
-                                          ] ?? ""
-                                        }
+                                        error={Boolean(getIn(props.errors, `partners.${index}.members.${emailIndex}`))}
+                                        // helperText={
+                                        //   props.errors[
+                                        //     `partners.${index}.members.${emailIndex}`
+                                        //   ] ?? ""
+                                        // }
+                                        helperText={getIn(props.errors, `partners.${index}.members.${emailIndex}`) ?? ""}
                                       />
                                       {/*                                       
                                       <TextField
