@@ -209,7 +209,7 @@ export default function ProjectDetailPage() {
                   sx={{
                     width: "100%",
                     color: theme.figma.neutral[100],
-                    bgcolor: theme.figma.primary.normal_blue,
+                    bgcolor: theme.figma.Primary.normal_blue,
                     borderRadius: "12px",
                     textDecoration: "none",
                     fontWeight: "bold",
@@ -217,7 +217,7 @@ export default function ProjectDetailPage() {
                     fontSize: "16px",
                     lineHeight: "19px",
                     "&:hover": {
-                      bgcolor: theme.figma.btn.fill_bg_hover_blue,
+                      bgcolor: theme.figma.btn.fill.bg_hover_blue,
                     },
                   }}
                 >

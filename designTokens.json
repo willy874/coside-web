@@ -138,13 +138,9 @@
         "$type": "color"
       }
     },
-    "primary": {
+    "Primary": {
       "normal_blue": {
         "$value": "#007dc3",
-        "$type": "color"
-      },
-      "normal_purple": {
-        "$value": "#bf8ffd",
         "$type": "color"
       },
       "black": {
@@ -157,14 +153,6 @@
       },
       "light_blue": {
         "$value": "#e3efff",
-        "$type": "color"
-      },
-      "dark_purple": {
-        "$value": "#9868d6",
-        "$type": "color"
-      },
-      "light_purple": {
-        "$value": "#f1e7ff",
         "$type": "color"
       },
       "normal_gray": {
@@ -190,6 +178,32 @@
       "darker_gray": {
         "$value": "{neutral.70}",
         "$type": "color"
+      },
+      "extra_dark_blue": {
+        "$value": "#015483",
+        "$type": "color"
+      }
+    },
+    "Secondary": {
+      "normal_purple": {
+        "$value": "#bf8ffd",
+        "$type": "color"
+      },
+      "dark_purple": {
+        "$value": "#9868d6",
+        "$type": "color"
+      },
+      "light_purple": {
+        "$value": "#f1e7ff",
+        "$type": "color"
+      },
+      "extra_dark_purple": {
+        "$value": "#763bc1",
+        "$type": "color"
+      },
+      "extra_light_purple": {
+        "$value": "#f8f3ff",
+        "$type": "color"
       }
     },
     "status": {
@@ -211,18 +225,24 @@
       }
     },
     "project_banner_bg": {
-      "$value": "{primary.extra_light_blue}",
+      "$value": "{Primary.extra_light_blue}",
       "$type": "color"
+    },
+    "Tertiary": {
+      "yellow": {
+        "$value": "#ffe500",
+        "$type": "color"
+      }
     }
   },
   "component_tokens": {
     "form": {
       "text_default": {
-        "$value": "{primary.black}",
+        "$value": "{Primary.black}",
         "$type": "color"
       },
       "border_default": {
-        "$value": "{primary.darker_gray}",
+        "$value": "{Primary.darker_gray}",
         "$type": "color"
       },
       "border_error": {
@@ -230,7 +250,7 @@
         "$type": "color"
       },
       "helper_default": {
-        "$value": "{primary.dark_gray}",
+        "$value": "{Primary.dark_gray}",
         "$type": "color"
       },
       "helper_error": {
@@ -238,27 +258,31 @@
         "$type": "color"
       },
       "placeholder_input": {
-        "$value": "{primary.darker_gray}",
+        "$value": "{Primary.darker_gray}",
         "$type": "color"
       },
       "placeholder_dropdown": {
-        "$value": "{primary.dark_gray}",
+        "$value": "{Primary.dark_gray}",
         "$type": "color"
       },
       "border_selected_blue": {
-        "$value": "{primary.normal_blue}",
+        "$value": "{Primary.normal_blue}",
         "$type": "color"
       },
       "border_hover_blue": {
-        "$value": "{primary.normal_blue}",
+        "$value": "{Primary.normal_blue}",
         "$type": "color"
       },
       "bg": {
-        "$value": "{primary.white}",
+        "$value": "{Primary.white}",
         "$type": "color"
       },
       "options_bg_select_blue": {
-        "$value": "{primary.extra_light_blue}",
+        "$value": "{Primary.extra_light_blue}",
+        "$type": "color"
+      },
+      "text_label": {
+        "$value": "{Primary.dark_gray}",
         "$type": "color"
       },
       "radius": {
@@ -275,81 +299,89 @@
       }
     },
     "btn": {
-      "fill_bg_default_blue": {
-        "$value": "{primary.normal_blue}",
-        "$type": "color"
+      "fill": {
+        "bg_default_blue": {
+          "$value": "{Primary.normal_blue}",
+          "$type": "color"
+        },
+        "bg_default_purple": {
+          "$value": "{Secondary.normal_purple}",
+          "$type": "color"
+        },
+        "bg_hover_blue": {
+          "$value": "{Primary.dark_blue}",
+          "$type": "color"
+        },
+        "bg_hover_purple": {
+          "$value": "{Secondary.dark_purple}",
+          "$type": "color"
+        },
+        "content_default": {
+          "$value": "{Primary.white}",
+          "$type": "color"
+        },
+        "bg_clicked_blue": {
+          "$value": "{Primary.extra_dark_blue}",
+          "$type": "color"
+        },
+        "bg_clicked_purple": {
+          "$value": "{Secondary.extra_dark_purple}",
+          "$type": "color"
+        },
+        "content_hover_blue": {
+          "$value": "{Primary.light_blue}",
+          "$type": "color"
+        },
+        "content_hover_purple": {
+          "$value": "{Secondary.light_purple}",
+          "$type": "color"
+        }
       },
-      "fill_bg_default_purple": {
-        "$value": "{primary.normal_purple}",
-        "$type": "color"
-      },
-      "fill_bg_hover_blue": {
-        "$value": "{primary.dark_blue}",
-        "$type": "color"
-      },
-      "fill_bg_hover_purple": {
-        "$value": "{primary.dark_purple}",
-        "$type": "color"
-      },
-      "fill_text": {
-        "$value": "{primary.white}",
-        "$type": "color"
-      },
-      "fill_icon": {
-        "$value": "{primary.white}",
-        "$type": "color"
-      },
-      "fill_bg_clicked_blue": {
-        "$value": "{primary.normal_blue}",
-        "$type": "color"
-      },
-      "fill_bg_clicked_purple": {
-        "$value": "{primary.normal_purple}",
-        "$type": "color"
-      },
-      "outline_text_default_blue": {
-        "$value": "{primary.normal_blue}",
-        "$type": "color"
-      },
-      "outline_icon_default_blue": {
-        "$value": "{primary.normal_blue}",
-        "$type": "color"
-      },
-      "outline_bg_default": {
-        "$value": "{primary.white}",
-        "$type": "color"
-      },
-      "bg_hover_blue": {
-        "$value": "{primary.light_blue}",
-        "$type": "color"
-      },
-      "bg_hover_purple": {
-        "$value": "{primary.light_purple}",
-        "$type": "color"
-      },
-      "text_default_purple": {
-        "$value": "{primary.normal_purple}",
-        "$type": "color"
-      },
-      "icon_default_purple": {
-        "$value": "{primary.normal_purple}",
-        "$type": "color"
-      },
-      "text_hover_purple": {
-        "$value": "{primary.dark_purple}",
-        "$type": "color"
-      },
-      "text_hover_blue": {
-        "$value": "{primary.dark_blue}",
-        "$type": "color"
-      },
-      "icon_hover_purple": {
-        "$value": "{primary.dark_purple}",
-        "$type": "color"
-      },
-      "icon_hover_blue": {
-        "$value": "{primary.dark_blue}",
-        "$type": "color"
+      "outline": {
+        "content_default_blue": {
+          "$value": "{Primary.normal_blue}",
+          "$type": "color"
+        },
+        "bg_default": {
+          "$value": "{Primary.white}",
+          "$type": "color"
+        },
+        "bg_hover_blue": {
+          "$value": "{Primary.extra_light_blue}",
+          "$type": "color"
+        },
+        "bg_hover_purple": {
+          "$value": "{Secondary.extra_light_purple}",
+          "$type": "color"
+        },
+        "content_default_purple": {
+          "$value": "{Secondary.normal_purple}",
+          "$type": "color"
+        },
+        "content_hover_purple": {
+          "$value": "{Secondary.dark_purple}",
+          "$type": "color"
+        },
+        "content_hover_blue": {
+          "$value": "{Primary.dark_blue}",
+          "$type": "color"
+        },
+        "border_blue": {
+          "$value": "{Primary.normal_blue}",
+          "$type": "color"
+        },
+        "border_purple": {
+          "$value": "{Secondary.normal_purple}",
+          "$type": "color"
+        },
+        "bg_clicked_blue": {
+          "$value": "{Primary.light_blue}",
+          "$type": "color"
+        },
+        "bg_clicked_purple": {
+          "$value": "{Secondary.light_purple}",
+          "$type": "color"
+        }
       },
       "radius": {
         "$value": 12,
@@ -366,7 +398,7 @@
     },
     "card": {
       "bg": {
-        "$value": "{primary.white}",
+        "$value": "{Primary.white}",
         "$type": "color"
       },
       "radius": {

@@ -15,7 +15,7 @@ const ProjectInfo = ({ project }) => {
           display: { xs: "block", sm: "block", md: "none" },
           fontWeight: "bold",
           width: "100%",
-          color: theme.figma.primary.normal_blue,
+          color: theme.figma.Primary.normal_blue,
           mb: 2,
         }}
       >
@@ -25,7 +25,7 @@ const ProjectInfo = ({ project }) => {
         <Grid item xs={12} sm={12} md={7}>
           <Box
             sx={{
-              border: `1px solid ${theme.figma.primary.normal_gray}`,
+              border: `1px solid ${theme.figma.Primary.normal_gray}`,
               borderRadius: { xs: "12px", sm: "12px", md: "20px" },
               padding: { xs: "32px", sm: "32px", md: "32px 24px" },
             }}
@@ -57,7 +57,7 @@ const ProjectInfo = ({ project }) => {
         >
           <Box
             sx={{
-              border: `1px solid ${theme.figma.primary.normal_gray}`,
+              border: `1px solid ${theme.figma.Primary.normal_gray}`,
               borderRadius: "20px",
               padding: "32px 24px",
             }}
@@ -97,8 +97,8 @@ const ProjectInfo = ({ project }) => {
               variant="contained"
               sx={{
                 width: "100%",
-                color: theme.figma.primary.white,
-                bgcolor: theme.figma.primary.normal_blue,
+                color: theme.figma.Primary.white,
+                bgcolor: theme.figma.Primary.normal_blue,
                 borderRadius: "12px",
                 textDecoration: "none",
                 fontWeight: "bold",
@@ -106,7 +106,7 @@ const ProjectInfo = ({ project }) => {
                 fontSize: "16px",
                 lineHeight: "19px",
                 "&:hover": {
-                  bgcolor: theme.figma.btn.fill_bg_hover_blue,
+                  bgcolor: theme.figma.btn.fill.bg_hover_blue,
                 },
               }}
             >

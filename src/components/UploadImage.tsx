@@ -219,7 +219,7 @@ export default function UploadImage({
   const [isHover, setIsHover] = useState(false);
   const { token } = useLoginStore();
   const listRef = useRef(null);
-  const domain = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL;
+  const domain = process.env.NEXT_PUBLIC_API_URL;
 
   const stopDefault = (e: DragEvent<HTMLDivElement>) => {
     e.stopPropagation();

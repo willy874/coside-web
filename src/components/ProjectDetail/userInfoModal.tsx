@@ -254,7 +254,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                     marginBottom: "13px",
                     borderRadius: "100px",
 
-                    bgcolor: theme.figma.primary.light_gray,
+                    bgcolor: theme.figma.Primary.light_gray,
                     color: theme.figma.neutral[50],
                   }}
                 >
@@ -296,8 +296,8 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                   color="primary"
                   variant="contained"
                   sx={{
-                    color: theme.figma.primary.white,
-                    bgcolor: theme.figma.primary.normal_blue,
+                    color: theme.figma.Primary.white,
+                    bgcolor: theme.figma.Primary.normal_blue,
                     borderRadius: "12px",
                     textDecoration: "none",
                     display: "flex",
@@ -306,7 +306,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                     textAlign: "center",
                     gap: "8px",
                     "&:hover": {
-                      bgcolor: theme.figma.btn.fill_bg_hover_blue,
+                      bgcolor: theme.figma.btn.fill.bg_hover_blue,
                     },
                   }}
                 >
@@ -337,7 +337,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                 variant="h6"
                 component="h3"
                 sx={{
-                  color: theme.figma.primary.dark_gray,
+                  color: theme.figma.Primary.dark_gray,
                   marginBottom: 1.5,
                   fontWeight: "bold",
                   fontSize: "20px",

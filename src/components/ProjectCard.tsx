@@ -51,7 +51,7 @@ export const ProjectCard = ({
         <Card
           className="project-card"
           sx={{
-            border: `solid 1px ${theme.figma.primary.normal_gray}`, boxShadow: "none", borderRadius: "20px", minWidth: { xs: "auto", sm: "320px" }, width: "100%", height: "100%", minHeight: { xs: "474px", sm: "474px", md: "482px" }, display: "flex", flexDirection: "column"
+            border: `solid 1px ${theme.figma.Primary.normal_gray}`, boxShadow: "none", borderRadius: "20px", minWidth: { xs: "auto", sm: "320px" }, width: "100%", height: "100%", minHeight: { xs: "474px", sm: "474px", md: "482px" }, display: "flex", flexDirection: "column"
             , "&:hover": {
               boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
             }

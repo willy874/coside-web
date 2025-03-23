@@ -24,7 +24,7 @@ export const LoginDialog = ({
     // }
     // https://8d20-13-115-215-106.ngrok-free.app
     // https://139c-18-181-211-61.ngrok-free.app
-    window.location.href = `${process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URL}/oauth-via-google?signUpRedirectUrl=${process.env.NEXT_PUBLIC_DOMAIN_URL}/loginsetting&signInRedirectUrl=${process.env.NEXT_PUBLIC_DOMAIN_URL}`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/oauth-via-google?signUpRedirectUrl=${process.env.NEXT_PUBLIC_DOMAIN_URL}/loginsetting&signInRedirectUrl=${process.env.NEXT_PUBLIC_DOMAIN_URL}`;
   }
 
   return (

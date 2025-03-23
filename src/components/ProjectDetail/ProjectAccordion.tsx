@@ -104,7 +104,7 @@ export default function ProjectAccordion({ project }) {
             <Typography
               sx={{
                 padding: "16px 12px",
-                backgroundColor: theme.figma.primary.extra_light_blue,
+                backgroundColor: theme.figma.Primary.extra_light_blue,
                 borderRadius: "12px",
               }}
             >

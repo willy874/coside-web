@@ -39,20 +39,25 @@ export const theme = {
     "sideproject_implement": "#ff5d5d",
     "sideproject_no_theme": "#6fb2ff"
   },
-  "primary": {
+  "Primary": {
     "normal_blue": "#007dc3",
-    "normal_purple": "#bf8ffd",
     "black": "#4f4f4f",
     "dark_blue": "#07689e",
     "light_blue": "#e3efff",
-    "extra_light_blue": "#f1f7ff",
-    "dark_purple": "#9868d6",
-    "light_purple": "#f1e7ff",
     "normal_gray": "#dcdcdc",
     "white": "#ffffff",
     "dark_gray": "#7c7c7c",
     "light_gray": "#ececec",
-    "darker_gray": "#b5b5b5"
+    "extra_light_blue": "#f1f7ff",
+    "darker_gray": "#b5b5b5",
+    "extra_dark_blue": "#015483"
+  },
+  "Secondary": {
+    "normal_purple": "#bf8ffd",
+    "dark_purple": "#9868d6",
+    "light_purple": "#f1e7ff",
+    "extra_dark_purple": "#763bc1",
+    "extra_light_purple": "#f8f3ff"
   },
   "status": {
     "normal_red": "#ff5d5d",
@@ -61,6 +66,9 @@ export const theme = {
     "lighter_green": "#d1f1c2"
   },
   "project_banner_bg": "#f1f7ff",
+  "Tertiary": {
+    "yellow": "#ffe500"
+  },
   "form": {
     "text_default": "#4f4f4f",
     "border_default": "#b5b5b5",
@@ -73,30 +81,36 @@ export const theme = {
     "border_hover_blue": "#007dc3",
     "bg": "#ffffff",
     "options_bg_select_blue": "#f1f7ff",
+    "text_label": "#7c7c7c",
     "radius": "12px",
     "mid_padding": "16px",
     "small_padding": "12px"
   },
   "btn": {
-    "fill_bg_default_blue": "#007dc3",
-    "fill_bg_default_purple": "#bf8ffd",
-    "fill_bg_hover_blue": "#07689e",
-    "fill_bg_hover_purple": "#9868d6",
-    "fill_text": "#ffffff",
-    "fill_icon": "#ffffff",
-    "fill_bg_clicked_blue": "#007dc3",
-    "fill_bg_clicked_purple": "#bf8ffd",
-    "outline_text_default_blue": "#007dc3",
-    "outline_icon_default_blue": "#007dc3",
-    "outline_bg_default": "#ffffff",
-    "bg_hover_blue": "#e3efff",
-    "bg_hover_purple": "#f1e7ff",
-    "text_default_purple": "#bf8ffd",
-    "icon_default_purple": "#bf8ffd",
-    "text_hover_purple": "#9868d6",
-    "text_hover_blue": "#07689e",
-    "icon_hover_purple": "#9868d6",
-    "icon_hover_blue": "#07689e",
+    "fill": {
+      "bg_default_blue": "#007dc3",
+      "bg_default_purple": "#bf8ffd",
+      "bg_hover_blue": "#07689e",
+      "bg_hover_purple": "#9868d6",
+      "content_default": "#ffffff",
+      "bg_clicked_blue": "#015483",
+      "bg_clicked_purple": "#763bc1",
+      "content_hover_blue": "#e3efff",
+      "content_hover_purple": "#f1e7ff"
+    },
+    "outline": {
+      "content_default_blue": "#007dc3",
+      "bg_default": "#ffffff",
+      "bg_hover_blue": "#f1f7ff",
+      "bg_hover_purple": "#f8f3ff",
+      "content_default_purple": "#bf8ffd",
+      "content_hover_purple": "#9868d6",
+      "content_hover_blue": "#07689e",
+      "border_blue": "#007dc3",
+      "border_purple": "#bf8ffd",
+      "bg_clicked_blue": "#e3efff",
+      "bg_clicked_purple": "#f1e7ff"
+    },
     "radius": "12px",
     "padding_md": "16px",
     "padding_sm": "12px"

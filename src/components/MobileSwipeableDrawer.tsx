@@ -77,14 +77,14 @@ const MobileSwipeableDrawer = ({ title, content }) => {
             sx={{
               fontSize: "24px",
               lineHeight: "24px",
-              color: theme.figma.primary.dark_gray,
+              color: theme.figma.Primary.dark_gray,
             }}
           />
           <Typography
             sx={{
               fontSize: "16px",
               lineHeight: "19px",
-              color: theme.figma.primary.normal_blue,
+              color: theme.figma.Primary.normal_blue,
               textAlign: "center",
               fontWeight: "bold",
               display: open ? "none" : "block",

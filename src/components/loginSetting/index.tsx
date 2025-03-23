@@ -93,7 +93,7 @@ const LoginSetting = () => {
       });
       try {
         const res = await axios.post(
-          `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/signup`,
+          `${process.env.NEXT_PUBLIC_API_URL}/api/signup`,
           bodyData,
           {
             headers: {
@@ -307,7 +307,7 @@ const LoginSetting = () => {
                                 data.append("file", file);
                                 try {
                                   const res = await axios.post(
-                                    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/upload?type=images`,
+                                    `${process.env.NEXT_PUBLIC_API_URL}/api/upload?type=images`,
                                     data,
                                     {
                                       headers: {

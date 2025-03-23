@@ -116,10 +116,10 @@ const FilterComponent = ({ onFilterApply }) => {
             cursor: "pointer",
             fontSize: "16px",
             lineHeight: "19px",
-            color: theme.figma.primary.normal_blue,
+            color: theme.figma.Primary.normal_blue,
             textTransform: "none",
             "&:hover": {
-              color: theme.figma.primary.dark_blue
+              color: theme.figma.Primary.dark_blue
             }
           }}
         >
@@ -146,19 +146,19 @@ const FilterComponent = ({ onFilterApply }) => {
                 borderRadius: "20px",
                 p: "11px 31px",
                 color: selectedPositions.includes(position.value)
-                  ? theme.figma.primary.extra_light_blue
-                  : theme.figma.primary.normal_blue,
+                  ? theme.figma.Primary.extra_light_blue
+                  : theme.figma.Primary.normal_blue,
                 bgcolor: selectedPositions.includes(position.value)
-                  ? theme.figma.primary.normal_blue
-                  : theme.figma.primary.extra_light_blue,
-                border: `1px solid ${theme.figma.primary.normal_blue}`,
+                  ? theme.figma.Primary.normal_blue
+                  : theme.figma.Primary.extra_light_blue,
+                border: `1px solid ${theme.figma.Primary.normal_blue}`,
                 span: {
                   padding: "0",
                 },
                 "&:hover": {
                   bgcolor: selectedPositions.includes(position.value)
-                    ? theme.figma.btn.fill_bg_hover_blue
-                    : theme.figma.primary.light_blue + " !important",
+                    ? theme.figma.btn.fill.bg_hover_blue
+                    : theme.figma.Primary.light_blue + " !important",
                 },
               }}
             />
@@ -185,12 +185,12 @@ const FilterComponent = ({ onFilterApply }) => {
                 borderRadius: "20px",
                 p: "11px 31px",
                 color: selectedProjectTypes.includes(type.value)
-                  ? theme.figma.primary.light_purple
-                  : theme.figma.primary.dark_purple,
+                  ? theme.figma.Secondary.light_purple
+                  : theme.figma.Secondary.dark_purple,
                 bgcolor: selectedProjectTypes.includes(type.value)
-                  ? theme.figma.primary.dark_purple
-                  : theme.figma.primary.light_purple,
-                border: `1px solid ${theme.figma.primary.dark_purple}`,
+                  ? theme.figma.Secondary.dark_purple
+                  : theme.figma.Secondary.light_purple,
+                border: `1px solid ${theme.figma.Secondary.dark_purple}`,
                 span: {
                   padding: "0",
                 },
@@ -218,10 +218,10 @@ const FilterComponent = ({ onFilterApply }) => {
             cursor: "pointer",
             fontSize: "16px",
             lineHeight: "19px",
-            color: theme.figma.primary.normal_blue,
+            color: theme.figma.Primary.normal_blue,
             textTransform: "none",
             "&:hover": {
-              color: theme.figma.primary.dark_blue
+              color: theme.figma.Primary.dark_blue
             },
             mt: "24px"
           }}
@@ -242,8 +242,8 @@ const FilterComponent = ({ onFilterApply }) => {
           borderRadius: "12px",
           py: "10px",
           textTransform: "none",
-          color: theme.figma.primary.normal_blue,
-          border: `1px solid ${theme.figma.primary.normal_blue}`,
+          color: theme.figma.Primary.normal_blue,
+          border: `1px solid ${theme.figma.Primary.normal_blue}`,
           marginTop: isMobile ? "36px" : "32px"
         }}
       >
