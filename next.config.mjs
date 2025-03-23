@@ -5,8 +5,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`
-        // destination: "https://c105-13-115-215-106.ngrok-free.app/:path*"
+        destination: "https://c105-13-115-215-106.ngrok-free.app/:path*"
       },
     ];
   },
