@@ -30,7 +30,7 @@ export const LoginDialog = ({
   return (
     <Dialog open={open} onClose={() => { onClose() }} classes={{ paper: styles.dialog }}>
       <DialogTitle className={styles.center}>
-        <Image src="/Co-Side.png" alt="" width={69} height={65} className={styles.image} />
+        <Image src="/coside_icon.svg" alt="" width={69} height={65} className={styles.image} />
       </DialogTitle>
       <DialogContent className={styles.dialogContent}>
         <h3 className={styles.contentHead}>歡迎來到 Co-Side</h3>

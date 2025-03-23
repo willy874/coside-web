@@ -301,7 +301,7 @@ export default function Form() {
           data.append("file", formValues.bannerUpload as Blob);
 
           const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/upload?type=images`,
+            `/api/upload?type=images`,
             data,
             {
               headers: {
@@ -386,7 +386,7 @@ export default function Form() {
             data.append("file", file);
 
             const res = await axios.post(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/upload?type=images`,
+              `/api/upload?type=images`,
               data,
               {
                 headers: {
@@ -455,7 +455,7 @@ export default function Form() {
 
       // 5. Submit the project
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/project`,
+        `/api/project`,
         bodyData,
         {
           headers: {
