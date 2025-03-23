@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { projectGetById } from "@/api/project";
 import { Box, Button } from "@mui/material";
-import UserInfoModal from "@/components/ProjectDetail/UserInfoModal";
+import UserInfoModal from "@/components/ProjectDetail/userInfoModal";
 import MobileSwipeableDrawer from "@/components/MobileSwipeableDrawer";
 import ProjectAccordion from "@/components/ProjectDetail/ProjectAccordion";
 import ProjectHeader from "@/components/ProjectDetail/ProjectHeader";
