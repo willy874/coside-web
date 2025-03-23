@@ -26,7 +26,7 @@ declare module "@mui/material/styles" {
       othersOutline: string;
       extraLightBlue: string;
     };
-    
+    figma: typeof figmaTheme;
   }
 
   // allow configuration using `createTheme`
@@ -52,6 +52,7 @@ declare module "@mui/material/styles" {
       othersOutline?: string;
       extraLightBlue?: string;
     };
+    figma?: typeof figmaTheme;
   }
   interface PaletteColor {
     black?: string;
@@ -124,7 +125,7 @@ const theme = createTheme({
       },
     },
   },
-  ...figmaTheme
+  figma: figmaTheme
 });
 
 export default theme;

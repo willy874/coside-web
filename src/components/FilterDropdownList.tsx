@@ -116,10 +116,10 @@ const FilterComponent = ({ onFilterApply }) => {
             cursor: "pointer",
             fontSize: "16px",
             lineHeight: "19px",
-            color: theme.primary.normal_blue,
+            color: theme.figma.primary.normal_blue,
             textTransform: "none",
             "&:hover": {
-              color: theme.primary.dark_blue
+              color: theme.figma.primary.dark_blue
             }
           }}
         >
@@ -129,7 +129,7 @@ const FilterComponent = ({ onFilterApply }) => {
 
       {/* Job positions */}
       <Box sx={{ mb: "24px" }}>
-        <Typography variant="body2" sx={{ fontSize: "16px", lineHeight: "19px", fontWeight: 700, mb: "16px", color: theme.form.text_default }}>
+        <Typography variant="body2" sx={{ fontSize: "16px", lineHeight: "19px", fontWeight: 700, mb: "16px", color: theme.figma.form.text_default }}>
           徵求職位
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -146,19 +146,19 @@ const FilterComponent = ({ onFilterApply }) => {
                 borderRadius: "20px",
                 p: "11px 31px",
                 color: selectedPositions.includes(position.value)
-                  ? theme.primary.extra_light_blue
-                  : theme.primary.normal_blue,
+                  ? theme.figma.primary.extra_light_blue
+                  : theme.figma.primary.normal_blue,
                 bgcolor: selectedPositions.includes(position.value)
-                  ? theme.primary.normal_blue
-                  : theme.primary.extra_light_blue,
-                border: `1px solid ${theme.primary.normal_blue}`,
+                  ? theme.figma.primary.normal_blue
+                  : theme.figma.primary.extra_light_blue,
+                border: `1px solid ${theme.figma.primary.normal_blue}`,
                 span: {
                   padding: "0",
                 },
                 "&:hover": {
                   bgcolor: selectedPositions.includes(position.value)
-                    ? theme.btn.fill_bg_hover_blue
-                    : theme.primary.light_blue + " !important",
+                    ? theme.figma.btn.fill_bg_hover_blue
+                    : theme.figma.primary.light_blue + " !important",
                 },
               }}
             />
@@ -168,7 +168,7 @@ const FilterComponent = ({ onFilterApply }) => {
 
       {/* Project type */}
       <Box>
-        <Typography variant="body2" sx={{ fontSize: "16px", lineHeight: "19px", fontWeight: 700, mb: "16px", color: theme.form.text_default }}>
+        <Typography variant="body2" sx={{ fontSize: "16px", lineHeight: "19px", fontWeight: 700, mb: "16px", color: theme.figma.form.text_default }}>
           專案種類
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
@@ -185,12 +185,12 @@ const FilterComponent = ({ onFilterApply }) => {
                 borderRadius: "20px",
                 p: "11px 31px",
                 color: selectedProjectTypes.includes(type.value)
-                  ? theme.primary.light_purple
-                  : theme.primary.dark_purple,
+                  ? theme.figma.primary.light_purple
+                  : theme.figma.primary.dark_purple,
                 bgcolor: selectedProjectTypes.includes(type.value)
-                  ? theme.primary.dark_purple
-                  : theme.primary.light_purple,
-                border: `1px solid ${theme.primary.dark_purple}`,
+                  ? theme.figma.primary.dark_purple
+                  : theme.figma.primary.light_purple,
+                border: `1px solid ${theme.figma.primary.dark_purple}`,
                 span: {
                   padding: "0",
                 },
@@ -218,10 +218,10 @@ const FilterComponent = ({ onFilterApply }) => {
             cursor: "pointer",
             fontSize: "16px",
             lineHeight: "19px",
-            color: theme.primary.normal_blue,
+            color: theme.figma.primary.normal_blue,
             textTransform: "none",
             "&:hover": {
-              color: theme.primary.dark_blue
+              color: theme.figma.primary.dark_blue
             },
             mt: "24px"
           }}
@@ -242,8 +242,8 @@ const FilterComponent = ({ onFilterApply }) => {
           borderRadius: "12px",
           py: "10px",
           textTransform: "none",
-          color: theme.primary.normal_blue,
-          border: `1px solid ${theme.primary.normal_blue}`,
+          color: theme.figma.primary.normal_blue,
+          border: `1px solid ${theme.figma.primary.normal_blue}`,
           marginTop: isMobile ? "36px" : "32px"
         }}
       >
@@ -259,15 +259,15 @@ const FilterComponent = ({ onFilterApply }) => {
         sx={{
           borderRadius: "12px",
           padding: "10px 16px",
-          color: theme.form.placeholder_dropdown,
-          borderColor: theme.form.border_default,
-          backgroundColor: theme.form.bg,
+          color: theme.figma.form.placeholder_dropdown,
+          borderColor: theme.figma.form.border_default,
+          backgroundColor: theme.figma.form.bg,
           textTransform: "none",
           minWidth: "auto",
           "&:hover": {
-            color: theme.form.border_hover_blue,
-            borderColor: theme.form.border_hover_blue,
-            bgcolor: theme.form.bg,
+            color: theme.figma.form.border_hover_blue,
+            borderColor: theme.figma.form.border_hover_blue,
+            bgcolor: theme.figma.form.bg,
           },
         }}
         onClick={toggleFilterDropdown}
@@ -282,16 +282,16 @@ const FilterComponent = ({ onFilterApply }) => {
           sx={{
             borderRadius: "12px",
             padding: "16px",
-            color: theme.form.placeholder_dropdown,
-            borderColor: theme.form.border_default,
-            backgroundColor: theme.form.bg,
+            color: theme.figma.form.placeholder_dropdown,
+            borderColor: theme.figma.form.border_default,
+            backgroundColor: theme.figma.form.bg,
             textTransform: "none",
             minWidth: "167px",
             gap: "8px",
             "&:hover": {
-              color: theme.form.border_hover_blue,
-              borderColor: theme.form.border_hover_blue,
-              bgcolor: theme.form.bg,
+              color: theme.figma.form.border_hover_blue,
+              borderColor: theme.figma.form.border_hover_blue,
+              bgcolor: theme.figma.form.bg,
             },
           }}
           onClick={toggleFilterDropdown}

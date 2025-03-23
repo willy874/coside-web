@@ -28,7 +28,7 @@ export default function HandleToken() {
     console.log(token);
 
     setToken(token);
-  }, [isReady, searchParams, setToken]);
+  }, [isReady, searchParams, setToken, pathname, router]);
 
   return null;
 }

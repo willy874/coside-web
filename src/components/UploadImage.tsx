@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   useEffect,
+  useCallback,
 } from "react";
 import Image from "next/image";
 import { alpha, styled } from "@mui/material/styles";
@@ -273,7 +274,7 @@ export default function UploadImage({
     }
   };
 
-  const getPhotos = async (page = 1, isNew = true) => {
+  const getPhotos = useCallback(async (page = 1, isNew = true) => {
     try {
       const data = await getPhotosByQuery(filterValue, page, 12);
       const photos = data?.results || data;
@@ -284,21 +285,21 @@ export default function UploadImage({
     } catch (error) {
       console.error(error);
     }
-  };
+  }, [filterValue, currentPage, setUnsplashImages]);
 
-  const scrollEvent = (evt: React.UIEvent<HTMLDivElement>) => {
+  const scrollEvent = useCallback((evt: React.UIEvent<HTMLDivElement>) => {
     const target = evt.target as HTMLElement;
     const height = target.scrollHeight - target.clientHeight;
     if (target.scrollTop >= height && filterValue !== "") {
       currentPage.current++;
       getPhotos(currentPage.current, false);
     }
-  };
+  }, [filterValue, currentPage, getPhotos]);
 
   useEffect(() => {
     if (filterValue === "" || currentPage.current > 1) return;
     getPhotos(1, true);
-  }, [filterValue, currentPage]);
+  }, [filterValue, currentPage, getPhotos]);
 
   useEffect(() => {
     if (imageType === "unsplash" && listRef.current) {
@@ -306,7 +307,7 @@ export default function UploadImage({
       scrollContainer.addEventListener("scroll", scrollEvent);
       return () => scrollContainer.removeEventListener("scroll", scrollEvent);
     }
-  }, [imageType, filterValue]);
+  }, [imageType, filterValue, scrollEvent]);
 
   const chooseImage = (item) => {
     if (imageType === "coside") {

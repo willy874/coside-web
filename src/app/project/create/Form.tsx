@@ -443,13 +443,15 @@ export default function Form() {
         name: values.title,
         type: values.titleType,
         duration: values.projectDuration,
-        backgroundimage: imgPath,
+        background_Path: imgPath,
         description: values.MKContent,
         categories: [values.projectType],
         members,
         industry: "未分類",
         tags: ["未分類"],
       };
+
+      console.log(bodyData)
 
       // 5. Submit the project
       const response = await axios.post(

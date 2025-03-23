@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 
 import Box from "@mui/material/Box";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -101,16 +102,16 @@ const LoginSetting = () => {
             },
           }
         );
-        if(res.data.success) {
+        if (res.data.success) {
           setToken(res.data.data.token);
           router.push("/")
-        }else {
+        } else {
           console.log(res.data.message)
         }
-        
-        
-      }catch(e) {
-        
+
+
+      } catch (e) {
+
       }
     }
   };
@@ -299,7 +300,7 @@ const LoginSetting = () => {
                                   });
                                 };
 
-                                if(!file) {
+                                if (!file) {
                                   throw new Error("檔案有誤");
                                 }
                                 const data = new FormData();
@@ -345,9 +346,7 @@ const LoginSetting = () => {
                             </div>
                           </div>
                           {formData.previewImage && (
-                            <div className={styles.previewImage}>
-                              <img src={formData.previewImage} alt="preview" />
-                            </div>
+                            <Image src={formData.previewImage} alt="preview" width={200} height={200} />
                           )}
                           <Field
                             as={TextField}
@@ -494,7 +493,7 @@ const LoginSetting = () => {
                               disabled
                               onChange={handleChange}
                               value={values.email}
-                              error={touched.email && Boolean(errors.email)} 
+                              error={touched.email && Boolean(errors.email)}
                               helperText={touched.email2 && errors.email2}
                               sx={{
                                 "& .MuiOutlinedInput-root": {
@@ -510,20 +509,20 @@ const LoginSetting = () => {
                                   name="emailPublic"
                                   color="primary"
                                   checked={values.emailPublic}
-                                  onChange={(event:React.ChangeEvent<HTMLInputElement>) => {
+                                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setFieldValue(
                                       "emailPublic",
                                       event.target.checked
                                     );
                                   }}
-                                  sx={()=> switchSetting(true)}
+                                  sx={() => switchSetting(true)}
                                   disabled
                                 />
                               }
                               label={values.emailPublic ? "公開" : "關閉"}
                               labelPlacement="top"
                               className={styles.switch}
-                              
+
                             />
                           </div>
                           {/* <div className={styles.flexItem}>
@@ -592,13 +591,13 @@ const LoginSetting = () => {
                                   name="facebookPublic"
                                   color="primary"
                                   checked={values.facebookPublic}
-                                  onChange={(event:React.ChangeEvent<HTMLInputElement>) => {
+                                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setFieldValue(
                                       "facebookPublic",
                                       event.target.checked
                                     );
                                   }}
-                                  sx={()=> switchSetting()}
+                                  sx={() => switchSetting()}
                                 />
                               }
                               label={values.facebookPublic ? "公開" : "關閉"}
@@ -633,13 +632,13 @@ const LoginSetting = () => {
                                   name="instagramPublic"
                                   color="primary"
                                   checked={values.instagramPublic}
-                                  onChange={(event:React.ChangeEvent<HTMLInputElement>) => {
+                                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                     setFieldValue(
                                       "instagramPublic",
                                       event.target.checked
                                     );
                                   }}
-                                  sx={()=> switchSetting()}
+                                  sx={() => switchSetting()}
                                 />
                               }
                               label={values.instagramPublic ? "公開" : "關閉"}

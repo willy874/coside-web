@@ -58,7 +58,7 @@ const MarkdownContainer = styled('div')(({ theme }) => ({
     height: 'auto',
     borderRadius: '12px',
     margin: '1rem 0',
-    border: `1px solid ${theme.neutral[80]}`,
+    border: `1px solid ${theme.figma.neutral[80]}`,
   },
   '& a': {
     color: theme.palette.primary.main,
@@ -115,13 +115,22 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content, className }) => {
       // 這裡提供一個簡單版本，實際使用可能需要調整
       if (src && src.startsWith('http')) {
         return (
-          <img
+          <Image
             src={src}
             alt={alt || ''}
+            width={width || 656} // Provide a default width if not specified
+            height={height || 359} // Provide a default height if not specified
           />
         );
       }
-      return <img {...props} />;
+      return (
+        <Image
+          src={props.src || ''}
+          alt={props.alt || ''}
+          width={props.width || 656}
+          height={props.height || 359}
+        />
+      );
     },
     // 可以根據需要添加更多自定義元件
   };

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 import { Box, Typography, Modal, Grid, Button } from "@mui/material";
 import { useMediaQuery, useTheme } from "@mui/material";
 import theme from "@/styles/theme";
@@ -53,9 +53,9 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
     { icon: "/website.svg", link: "website.com" },
   ];
 
-  useState(() => {
+  useEffect(() => {
     userGetById(userId).then((data) => {
-      userData = data;
+      // userData = data;
     });
   }, [userId]);
 
@@ -82,7 +82,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
           maxWidth: 820,
           width: "calc(100% - 40px)",
           maxHeight: "calc(100% - 88px)",
-          bgcolor: theme.neutral[100],
+          bgcolor: theme.figma.neutral[100],
           borderRadius: "12px",
           boxShadow: 24,
           overflow: "hidden",
@@ -186,7 +186,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                 </Typography>
                 <Typography
                   sx={{
-                    color: theme.profession_tags.outline_uiux,
+                    color: theme.figma.profession_tags.outline_uiux,
                     fontSize: "14px",
                     lineHeight: "17px",
                     fontWeight: "bold",
@@ -254,8 +254,8 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                     marginBottom: "13px",
                     borderRadius: "100px",
 
-                    bgcolor: theme.primary.light_gray,
-                    color: theme.neutral[50],
+                    bgcolor: theme.figma.primary.light_gray,
+                    color: theme.figma.neutral[50],
                   }}
                 >
                   參與專案 2
@@ -296,8 +296,8 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                   color="primary"
                   variant="contained"
                   sx={{
-                    color: theme.primary.white,
-                    bgcolor: theme.primary.normal_blue,
+                    color: theme.figma.primary.white,
+                    bgcolor: theme.figma.primary.normal_blue,
                     borderRadius: "12px",
                     textDecoration: "none",
                     display: "flex",
@@ -306,7 +306,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                     textAlign: "center",
                     gap: "8px",
                     "&:hover": {
-                      bgcolor: theme.btn.fill_bg_hover_blue,
+                      bgcolor: theme.figma.btn.fill_bg_hover_blue,
                     },
                   }}
                 >
@@ -337,7 +337,7 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
                 variant="h6"
                 component="h3"
                 sx={{
-                  color: theme.primary.dark_gray,
+                  color: theme.figma.primary.dark_gray,
                   marginBottom: 1.5,
                   fontWeight: "bold",
                   fontSize: "20px",

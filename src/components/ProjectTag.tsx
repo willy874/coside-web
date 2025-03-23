@@ -16,7 +16,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_implement,
+    bgColor: theme.figma.project_tags.sideproject_implement,
   },
   "專案落地": {
     name: "專案落地",
@@ -25,7 +25,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_implement,
+    bgColor: theme.figma.project_tags.sideproject_implement,
   },
   "純作品集": {
     name: "純作品集",
@@ -34,7 +34,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_pofile,
+    bgColor: theme.figma.project_tags.sideproject_pofile,
   },
   "主題未定": {
     name: "主題未定",
@@ -43,7 +43,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_no_theme,
+    bgColor: theme.figma.project_tags.sideproject_no_theme,
   },
   "launch": {
     name: "專案落地",
@@ -52,7 +52,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_implement,
+    bgColor: theme.figma.project_tags.sideproject_implement,
   },
   "titled": {
     name: "純作品集",
@@ -61,7 +61,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_pofile,
+    bgColor: theme.figma.project_tags.sideproject_pofile,
   },
   "untitled": {
     name: "主題未定",
@@ -70,7 +70,7 @@ const PROJECT_STYLES_MAP: Record<string, ProjectTagProps> = {
         sx={{ width: "18px", marginRight: "4px" }}
       />
     ),
-    bgColor: theme.project_tags.sideproject_no_theme,
+    bgColor: theme.figma.project_tags.sideproject_no_theme,
   },
 };
 

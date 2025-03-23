@@ -34,7 +34,7 @@ export default function ProjectAccordion({ project }) {
         <Accordion
           sx={{
             boxShadow: "none",
-            border: `1px solid ${theme.neutral[80]}`,
+            border: `1px solid ${theme.figma.neutral[80]}`,
             borderRadius: "12px",
             marginBottom: "16px",
             "&:first-of-type": {
@@ -104,7 +104,7 @@ export default function ProjectAccordion({ project }) {
             <Typography
               sx={{
                 padding: "16px 12px",
-                backgroundColor: theme.primary.extra_light_blue,
+                backgroundColor: theme.figma.primary.extra_light_blue,
                 borderRadius: "12px",
               }}
             >

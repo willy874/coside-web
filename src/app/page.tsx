@@ -48,7 +48,7 @@ export default function Home({
     [loading, hasMore]
   );
 
-  const fetchData = async (page: number) => {
+  const fetchData = useCallback(async (page: number) => {
     setLoading(true);
     try {
       const data = await projectGetByFilter(page, size, filterParams);
@@ -86,7 +86,7 @@ export default function Home({
     } finally {
       setLoading(false);
     }
-  };
+  }, [size, filterParams]);
 
   const handleFilterApply = (filters) => {
     setFilterParams(filters);
@@ -96,14 +96,14 @@ export default function Home({
     if (loading || !hasMore) return;
     console.log(nowPage)
     fetchData(nowPage);
-  }, [nowPage]); // 當頁碼變化時重新獲取數據
+  }, [nowPage, fetchData, hasMore, loading]); // 當頁碼變化時重新獲取數據
 
   useEffect(() => {
     setNowPage(1);
     setProjects([]);
     setHasMore(true);
     fetchData(1);
-  }, [filterParams]);
+  }, [filterParams, fetchData]);
 
   return (
     <main className={styles.main}>

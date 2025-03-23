@@ -26,6 +26,7 @@ export interface ProjectCardProps {
   name: string;
   roles: string[];
   type: string;
+  background_Path: string;
 }
 
 const TEXT_MAP: Record<string, string> = {
@@ -50,7 +51,7 @@ export const ProjectCard = ({
         <Card
           className="project-card"
           sx={{
-            border: `solid 1px ${theme.primary.normal_gray}`, boxShadow: "none", borderRadius: "20px", minWidth: { xs: "auto", sm: "320px" }, width: "100%", height: "100%", minHeight: { xs: "474px", sm: "474px", md: "482px" }, display: "flex", flexDirection: "column"
+            border: `solid 1px ${theme.figma.primary.normal_gray}`, boxShadow: "none", borderRadius: "20px", minWidth: { xs: "auto", sm: "320px" }, width: "100%", height: "100%", minHeight: { xs: "474px", sm: "474px", md: "482px" }, display: "flex", flexDirection: "column"
             , "&:hover": {
               boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
             }
@@ -61,7 +62,7 @@ export const ProjectCard = ({
             src={project.background_Path
               ? `https://c105-13-115-215-106.ngrok-free.app/${project.background_Path}`
               : "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png"}
-            sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.neutral[80]}` }}
+            sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.figma.neutral[80]}` }}
             onError={(e) => {
               e.currentTarget.src = "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png";
             }}
@@ -108,7 +109,7 @@ export const ProjectCard = ({
               <Typography
                 sx={{
                   fontSize: "16px",
-                  color: `${theme.neutral[60]}`,
+                  color: `${theme.figma.neutral[60]}`,
                   fontWeight: "700",
                   marginBottom: "24px",
                 }}

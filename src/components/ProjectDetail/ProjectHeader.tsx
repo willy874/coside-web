@@ -46,7 +46,7 @@ export default function ProjectHeader({
           style={{
             objectFit: "cover",
             borderRadius: "12px",
-            border: `1px solid ${theme.neutral[80]}`,
+            border: `1px solid ${theme.figma.neutral[80]}`,
           }}
           onError={(e) => {
             e.currentTarget.src =
@@ -90,7 +90,7 @@ export default function ProjectHeader({
               alignItems: "center",
               justifyContent: "center",
               marginRight: "12px",
-              backgroundColor: theme.neutral[100],
+              backgroundColor: theme.figma.neutral[100],
             }}
           >
             <Image
@@ -162,8 +162,8 @@ export default function ProjectHeader({
             sx={{
               [theme.breakpoints.down("md")]: {
                 padding: "20px",
-                backgroundColor: theme.neutral[100],
-                border: `1px solid ${theme.neutral[80]}`,
+                backgroundColor: theme.figma.neutral[100],
+                border: `1px solid ${theme.figma.neutral[80]}`,
                 borderRadius: "12px",
               },
             }}

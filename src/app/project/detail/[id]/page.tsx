@@ -40,7 +40,6 @@ export default function ProjectDetailPage() {
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [groupedMembers, setGroupedMembers] = useState([]);
-  const [filterParams, setFilterParams] = useState(null);
 
   const createMailtoLink = (project, userName) => {
     const subject = `【${project.name}】Side project 合作詢問`;
@@ -112,7 +111,7 @@ export default function ProjectDetailPage() {
       }
     };
 
-    const id = params.id; // 從 params.id 取得專案 ID
+    const id = Array.isArray(params.id) ? params.id[0] : params.id; // 確保 id 是 string
 
     if (id) {
       fetchData(id);
@@ -209,8 +208,8 @@ export default function ProjectDetailPage() {
                   variant="contained"
                   sx={{
                     width: "100%",
-                    color: theme.primary.white,
-                    bgcolor: theme.primary.normal_blue,
+                    color: theme.figma.neutral[100],
+                    bgcolor: theme.figma.primary.normal_blue,
                     borderRadius: "12px",
                     textDecoration: "none",
                     fontWeight: "bold",
@@ -218,7 +217,7 @@ export default function ProjectDetailPage() {
                     fontSize: "16px",
                     lineHeight: "19px",
                     "&:hover": {
-                      bgcolor: theme.btn.fill_bg_hover_blue,
+                      bgcolor: theme.figma.btn.fill_bg_hover_blue,
                     },
                   }}
                 >
