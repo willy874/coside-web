@@ -8,7 +8,6 @@ import Image from "next/image";
 import UserInfoProjectList from "@/components/ProjectDetail/UserInfoProjectList";
 import Link from "next/link";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
-import { userGetById } from "@/api/user";
 
 interface ProjectCardModalProps {
   userId: string;
@@ -52,12 +51,6 @@ const ProjectCardModal = ({ userId, isOpen, onClose }: ProjectCardModalProps) =>
     { icon: "/facebook.svg", link: "facebook.com" },
     { icon: "/website.svg", link: "website.com" },
   ];
-
-  useEffect(() => {
-    userGetById(userId).then((data) => {
-      // userData = data;
-    });
-  }, [userId]);
 
   return (
     <Modal

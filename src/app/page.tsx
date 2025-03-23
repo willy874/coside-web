@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef, useCallback, use } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import styles from "./page.module.css";
@@ -12,6 +11,7 @@ import { Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { projectGetByFilter } from "@/api/project";
 import { Suspense } from "react";
+import theme from "@/styles/theme";
 
 export default function Home({
   searchParams,
@@ -172,22 +172,36 @@ export default function Home({
           </Box>
         )}
 
-        <Box position="fixed" bottom="5vh" right="4vw">
+        <Box position="fixed" sx={{
+          bottom: { xs: "32px", sm: "32px", md: "5vh" },
+          right: { xs: "32px", sm: "32px", md: "4vw" }
+        }}>
           <Button
             LinkComponent={Link}
             variant="contained"
             href="/project/create"
             color="warning"
-            startIcon={<AddIcon />}
             sx={{
-              padding: "20px 37px",
-              borderRadius: "32px",
-              fontSize: "20px",
-              lineHeight: 1,
+              display: "flex",
+              alignItems: "center",
+              padding: { xs: "14px", sm: "14px", md: "20px 33px" },
+              borderRadius: { xs: "50%", sm: "50%", md: "40px" },
               boxShadow: "4px 4px 12px rgba(0, 0, 0, 0.2)",
+              color: theme.figma.form.text_default,
+              bgcolor: theme.figma.Tertiary.yellow,
             }}
           >
-            發起專案
+            <AddIcon sx={{
+              width: { xs: "40px", sm: "40px", md: "24px" },
+              height: { xs: "40px", sm: "40px", md: "24px" },
+              marginRight: { xs: 0, sm: 0, md: "10px" },
+            }} />
+            <Typography sx={{
+              display: { xs: "none", sm: "none", md: "block" },
+              fontSize: "20px",
+              lineHeight: "24px",
+              fontWeight: "400",
+            }}>發起專案</Typography>
           </Button>
         </Box>
       </Box>

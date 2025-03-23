@@ -24,6 +24,18 @@ export const jobPosition = [
     { label: '其他', value: 'Other' },
 ]
 
+export const jobPositionTag = [
+    { label: 'UI', value: 'UI Designer' },
+    { label: 'UX', value: 'UX Designer' },
+    { label: 'UIUX', value: '(UI/UX)Product Designer' },
+    { label: 'UXR', value: 'User Researcher' },
+    { label: '前端', value: 'Frontend Engineer' },
+    { label: '後端', value: 'Backend Engineer' },
+    { label: '全端', value: 'Fullstack Engineer' },
+    { label: 'PM', value: 'Project Manager' },
+    { label: '其他', value: 'Other' },
+]
+
 export const duration = [
     { label: '未定', value: '未定' },
     { label: '1個月', value: '1個月' },

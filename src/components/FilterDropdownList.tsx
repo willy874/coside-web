@@ -14,6 +14,7 @@ import {
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import CloseIcon from "@mui/icons-material/Close";
+import { jobPositionTag, projectType } from "@/constant";
 import theme from "@/styles/theme";
 
 const FilterComponent = ({ onFilterApply }) => {
@@ -25,25 +26,7 @@ const FilterComponent = ({ onFilterApply }) => {
   const [selectedProjectTypes, setSelectedProjectTypes] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // State for filter dropdown visibility
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State for mobile drawer
-
-  // Position options
-  const positions = [
-    { label: "PM", value: "pm" },
-    { label: "UI/UX", value: "uiux" },
-    { label: "UI", value: "ui" },
-    { label: "UX", value: "ux" },
-    { label: "前端", value: "frontend" },
-    { label: "後端", value: "backend" },
-    { label: "全端", value: "fullstack" },
-    { label: "其他", value: "other_position" },
-  ];
-
-  // Project type options
-  const projectTypes = [
-    { label: "App", value: "app" },
-    { label: "Web", value: "web" },
-    { label: "其他", value: "other_type" },
-  ];
+  const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   // Toggle selection for positions
   const handlePositionToggle = (value) => {
@@ -73,6 +56,9 @@ const FilterComponent = ({ onFilterApply }) => {
 
   // Apply filters
   const handleApplyFilter = () => {
+    const hasAnyFilters = selectedPositions.length > 0 || selectedProjectTypes.length > 0;
+    setIsFilterApplied(hasAnyFilters);
+
     const filters = {
       roles: selectedPositions,
       categories: selectedProjectTypes,
@@ -133,7 +119,7 @@ const FilterComponent = ({ onFilterApply }) => {
           徵求職位
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-          {positions.map((position) => (
+          {jobPositionTag.map((position) => (
             <Chip
               key={position.value}
               label={position.label}
@@ -172,7 +158,7 @@ const FilterComponent = ({ onFilterApply }) => {
           專案種類
         </Typography>
         <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-          {projectTypes.map((type) => (
+          {projectType.map((type) => (
             <Chip
               key={type.value}
               label={type.label}
@@ -259,9 +245,21 @@ const FilterComponent = ({ onFilterApply }) => {
         sx={{
           borderRadius: "12px",
           padding: "10px 16px",
-          color: theme.figma.form.placeholder_dropdown,
-          borderColor: theme.figma.form.border_default,
-          backgroundColor: theme.figma.form.bg,
+          color: isFilterApplied
+            ? theme.figma.form.border_hover_blue
+            : isFilterOpen
+              ? theme.figma.form.border_hover_blue
+              : theme.figma.form.placeholder_dropdown,
+          borderColor: isFilterApplied
+            ? theme.figma.form.border_hover_blue
+            : isFilterOpen
+              ? theme.figma.form.border_hover_blue
+              : theme.figma.form.border_default,
+          bgcolor: isFilterApplied
+            ? theme.figma.form.options_bg_select_blue
+            : isFilterOpen
+              ? theme.figma.form.bg
+              : theme.figma.form.bg,
           textTransform: "none",
           minWidth: "auto",
           "&:hover": {
@@ -282,9 +280,21 @@ const FilterComponent = ({ onFilterApply }) => {
           sx={{
             borderRadius: "12px",
             padding: "16px",
-            color: theme.figma.form.placeholder_dropdown,
-            borderColor: theme.figma.form.border_default,
-            backgroundColor: theme.figma.form.bg,
+            color: isFilterApplied
+              ? theme.figma.form.border_hover_blue
+              : isFilterOpen
+                ? theme.figma.form.border_hover_blue
+                : theme.figma.form.placeholder_dropdown,
+            borderColor: isFilterApplied
+              ? theme.figma.form.border_hover_blue
+              : isFilterOpen
+                ? theme.figma.form.border_hover_blue
+                : theme.figma.form.border_default,
+            bgcolor: isFilterApplied
+              ? theme.figma.form.options_bg_select_blue
+              : isFilterOpen
+                ? theme.figma.form.bg
+                : theme.figma.form.bg,
             textTransform: "none",
             minWidth: "167px",
             gap: "8px",

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import theme from "@/styles/theme";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, useMediaQuery } from "@mui/material";
 import DragHandleIcon from "@mui/icons-material/DragHandle";
 
 const MobileSwipeableDrawer = ({ title, content }) => {
@@ -8,12 +8,13 @@ const MobileSwipeableDrawer = ({ title, content }) => {
   const [bottomValue, setBottomValue] = useState("-270px");
   const contentRef = useRef(null);
   const muiTheme = useTheme();
-  const isBelowMd = useMediaQuery(muiTheme.breakpoints.down("md"));
+  const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
 
   useEffect(() => {
     const contentHeight = contentRef.current?.offsetHeight;
+    console.log(`-${contentHeight}px`)
     setBottomValue(open ? "0px" : `-${contentHeight}px`);
-  }, [open, contentRef]);
+  }, [open, contentRef, isMobile]);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -25,16 +26,13 @@ const MobileSwipeableDrawer = ({ title, content }) => {
     }
   };
 
-  if (!isBelowMd) {
-    return null; // 如果不是 md 尺寸以下，則不渲染
-  }
-
   return (
     <>
       {open && (
         <Box
           onClick={handleMaskClick}
           sx={{
+            display: { xs: "block", sm: "block", md: "none" },
             position: "fixed",
             top: 0,
             left: 0,
@@ -48,6 +46,7 @@ const MobileSwipeableDrawer = ({ title, content }) => {
 
       <Box
         sx={{
+          display: { xs: "block", sm: "block", md: "none" },
           position: "fixed",
           bottom: bottomValue,
           left: 0,
