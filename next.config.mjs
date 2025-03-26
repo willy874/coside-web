@@ -1,3 +1,4 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
@@ -5,7 +6,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "https://c105-13-115-215-106.ngrok-free.app/:path*"
+        destination: `${API_URL}/:path*`
       },
     ];
   },
@@ -16,7 +17,7 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    domains: ['c105-13-115-215-106.ngrok-free.app'],
+    domains: [`6181-13-115-215-106.ngrok-free.app`],
   },
 };
 

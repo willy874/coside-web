@@ -6,6 +6,8 @@ import Image from "next/image";
 import { CharacterTag } from "@/components/CharacterTag";
 import { ProjectTag } from "@/components/ProjectTag";
 
+
+
 const TEXT_MAP: Record<string, string> = {
   REQUIRE_TYPE: "專案類型",
   REQUIRE_DURATION: "預計時長",
@@ -37,8 +39,8 @@ export default function ProjectHeader({
         <Image
           src={
             project.background_Path
-              ? `https://c105-13-115-215-106.ngrok-free.app/${project.background_Path}`
-              : "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png"
+              ? `https://6181-13-115-215-106.ngrok-free.app/${project.background_Path}`
+              : `/images/default/banner_coside_1.png`
           }
           alt={project.name}
           fill
@@ -50,7 +52,7 @@ export default function ProjectHeader({
           }}
           onError={(e) => {
             e.currentTarget.src =
-              "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png";
+              `/images/default/banner_coside_1.png`;
           }}
         />
       </Box>
@@ -94,7 +96,7 @@ export default function ProjectHeader({
             }}
           >
             <Image
-              src={`https://c105-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+              src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
               alt={project.creator.name}
               width={32}
               height={32}
@@ -297,7 +299,7 @@ export default function ProjectHeader({
                 }}
               >
                 <Image
-                  src={`https://c105-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                  src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
                   alt={project.creator.name}
                   width={24}
                   height={24}

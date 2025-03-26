@@ -60,11 +60,11 @@ export const ProjectCard = ({
           <CardMedia
             component="img"
             src={project.background_Path
-              ? `https://c105-13-115-215-106.ngrok-free.app/${project.background_Path}`
-              : "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png"}
+              ? `https://6181-13-115-215-106.ngrok-free.app/${project.background_Path}`
+              : `/images/default/banner_coside_1.png`}
             sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.figma.neutral[80]}` }}
             onError={(e) => {
-              e.currentTarget.src = "https://c105-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png";
+              e.currentTarget.src =`/images/default/banner_coside_1.png`;
             }}
           />
 
@@ -74,7 +74,7 @@ export const ProjectCard = ({
                 <ProjectTag projectTag={project.type} />
                 <Box sx={{ display: "flex", alignItems: "center" }}>
                   <Image
-                    src={`https://c105-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                    src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
                     alt={project.creator.name}
                     width={24}
                     height={24}
