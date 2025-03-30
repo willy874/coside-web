@@ -24,7 +24,7 @@ import styles from "./page.module.scss";
 import SelectLabels from "@/components/LoginPage/select";
 
 import { Formik, Form, Field } from "formik";
-import { z } from "zod";
+import { set, z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
 import useLoginStore from "@/stores/loginStore";
@@ -60,6 +60,8 @@ const LoginSetting = () => {
     instagramPublic: false,
     imgPath: "",
   });
+
+  const [fileError, setFileError] = useState<string>("");
 
   const [activeStep, setActiveStep] = useState<number>(0);
 
@@ -284,27 +286,44 @@ const LoginSetting = () => {
                               id="icon-button-file"
                               type="file"
                               onChange={async (event) => {
+                                setFileError("");
                                 const file = event.currentTarget.files?.[0];
-                                const maxSize = 2 * 1024 * 1024;
-                                if (file && file.size > maxSize) {
-                                  console.log("大小上限2MB");
+                                
+                                if (!file) {
+                                  setFileError("請選擇檔案");
                                   return;
                                 }
-                                setFieldValue("image", file);
 
+                                const maxSize = 2 * 1024 * 1024;
+                                if (file.size > maxSize) {
+                                  setFileError("檔案大小超過2MB上限");
+                                  return;
+                                }
+
+                                // Check file type
+                                const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                                if (!validTypes.includes(file.type)) {
+                                  setFileError("只接受 .jpg, .jpeg, .png 格式");
+                                  return;
+                                }
+
+                                setFieldValue("image", file);
+                                
                                 const reader = new FileReader();
                                 reader.onload = () => {
                                   setFormData({
                                     ...formData,
                                     previewImage: (reader.result as string) || "",
                                   });
+                                  setFieldValue(
+                                    "previewImage",
+                                    (reader.result as string) || ""
+                                  )
                                 };
 
-                                if (!file) {
-                                  throw new Error("檔案有誤");
-                                }
                                 const data = new FormData();
                                 data.append("file", file);
+                                
                                 try {
                                   const res = await axios.post(
                                     `/api/upload?type=images`,
@@ -320,7 +339,12 @@ const LoginSetting = () => {
                                     ...formData,
                                     imgPath: res.data.data,
                                   });
+                                  setFieldValue(
+                                    "imgPath",
+                                    res.data.data
+                                  );
                                 } catch (e) {
+                                  setFileError("上傳失敗，請稍後再試");
                                   setFormData({
                                     ...formData,
                                     previewImage: "",
@@ -344,9 +368,21 @@ const LoginSetting = () => {
                               <p>上傳格式：jpg, jpeg, png</p>
                               <p>大小上限：2Mb</p>
                             </div>
+                            {fileError && (
+                              <p className={styles.errorText}>{fileError}</p>
+                            )}
                           </div>
                           {formData.previewImage && (
-                            <Image src={formData.previewImage} alt="preview" width={200} height={200} />
+                            <div style={{ width: '200px', position: 'relative' }}>
+                              <Image 
+                                src={formData.previewImage} 
+                                alt="preview" 
+                                width={200}
+                                height={0}
+                                sizes="200px"
+                                style={{ width: '100%', height: 'auto' }}
+                              />
+                            </div>
                           )}
                           <Field
                             as={TextField}

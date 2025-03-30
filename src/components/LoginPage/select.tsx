@@ -4,6 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { jobPosition } from '@/constant/index';
 
 
 export default function SelectLabels({ value, onChange, id, name, label, error, helperText }) {
@@ -42,17 +43,19 @@ export default function SelectLabels({ value, onChange, id, name, label, error, 
           onChange={handleChange}
           sx={{ borderRadius: '12px' }}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {positionArray.map((item, index) => { 
-            return <MenuItem value={item} key={index} >{item}</MenuItem> 
+          {/* 改成 jobPosition  */}
+          {jobPosition.map((item, index) => { 
+            return <MenuItem value={item.value} key={index} >{item.label}</MenuItem> 
                 })
             }
+          {/* 改成 positionArray  */}
+          {/* {positionArray.map((item, index) => { 
+            return <MenuItem value={item} key={index} >{item}</MenuItem> 
+                })
+            } */}
         </Select>
         {helperText && <FormHelperText>{helperText}</FormHelperText>}
       </FormControl>
     </div>
   );
 }
-

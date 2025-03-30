@@ -13,13 +13,13 @@ export const projectType = [
 ]
 
 export const jobPosition = [
-    { label: 'UI Designer', value: 'UI Designer' },
-    { label: 'UX Designer', value: 'UX Designer' },
-    { label: '(UI/UX)Product Designer', value: '(UI/UX)Product Designer' },
-    { label: 'User Researcher', value: 'User Researcher' },
-    { label: '前端', value: 'Frontend Engineer' },
-    { label: '後端', value: 'Backend Engineer' },
-    { label: '前後端', value: 'Fullstack Engineer' },
+    { label: 'UI設計師', value: 'UI Designer' },
+    { label: 'UX設計師', value: 'UX Designer' },
+    { label: 'UIUX/產品設計師', value: '(UI/UX)Product Designer' },
+    { label: '使用者研究員', value: 'User Researcher' },
+    { label: '前端工程師', value: '前端工程師' },
+    { label: '後端工程師', value: '後端工程師' },
+    { label: '全端工程師', value: '全端工程師' },
     { label: 'PM', value: 'Project Manager' },
     { label: '其他', value: 'Other' },
 ]
