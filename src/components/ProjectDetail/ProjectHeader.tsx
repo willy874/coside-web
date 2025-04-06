@@ -14,12 +14,6 @@ const TEXT_MAP: Record<string, string> = {
   SPONSOR: "發起人",
 };
 
-interface ProjectHeaderProps {
-  project: any; // 替換為實際的專案類型
-  handleOpenModal: () => void;
-  groupedMembers: { role: string; count: number }[];
-}
-
 export default function ProjectHeader({
   project,
   handleOpenModal,
@@ -52,7 +46,7 @@ export default function ProjectHeader({
           }}
           onError={(e) => {
             e.currentTarget.src =
-              `/images/default/banner_coside_1.png`;
+              `https://6181-13-115-215-106.ngrok-free.app//images/default/banner_coside_1.png`;
           }}
         />
       </Box>
@@ -192,8 +186,7 @@ export default function ProjectHeader({
                 <CharacterTag
                   key={`member-${member.role}-${index}`}
                   character={member.role}
-                  borderRadius={isBelowMd ? "12px" : "20px"}
-                  lineHeight={isBelowMd ? "26px" : "17px"}
+                  type={isBelowMd ? "square" : "detailInfo"}
                   addText={isBelowMd ? `${member.count}名` : ""}
                 />
               ))}

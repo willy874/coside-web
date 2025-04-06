@@ -12,7 +12,7 @@ import Link from "next/link";
 
 import { ProjectTag } from "./ProjectTag";
 import { CharacterTag } from "./CharacterTag";
-import { useEffect } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export interface ProjectCardProps {
   categories: string[];
@@ -40,14 +40,41 @@ export const ProjectCard = ({
 }: {
   project: ProjectCardProps;
 }) => {
-  const renderCharacterTag = () =>
-    project.roles.map((tag: string) => (
-      <CharacterTag key={tag} character={tag} />
-    ));
+  const boxRef = useRef(null);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+
+  const checkOverflow = useCallback(() => {
+    if (boxRef.current) {
+      const isContentOverflowing = boxRef.current.scrollHeight > boxRef.current.clientHeight;
+      setIsOverflowing(isContentOverflowing);
+    }
+  }, []);
+
+  useEffect(() => {
+    // 初始檢查
+    checkOverflow();
+
+    // 添加視窗大小改變事件監聽器
+    window.addEventListener('resize', checkOverflow);
+
+    // 清理函數 
+    return () => {
+      window.removeEventListener('resize', checkOverflow);
+    };
+  }, [checkOverflow, project.roles]);
+
+  const renderCharacterTags = () => {
+    const tags = [];
+    project.roles.forEach((tag, index) => {
+      tags.push(<CharacterTag key={`${tag}-${index}`} character={tag} data-character-tag />);
+    });
+
+    return tags;
+  };
 
   return (
     <Grid item sx={{ height: "100%" }}>
-      <Link href={`/project/detail/${project.id}`} style={{ display: "block", height: "100%" }}>
+      <Link href={`/project/${project.id}`} style={{ display: "block", height: "100%" }}>
         <Card
           className="project-card"
           sx={{
@@ -64,7 +91,7 @@ export const ProjectCard = ({
               : `/images/default/banner_coside_1.png`}
             sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.figma.neutral[80]}` }}
             onError={(e) => {
-              e.currentTarget.src =`/images/default/banner_coside_1.png`;
+              e.currentTarget.src = `https://6181-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png`;
             }}
           />
 
@@ -117,19 +144,43 @@ export const ProjectCard = ({
                 <span>{project.categories.join(" / ")}・{project.duration}</span>
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "flex-start" }}>
               <Typography
                 sx={{
                   fontSize: "16px",
+                  lineHeight: "26px",
                   color: "#4F4F4F",
                   fontWeight: "700",
                   marginRight: "6px",
+                  flexShrink: 0,
                 }}
               >
                 <span>{TEXT_MAP.REQUIRE_POSITION}</span>
               </Typography>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                {renderCharacterTag()}
+              <Box
+                ref={boxRef}
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "6px",
+                  maxHeight: "64px",
+                  overflow: "hidden",
+                }}
+              >
+                {renderCharacterTags()}
+                {isOverflowing && (
+                  <Box
+                    component="span"
+                    sx={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      height: "26px", // 與標籤高度一致
+                      marginLeft: "4px"
+                    }}
+                  >
+                    ...
+                  </Box>
+                )}
               </Box>
             </Box>
           </CardContent>

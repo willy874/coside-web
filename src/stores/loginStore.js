@@ -5,11 +5,12 @@ const useLoginStore = create(
   persist(
     (set) => ({
       token: null, // 用來儲存 token
+      userInfo: null, // 用來儲存使用者資訊
       isAuthenticated: false, // 用來儲存使用者是否登入的狀態
       // 設置 token 並將登入狀態設為 true
-      setToken: (token) => set({ token: token, isAuthenticated: !!token }),
+      setUserInfo: (token, userInfo) => set({ token, userInfo, isAuthenticated: !!token }),
       // 清除 token 並將登入狀態設為 false
-      clearToken: () => set({ token: null, isAuthenticated: false }),
+      clearUserInfo: () => set({ token: null, userInfo: null, isAuthenticated: false }),
     }),
     {
       name: "loginState",

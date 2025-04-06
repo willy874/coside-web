@@ -8,15 +8,15 @@ import {
   useCallback,
 } from "react";
 import Image from "next/image";
-import { alpha, styled } from "@mui/material/styles";
-import { Box, Typography, Button, Grid, FormHelperText } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { Box, Typography, Button, ButtonGroup, Grid, FormHelperText } from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import axios from "axios";
 import useLoginStore from "@/stores/loginStore";
 import theme from "@/styles/theme";
 import { getPhotosByQuery } from "@/api/unsplash";
-import { set } from "zod";
+import CachedIcon from '@mui/icons-material/Cached';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const StyledUploadWrapper = styled("div")(() => ({
   position: "relative",
@@ -26,7 +26,7 @@ const StyledUploadWrapper = styled("div")(() => ({
   alignItems: "center",
   justifyContent: "center",
   flexDirection: "column",
-  borderRadius: 12,
+  borderRadius: "12px",
   overflow: "hidden",
   input: {
     display: "none",
@@ -228,8 +228,8 @@ export default function UploadImage({
 
   const handleFile = async (_file: File | null = null) => {
     if (!_file) {
-      setPreviewImage("");
-      setFieldValue("bannerUpload", undefined);
+      // setPreviewImage("");
+      // setFieldValue("bannerUpload", undefined);
       return;
     }
 
@@ -332,7 +332,7 @@ export default function UploadImage({
         sx={{
           borderRadius: 3,
           border: `1px solid ${theme.palette.grey[200]}`,
-          padding: "4px 12px",
+          padding: "12px",
           ...(errorStatus && {
             border: `1px solid ${theme.palette.error.main}`,
           }),
@@ -389,6 +389,7 @@ export default function UploadImage({
                       width: "100%",
                       height: "100%",
                       padding: 0,
+
                     }}
                   >
                     <Image
@@ -397,30 +398,52 @@ export default function UploadImage({
                       fill
                       style={{ objectFit: "cover" }}
                     />
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        width: "28px",
-                        height: "28px",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        borderRadius: "50%",
-                        padding: "4px",
-                        cursor: "pointer",
+                    <ButtonGroup variant="contained" aria-label="Basic button group" sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      boxShadow: "none",
+                      "& .MuiButtonGroup-firstButton, & .MuiButtonGroup-middleButton": {
+                        borderColor: `${theme.figma.btn.outline.bg_default} !important`,
+                      },
+                      "& .MuiButtonGroup-firstButton": {
+                        borderRadius: "6px 0 0 6px",
+                      },
+                      "& .MuiButtonGroup-lastButton": {
+                        borderRadius: "0 6px 6px 0",
+                      }
+                    }}
+                    >
+                      <Button sx={{
+                        padding: "4px 10px",
+                        bgcolor: "rgba(31, 31, 31, 0.7)",
                         "&:hover": {
-                          backgroundColor: "rgba(0, 0, 0, 0.7)",
+                          backgroundColor: "rgba(31, 31, 31, 0.8)",
                         },
                       }}
-                      onClick={deleteImage}
-                    >
-                      <Image
-                        src="/delete.svg"
-                        alt="delete image"
-                        width={20}
-                        height={20}
-                      />
-                    </Box>
+                        onClick={() => inputRef.current?.click()}
+                      >
+                        <CachedIcon sx={{
+                          width: "16px",
+                          height: "16px",
+                        }} />
+                      </Button>
+                      <Button
+                        sx={{
+                          padding: "4px 10px",
+                          bgcolor: "rgba(31, 31, 31, 0.7)",
+                          "&:hover": {
+                            backgroundColor: "rgba(31, 31, 31, 0.8)",
+                          },
+                        }}
+                        onClick={deleteImage}
+                      >
+                        <DeleteOutlineOutlinedIcon sx={{
+                          width: "16px",
+                          height: "16px",
+                          color: theme.figma.status.normal_red,
+                        }} /></Button>
+                    </ButtonGroup>
                   </Box>
                 ) : (
                   <>

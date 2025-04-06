@@ -76,32 +76,33 @@ export default function ProjectDetailPage() {
         if (data.success) {
           setProject(data.data);
           console.log(data.data);
+
           const mergedMembers = [];
           const roleCount = {};
 
           data.data.members.forEach((member) => {
-            const existingMemberIndex = mergedMembers.findIndex(
-              (m) => m.role === member.role
-            );
+            if (member.email === null) {
+              const existingMemberIndex = mergedMembers.findIndex(
+                (m) => m.role === member.role
+              );
 
-            if (existingMemberIndex === -1) {
-              // 只保留 role 並設置 count 為 1
-              roleCount[member.role] = 1;
-              mergedMembers.push({
-                role: member.role,
-                count: 1,
-              });
-            } else {
-              // 增加已存在角色的計數
-              roleCount[member.role]++;
-              mergedMembers[existingMemberIndex].count = roleCount[member.role];
+              if (existingMemberIndex === -1) {
+                // 只保留有缺人的 role 並設置 count 為 1
+                roleCount[member.role] = 1;
+                mergedMembers.push({
+                  role: member.role,
+                  count: 1,
+                });
+              } else {
+                // 增加已存在角色的計數
+                roleCount[member.role]++;
+                mergedMembers[existingMemberIndex].count = roleCount[member.role];
+              }
             }
           });
 
           console.log(mergedMembers);
           setGroupedMembers(mergedMembers);
-        } else {
-          setError(data.message || "Failed to fetch project");
         }
       } catch (error) {
         console.error("Failed to fetch projects", error);
@@ -208,8 +209,8 @@ export default function ProjectDetailPage() {
                   variant="contained"
                   sx={{
                     width: "100%",
-                    color: theme.figma.neutral[100],
-                    bgcolor: theme.figma.Primary.normal_blue,
+                    color: theme.figma.btn.fill.content_default,
+                    bgcolor: theme.figma.btn.fill.bg_default_blue,
                     borderRadius: "12px",
                     textDecoration: "none",
                     fontWeight: "bold",

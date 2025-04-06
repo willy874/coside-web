@@ -30,6 +30,7 @@ import { toFormikValidationSchema } from "zod-formik-adapter";
 import useLoginStore from "@/stores/loginStore";
 
 import axios from "axios";
+import { userGetSelf } from "@/api/user";
 
 const LoginSetting = () => {
   const steps = ["基本資料", "聯繫方式"];
@@ -39,7 +40,7 @@ const LoginSetting = () => {
   const name = params.get("name");
   const settingToken = params.get("token");
 
-  const { setToken, token, isAuthenticated } = useLoginStore();
+  const { setUserInfo, token, isAuthenticated } = useLoginStore();
   const router = useRouter()
 
   const [formData, setFormData] = useState({
@@ -105,7 +106,8 @@ const LoginSetting = () => {
           }
         );
         if (res.data.success) {
-          setToken(res.data.data.token);
+          const userInfo = await userGetSelf(token);
+          setUserInfo(res.data.data.token, userInfo.data); // 儲存進 store
           router.push("/")
         } else {
           console.log(res.data.message)

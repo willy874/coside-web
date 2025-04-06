@@ -1,58 +1,34 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback, use } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 
 import styles from "./page.module.css";
 import { ProjectCard, ProjectCardProps } from "@/components/ProjectCard";
 import HandleToken from "@/components/Auth/HandleToken";
 import FilterDropdownList from "@/components/FilterDropdownList";
+import BackToTopButton from "@/components/BackToTopButton";
 import { Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { projectGetByFilter } from "@/api/project";
 import { Suspense } from "react";
 import theme from "@/styles/theme";
 
-export default function Home({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined }
-}) {
+export default function Home() {
   const [nowPage, setNowPage] = useState(1);
   const [size, setSize] = useState(12);
   const [projects, setProjects] = useState<ProjectCardProps[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [filterParams, setFilterParams] = useState(null); // 
-
-  // 參考元素，用於觀察何時滾動到底部
-  const observer = useRef<IntersectionObserver>();
-  // 用於觀察的最後一個項目
-  const lastProjectElementRef = useCallback(
-    (node: HTMLDivElement) => {
-      if (loading) return;
-      if (!hasMore) return;
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && hasMore) {
-            setNowPage((prevPage) => prevPage + 1);
-          }
-        },
-        { threshold: 0.5 }
-      );
-
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore]
-  );
+  const [filterParams, setFilterParams] = useState(null);
 
   const fetchData = useCallback(async (page: number) => {
+    if (loading) return; // Prevent multiple simultaneous requests
+
     setLoading(true);
     try {
+      console.log(filterParams, "filterParams"); // Check filterParams
       const data = await projectGetByFilter(page, size, filterParams);
-      console.log(data);
 
       // Check if the response is null or if there's no data
       if (!data || !data.success || !data.data || !data.data.projects) {
@@ -61,9 +37,12 @@ export default function Home({
       }
 
       setProjects((prevProjects) => {
+        // Only merge with previous projects if we're not on page 1
+        const baseProjects = page === 1 ? [] : prevProjects;
+
         const newProjects = data.data.projects.filter(
           (newProject) =>
-            !prevProjects.some(
+            !baseProjects.some(
               (existingProject) => existingProject.id === newProject.id
             )
         );
@@ -73,7 +52,7 @@ export default function Home({
           setHasMore(false);
         }
 
-        return [...prevProjects, ...newProjects];
+        return [...baseProjects, ...newProjects];
       });
 
       // If fewer projects than requested size, we've reached the end
@@ -86,25 +65,38 @@ export default function Home({
     } finally {
       setLoading(false);
     }
-  }, [size, filterParams]);
+  }, [loading, size, filterParams]);
+
+  // Effect to handle infinite scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const fullHeight = document.documentElement.scrollHeight;
+
+      // Trigger when close to bottom
+      if (scrollTop + windowHeight >= fullHeight - 300 && !loading && hasMore) {
+        setNowPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading, hasMore]);
 
   const handleFilterApply = (filters) => {
-    setFilterParams(filters);
-  };
-
-  useEffect(() => {
-    if (loading || !hasMore) return;
-    console.log(nowPage)
-    fetchData(nowPage);
-  }, [nowPage, fetchData, hasMore, loading]); // 當頁碼變化時重新獲取數據
-
-  useEffect(() => {
-    setNowPage(1);
+    // Reset page and fetch with new filters
     setProjects([]);
     setHasMore(true);
-    fetchData(1);
-  }, [filterParams, fetchData]);
+    setFilterParams(filters);
+    setNowPage(1);
+  };
 
+  // Effect to fetch data when page changes
+  useEffect(() => {
+    fetchData(nowPage); // Fetch data for the current page
+  }, [nowPage, filterParams]); // Trigger fetch when either page or filters change
+  
   return (
     <main className={styles.main}>
       <Box sx={{ maxWidth: "1224px", width: "100%" }}>
@@ -121,9 +113,10 @@ export default function Home({
         >
           <Typography
             sx={{
-              margin: "9px 0",
+              margin: "8px 0",
               fontWeight: "700",
               fontSize: { xs: "24px", sm: "24px", md: "32px" },
+              lineHeight: { xs: "28px", sm: "28px", md: "38px" },
             }}
           >
             探索新專案
@@ -136,27 +129,11 @@ export default function Home({
           rowSpacing={{ sm: 2.5, xs: 2.5, md: 4 }}
           columnSpacing={3}
         >
-          {projects.map((project, index) => {
-            if (projects.length === index + 1) {
-              // 為最後一個項目添加 ref
-              return (
-                <Grid
-                  item
-                  xs={1}
-                  key={project.id || index}
-                  ref={lastProjectElementRef}
-                >
-                  <ProjectCard project={project} />
-                </Grid>
-              );
-            } else {
-              return (
-                <Grid item xs={1} key={project.id || index}>
-                  <ProjectCard project={project} />
-                </Grid>
-              );
-            }
-          })}
+          {projects.map((project) => (
+            <Grid item xs={1} key={project.id}>
+              <ProjectCard project={project} />
+            </Grid>
+          ))}
         </Grid>
 
         {loading && (
@@ -174,7 +151,8 @@ export default function Home({
 
         <Box position="fixed" sx={{
           bottom: { xs: "32px", sm: "32px", md: "5vh" },
-          right: { xs: "32px", sm: "32px", md: "4vw" }
+          right: { xs: "32px", sm: "32px", md: "4vw" },
+          zIndex: 999,
         }}>
           <Button
             LinkComponent={Link}
@@ -207,9 +185,9 @@ export default function Home({
       </Box>
       <Suspense>
         <HandleToken />
-
       </Suspense>
       {/* <ServerHandleToken searchParams={searchParams}/> */}
+      <BackToTopButton />
     </main>
   );
 }

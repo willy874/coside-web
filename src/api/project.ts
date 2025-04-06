@@ -25,7 +25,6 @@ export const projectGetByFilter = async (
     const token = useLoginStore.getState().token;
 
     const params: Record<string, any> = { page, size };
-
     // 如果 filters 不為 null，則合併查詢參數
     if (filters) {
       Object.assign(params, convertToQueryParams(filters));

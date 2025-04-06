@@ -13,27 +13,27 @@ export const projectType = [
 ]
 
 export const jobPosition = [
-    { label: 'UI設計師', value: 'UI Designer' },
-    { label: 'UX設計師', value: 'UX Designer' },
-    { label: 'UIUX/產品設計師', value: '(UI/UX)Product Designer' },
-    { label: '使用者研究員', value: 'User Researcher' },
+    { label: 'UI設計師', value: 'UI設計師' },
+    { label: 'UX設計師', value: 'UX設計師' },
+    { label: 'UIUX/產品設計師', value: 'UIUX/產品設計師' },
+    { label: '使用者研究員', value: '使用者研究員' },
     { label: '前端工程師', value: '前端工程師' },
     { label: '後端工程師', value: '後端工程師' },
     { label: '全端工程師', value: '全端工程師' },
-    { label: 'PM', value: 'Project Manager' },
-    { label: '其他', value: 'Other' },
+    { label: 'PM', value: 'PM' },
+    { label: '其他', value: '其他' },
 ]
 
 export const jobPositionTag = [
-    { label: 'UI', value: 'UI Designer' },
-    { label: 'UX', value: 'UX Designer' },
-    { label: 'UIUX', value: '(UI/UX)Product Designer' },
-    { label: 'UXR', value: 'User Researcher' },
-    { label: '前端', value: 'Frontend Engineer' },
-    { label: '後端', value: 'Backend Engineer' },
-    { label: '全端', value: 'Fullstack Engineer' },
-    { label: 'PM', value: 'Project Manager' },
-    { label: '其他', value: 'Other' },
+    { label: 'UI', value: 'UI設計師' },
+    { label: 'UX', value: 'UX設計師' },
+    { label: 'UIUX', value: 'UIUX/產品設計師' },
+    { label: 'UXR', value: '使用者研究員' },
+    { label: '前端', value: '前端工程師' },
+    { label: '後端', value: '後端工程師' },
+    { label: '全端', value: '全端工程師' },
+    { label: 'PM', value: 'PM' },
+    { label: '其他', value: '其他' },
 ]
 
 export const duration = [

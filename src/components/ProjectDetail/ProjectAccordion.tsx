@@ -10,23 +10,25 @@ import { CharacterTag } from "@/components/CharacterTag";
 
 export default function ProjectAccordion({ project }) {
   const groupedMembers = project.members.reduce((acc, member) => {
-    // 用 role 和 skill 作為唯一標識
-    const key = `${member.role}-${member.skill}`;
-    const existingMember = acc.find((item) => item.key === key);
-
-    if (existingMember) {
-      existingMember.people += 1;
-    } else {
-      acc.push({
-        key, // 用來確保組合的唯一性
-        role: member.role,
-        skill: member.skill,
-        people: 1,
-      });
+    // 只處理有缺人的職位（email 為 null）
+    if (member.email === null) {
+      const key = `${member.role}-${member.skill}`;
+      const existingMember = acc.find((item) => item.key === key);
+  
+      if (existingMember) {
+        existingMember.people += 1;
+      } else {
+        acc.push({
+          key, // 唯一標識
+          role: member.role,
+          skill: member.skill,
+          people: 1,
+        });
+      }
     }
-
+  
     return acc;
-  }, []);
+  }, []);  
 
   return (
     <>
@@ -76,7 +78,7 @@ export default function ProjectAccordion({ project }) {
               },
             }}
           >
-            <CharacterTag key={member.role} character={member.role} />
+            <CharacterTag key={member.role} character={member.role} type="detailInfo" />
             <Typography
               component="span"
               sx={{

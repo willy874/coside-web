@@ -433,7 +433,7 @@ export default function Form() {
         partner.members.map((member) => ({
           role: partner.jobPosition,
           skill: partner.projectRequirement || "",
-          email: member,
+          email: member.trim() === "" ? null : member,
           group: partner.jobPosition,
         }))
       );

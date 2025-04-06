@@ -1,16 +1,14 @@
 "use client";
-import { useSearchParams,useRouter, usePathname } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { userGetSelf } from "@/api/user";
 import useLoginStore from "@/stores/loginStore";
-// import test from "@/app/api/test";
-import axios from "axios";
 
 export default function HandleToken() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { setToken } = useLoginStore();
+  const { setUserInfo } = useLoginStore();
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -20,15 +18,22 @@ export default function HandleToken() {
   }, []);
 
   useEffect(() => {
+    const init = async () => {
+      const token = searchParams.get("token");
+      if (!token) return;
 
+      const userInfo = await userGetSelf(token); // 這裡打 API 拿自己資訊
+      console.log(userInfo.data, "userInfo"); // 確認 userInfo
+      setUserInfo(token, userInfo.data); // 儲存進 store
 
-    const token = searchParams.get("token");
-    if(!token) return;
-    router.replace(pathname);
-    console.log(token);
+      // 移除 token from URL
+      router.replace(pathname);
+    };
 
-    setToken(token);
-  }, [isReady, searchParams, setToken, pathname, router]);
+    if (isReady) {
+      init();
+    }
+  }, [isReady, searchParams, setUserInfo, pathname, router]);
 
   return null;
 }
