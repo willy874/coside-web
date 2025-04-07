@@ -2,12 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-
+import Image from "next/image";
 import styles from "./page.module.css";
 import { ProjectCard, ProjectCardProps } from "@/components/ProjectCard";
 import HandleToken from "@/components/Auth/HandleToken";
 import FilterDropdownList from "@/components/FilterDropdownList";
 import BackToTopButton from "@/components/BackToTopButton";
+import { useMediaQuery, useTheme } from '@mui/material';
 import { Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { projectGetByFilter } from "@/api/project";
@@ -21,6 +22,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filterParams, setFilterParams] = useState(null);
+  const theme = useTheme();
+  const isMd = useMediaQuery(theme.breakpoints.down('md'));
 
   const fetchData = useCallback(async (page: number) => {
     if (loading) return; // Prevent multiple simultaneous requests
@@ -96,10 +99,14 @@ export default function Home() {
   useEffect(() => {
     fetchData(nowPage); // Fetch data for the current page
   }, [nowPage, filterParams]); // Trigger fetch when either page or filters change
-  
+
   return (
     <main className={styles.main}>
-      <Box sx={{ maxWidth: "1224px", width: "100%" }}>
+      <Box sx={{
+        maxWidth: "1224px", width: "100%", flexGrow: 1,
+        display: "flex",
+        flexDirection: "column",
+      }}>
         <Box
           sx={{
             position: "relative",
@@ -123,18 +130,46 @@ export default function Home() {
           </Typography>
           <FilterDropdownList onFilterApply={handleFilterApply} />
         </Box>
-        <Grid
-          container
-          columns={{ xs: 1, sm: 1, md: 2, lg: 3 }}
-          rowSpacing={{ sm: 2.5, xs: 2.5, md: 4 }}
-          columnSpacing={3}
-        >
-          {projects.map((project) => (
-            <Grid item xs={1} key={project.id}>
-              <ProjectCard project={project} />
-            </Grid>
-          ))}
-        </Grid>
+        {projects.length === 0 ?
+          <Box sx={{
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            height: "100%"
+          }}>
+            <Image src="/project_empty.svg" alt="No Projects"
+              width={isMd ? 80 : 200} // 根據螢幕大小改變寬度
+              height={isMd ? 80 : 200} // 根據螢幕大小改變高度
+              style={{ margin: "0 auto", display: "block" }} />
+            <Typography sx={{
+              color: "rgba(0, 125, 195, 0.5)",
+              mt: { xs: "19px", sm: "19px", md: "32px" },
+              fontSize: { xs: "16px", sm: "16px", md: "32px" },
+              lineHeight: { xs: "26px", sm: "26px", md: "45px" },
+              fontWeight: "bold",
+              textAlign: "center",
+            }}>
+              這裡還沒有專案<br />
+              或許你的想法可以成為第一個！
+            </Typography>
+          </Box>
+          :
+          <Grid
+            container
+            columns={{ xs: 1, sm: 1, md: 2, lg: 3 }}
+            rowSpacing={{ sm: 2.5, xs: 2.5, md: 4 }}
+            columnSpacing={3}
+          >
+            {projects.map((project) => (
+              <Grid item xs={1} key={project.id}>
+                <ProjectCard project={project} />
+              </Grid>
+            ))
+            }
+          </Grid>}
 
         {loading && (
           <Box
@@ -147,6 +182,17 @@ export default function Home() {
           >
             <CircularProgress color="warning" />
           </Box>
+        )}
+
+        {(!hasMore && projects.length !== 0) && (
+          <Typography
+            sx={{
+              textAlign: "center",
+              fontSize: "20px",
+              lineHeight: "23px",
+              mt: "66px",
+            }}
+          >你已經看完所有專案</Typography>
         )}
 
         <Box position="fixed" sx={{
@@ -188,6 +234,6 @@ export default function Home() {
       </Suspense>
       {/* <ServerHandleToken searchParams={searchParams}/> */}
       <BackToTopButton />
-    </main>
+    </main >
   );
 }

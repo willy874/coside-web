@@ -14,6 +14,11 @@ import {
   Container,
   Button,
   MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemButton
 } from "@mui/material";
 import { LoginDialogProvider } from "@/contexts/LoginDialogContext";
 import { usePathname } from "next/navigation";
@@ -21,16 +26,11 @@ import { usePathname } from "next/navigation";
 const Avatar = dynamic(() => import("./Avatar"), { ssr: false });
 
 export const Topbar = () => {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [openDrawer, setOpenDrawer] = useState(false);
   const pathname = usePathname();
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+  const handleOpenDrawer = () => setOpenDrawer(true);
+  const handleCloseDrawer = () => setOpenDrawer(false);
 
   const navItems = [
     { label: "探索新專案", href: "/" },
@@ -58,50 +58,92 @@ export const Topbar = () => {
           </Box>
 
           {/* Mobile menu burger */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               aria-label="navigation menu"
-              onClick={handleOpenNavMenu}
+              onClick={handleOpenDrawer}
               sx={{ p: 0 }}
             >
               <Image src="/mobile_menu_btn.svg" alt="menu" width={48} height={48} />
             </IconButton>
-            <Menu
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+
+            <Drawer
+              anchor="top"
+              open={openDrawer}
+              onClose={handleCloseDrawer}
+              disableScrollLock
+              slotProps={{
+                backdrop: {
+                  invisible: true,
+                },
               }}
-              keepMounted
-              disableScrollLock={true}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
+              PaperProps={{
+                sx: {
+                  width: '100%',
+                  height: 'auto', // 根據內容自動延伸高度
+                  maxHeight: '100vh', // 避免超過螢幕
+                  boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+                  backgroundColor: theme.figma.Primary.white,
+                  padding: "16px",
+                },
               }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" } }}
             >
-              {navItems.map((item) => (
-                <MenuItem key={item.href} onClick={handleCloseNavMenu}>
-                  <Link href={item.href} passHref>
+              <Image
+                onClick={handleCloseDrawer}
+                src="/mobile_menu_close.svg"
+                alt="close"
+                width={48}
+                height={48}
+                style={{
+                  cursor: "pointer",
+                }}
+              />
+              <hr style={{
+                border: "none",
+                borderTop: `1px solid ${theme.figma.neutral[80]}`,
+                margin: "16px 0",
+              }} />
+              <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "4px",
+              }}>
+                {navItems.map((item) => (
+                  <Link key={item.href} href={item.href} passHref>
                     <Box
                       component="span"
+                      onClick={handleCloseDrawer}
                       sx={{
                         textDecoration: "none",
-                        color: theme.figma.Primary.black,
+                        color:
+                          pathname === item.href
+                            ? theme.figma.Primary.normal_blue
+                            : theme.figma.Primary.black,
+                        fontSize: "20px",
+                        lineHeight: "23px",
+                        display: "block",
+                        cursor: "pointer",
+                        padding: "20px",
+                        textAlign: "center",
                       }}
                     >
                       {item.label}
                     </Box>
                   </Link>
-                </MenuItem>
-              ))}
-            </Menu>
+                ))}
+              </Box>
+            </Drawer>
           </Box>
 
-          {/* Logo - mobile */}
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" }, justifyContent: "flex-start" }}>
+          {/* Logo - mobile (centered) */}
+          <Box 
+            sx={{ 
+              position: "absolute", 
+              left: "50%", 
+              transform: "translateX(-50%)",
+              display: { xs: "flex", md: "none" }
+            }}
+          >
             <Link href="/" passHref>
               <Image src="/coside_icon_mobile.svg" alt="Co-Side" width={42} height={39} priority />
             </Link>
@@ -113,7 +155,6 @@ export const Topbar = () => {
               <Link key={item.href} href={item.href} passHref>
                 <Button
                   disableRipple
-                  onClick={handleCloseNavMenu}
                   sx={{
                     position: "relative",
                     color:
@@ -153,7 +194,7 @@ export const Topbar = () => {
           </Box>
 
           {/* Avatar */}
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, display: { xs: "flex", md: "flex" }, ml: "auto" }}>
             <LoginDialogProvider>
               <Avatar />
             </LoginDialogProvider>
