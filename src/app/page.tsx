@@ -22,6 +22,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [filterParams, setFilterParams] = useState(null);
+  const [initialLoaded, setInitialLoaded] = useState(false); // 新增狀態來追蹤初始載入是否完成
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -32,6 +33,9 @@ export default function Home() {
     try {
       console.log(filterParams, "filterParams"); // Check filterParams
       const data = await projectGetByFilter(page, size, filterParams);
+
+      // Set initialLoaded to true after first fetch completes
+      setInitialLoaded(true);
 
       // Check if the response is null or if there's no data
       if (!data || !data.success || !data.data || !data.data.projects) {
@@ -65,6 +69,7 @@ export default function Home() {
     } catch (error) {
       console.error("Failed to fetch projects", error);
       setHasMore(false); // On error, also stop loading more
+      setInitialLoaded(true); // 即使出錯也標記為已載入完成
     } finally {
       setLoading(false);
     }
@@ -93,6 +98,7 @@ export default function Home() {
     setHasMore(true);
     setFilterParams(filters);
     setNowPage(1);
+    setInitialLoaded(false); // 重置初始載入狀態，因為我們要重新搜索
   };
 
   // Effect to fetch data when page changes
@@ -130,7 +136,23 @@ export default function Home() {
           </Typography>
           <FilterDropdownList onFilterApply={handleFilterApply} />
         </Box>
-        {projects.length === 0 ?
+        
+        {/* 初始加載狀態 */}
+        {!initialLoaded && (
+          <Box sx={{
+            flexGrow: 1,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            height: "50vh"
+          }}>
+            <CircularProgress color="warning" />
+          </Box>
+        )}
+        
+        {/* 已加載但沒有項目 */}
+        {initialLoaded && projects.length === 0 && (
           <Box sx={{
             flexGrow: 1,
             display: "flex",
@@ -156,7 +178,10 @@ export default function Home() {
               或許你的想法可以成為第一個！
             </Typography>
           </Box>
-          :
+        )}
+        
+        {/* 有項目時顯示項目列表 */}
+        {initialLoaded && projects.length > 0 && (
           <Grid
             container
             columns={{ xs: 1, sm: 1, md: 2, lg: 3 }}
@@ -167,11 +192,12 @@ export default function Home() {
               <Grid item xs={1} key={project.id}>
                 <ProjectCard project={project} />
               </Grid>
-            ))
-            }
-          </Grid>}
+            ))}
+          </Grid>
+        )}
 
-        {loading && (
+        {/* 載入更多的指示器（只在有專案且正在加載時顯示） */}
+        {loading && initialLoaded && (
           <Box
             sx={{
               display: "flex",
@@ -184,7 +210,8 @@ export default function Home() {
           </Box>
         )}
 
-        {(!hasMore && projects.length !== 0) && (
+        {/* 沒有更多項目的提示 */}
+        {initialLoaded && !hasMore && projects.length > 0 && (
           <Typography
             sx={{
               textAlign: "center",
@@ -232,7 +259,6 @@ export default function Home() {
       <Suspense>
         <HandleToken />
       </Suspense>
-      {/* <ServerHandleToken searchParams={searchParams}/> */}
       <BackToTopButton />
     </main >
   );
