@@ -11,28 +11,6 @@ import ProjectAccordion from "@/components/ProjectDetail/ProjectAccordion";
 import ProjectHeader from "@/components/ProjectDetail/ProjectHeader";
 import ProjectInfo from "@/components/ProjectDetail/ProjectInfo";
 
-interface ProjectCardProps {
-  thumbnail: string;
-  title: string;
-  projectTag: string;
-  characterTags: string[];
-  projectType: string;
-  projectDuration: string;
-  projectOwner: string;
-  projectOwnerAvatar: string;
-}
-
-const projectCardData: ProjectCardProps = {
-  thumbnail: "/project-card-thumbnail.png",
-  title: "尋蔬食者 VegeFinder",
-  projectTag: "專案落地",
-  characterTags: ["PM", "Frontend", "Backend"],
-  projectType: "App",
-  projectDuration: "6個月以上",
-  projectOwner: "Alan",
-  projectOwnerAvatar: "/project-card-owner-avatar.png",
-};
-
 export default function ProjectDetailPage() {
   const params = useParams(); // 取得動態路由參數
   const [project, setProject] = useState(null);
@@ -190,10 +168,9 @@ export default function ProjectDetailPage() {
           </Box>
         </Box>
         <UserInfoModal
-          userId={project.creator.id}
+          creatorId={project.creator.id}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          {...projectCardData}
         />
         <MobileSwipeableDrawer
           title={"查看徵求職位"}
