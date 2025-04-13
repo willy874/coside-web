@@ -44,8 +44,8 @@ import useArray from "@/hooks/useArray";
 import styles from "./Form.module.scss";
 import { convertSelectionToNode$ } from "@mdxeditor/editor";
 
-type  PartnerType  = {
-  id: string; 
+type PartnerType = {
+  id: string;
   number: number;
   jobPosition: string;
   projectRequirement: string;
@@ -53,7 +53,7 @@ type  PartnerType  = {
 }
 
 type bannerUnsplash = {
-  [key: string]: any; 
+  [key: string]: any;
 }
 
 type FormValues = {
@@ -124,7 +124,7 @@ export default function Form() {
 
   const theme = useTheme();
 
-  const initialValues:FormValues = {
+  const initialValues: FormValues = {
     titleType: "",
     projectType: "",
     title: "",
@@ -144,7 +144,7 @@ export default function Form() {
       },
     ],
     submit: ""
-    
+
   }
 
   useEffect(() => {
@@ -248,21 +248,21 @@ export default function Form() {
     try {
       await formikSchema.validate(values);
       return false;
-    } catch (error:any) {
+    } catch (error: any) {
       const errors: Record<string, string> = {};
-      error.inner.forEach((e:any) => {
+      error.inner.forEach((e: any) => {
         console.log("舊的", error);
         console.log(e.path)
         errors[e.path] = e.message;
         console.log(e)
-        
+
       });
       console.log("errors: ", errors);
       return errors;
     }
   };
 
-  const goNextOrErrors = (validateResult:object | boolean, setErrors:any) => {
+  const goNextOrErrors = (validateResult: object | boolean, setErrors: any) => {
     console.log("validateResult", validateResult);
     if (validateResult === false) {
       if (activeStep === 2) {
@@ -275,7 +275,7 @@ export default function Form() {
     }
   };
 
-  const handleNext = async (values:FormValues, setErrors:any) => {
+  const handleNext = async (values: FormValues, setErrors: any) => {
     if (activeStep === 0) {
       const validateResult = await doValidate(values, step0ValidationSchema);
       goNextOrErrors(validateResult, setErrors);
@@ -289,7 +289,7 @@ export default function Form() {
     }
   };
 
-  const uploadImageBeforeSubmit = async (formValues:FormValues, token:string) => {
+  const uploadImageBeforeSubmit = async (formValues: FormValues, token: string) => {
     try {
       switch (formValues.imageType) {
         case "upload": {
@@ -319,29 +319,28 @@ export default function Form() {
 
         case "unsplash": {
           console.log(formValues.bannerUnsplash);
-          
+
           try {
-            if(!formValues.bannerUnsplash) {
+            if (!formValues.bannerUnsplash) {
               throw new Error("No Unsplash image selected");
             }
-            // 原始圖片資訊
+            // 原始圖片資訊 
             const imageUrl = formValues.bannerUnsplash.urls.raw;
-            const downloadUrl =
-              formValues.bannerUnsplash.links.download_location;
+            const downloadUrl = formValues.bannerUnsplash.links.download_location;
 
-            // 壓縮參數
+            // 壓縮參數 
             let width = 1920;
-            let quality = 80; // 初始品質
-            const minQuality = 60; // 最低品質
-            const fileSizeLimit = 3 * 1024 * 1024; // 3MB
+            let quality = 80; // 初始品質 
+            const minQuality = 60; // 最低品質 
+            const fileSizeLimit = 3 * 1024 * 1024; // 3MB 
 
-            // 建立壓縮後的圖片 URL
-            const getCompressedUrl = (url:any, width:any, quality:any) => {
+            // 建立壓縮後的圖片 URL 
+            const getCompressedUrl = (url: string, width: number, quality: number) => {
               return `${url}?w=${width}&q=${quality}&fm=jpg&fit=max`;
-            }
+            };
 
-            // 用 axios 獲取圖片 Blob 並檢查大小
-            const compressAndGetQuality = async(url:any) => {
+            // 用 axios 獲取圖片 Blob 並檢查大小 
+            const compressAndGetQuality = async (url: string) => {
               let compressedUrl = getCompressedUrl(url, width, quality);
 
               while (true) {
@@ -351,37 +350,32 @@ export default function Form() {
                 const blob = response.data;
 
                 if (blob.size <= fileSizeLimit || quality <= minQuality) {
-                  // 返回確認後的 URL 和品質
-                  return { quality };
+                  // 返回確認後的 URL 和品質 
+                  return { blob };
                 }
 
-                // 若大小不合格且品質未達最低，降低品質再試
+                // 若大小不合格且品質未達最低，降低品質再試 
                 quality -= 10;
                 compressedUrl = getCompressedUrl(url, width, quality);
               }
-            }
+            };
 
-            // 獲取確認後的壓縮 URL 和品質
-            const { quality: finalQuality } =
+            // 獲取確認後的壓縮 URL 和品質以及 blob
+            const { blob: compressedBlob } =
               await compressAndGetQuality(imageUrl);
 
-            // 使用 bannerUnsplash.links.download 獲取最終圖片
-            const finalDownloadUrl = `${downloadUrl}&w=${width}&q=${finalQuality}&fm=jpg&fit=max&client_id=${process.env.NEXT_PUBLIC_UNSPLASH_CLIENT_ID}`;
+            await axios.get(
+              `${downloadUrl}&client_id=${process.env.NEXT_PUBLIC_UNSPLASH_CLIENT_ID}`
+            );
 
-            // 使用 axios 獲取最終圖片 Blob
-            const finalResponse = await axios.get(finalDownloadUrl, {
-              responseType: "blob",
-            });
-
-            console.log(finalResponse);
+            // 使用前面已經取得的壓縮後 blob 來建立 File 物件
             const file = new File(
-              [finalResponse.data],
+              [compressedBlob],
               `${formValues.bannerUnsplash.id}.jpg`,
               { type: "image/jpeg" }
             );
-            console.log(file);
 
-            // 建立 FormData 並上傳圖片
+            // 建立 FormData 並上傳圖片 
             const data = new FormData();
             data.append("file", file);
 
@@ -410,7 +404,7 @@ export default function Form() {
     }
   };
 
-  const handleSubmit = async (values:FormValues, formikHelpers: FormikHelpers<FormValues>) => {
+  const handleSubmit = async (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => {
     const { setErrors, setSubmitting } = formikHelpers
     try {
       setSubmitting(true);
@@ -426,7 +420,7 @@ export default function Form() {
       const imgPath = await uploadImageBeforeSubmit(values, token);
 
       // 3. Transform members data
-      if(!values.partners) {
+      if (!values.partners) {
         throw new Error("No partner");
       }
       const members = values.partners.flatMap((partner) =>
@@ -467,7 +461,7 @@ export default function Form() {
 
       // 6. Handle success (you might want to add navigation or success message here)
       console.log("Project created successfully:", response.data);
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Submit error:", error);
 
       // Handle specific error cases
@@ -713,7 +707,7 @@ export default function Form() {
                               )}
                               helperText={
                                 getIn(props.touched, `partners.${index}.jobPosition`) &&
-                                getIn(props.errors, `partners.${index}.jobPosition`)
+                                  getIn(props.errors, `partners.${index}.jobPosition`)
                                   ? getIn(props.errors, `partners.${index}.jobPosition`)
                                   : ""
                               }

@@ -32,12 +32,7 @@ export const userGetSelf = async (token: string) => {
 
 export const userGetCreatorInfo = async (id: string) => {
   try {
-    const token = useLoginStore.getState().token; // 取得 token
-
-    const response = await axios.get(`/api/user/creator/${id}`, {
-      headers: { Authorization: token ? `Bearer ${token}` : "" },
-    });
-
+    const response = await axios.get(`/api/user/creator/${id}`);
     return response.data;
   } catch (error) {
     console.error("API Error:", error);

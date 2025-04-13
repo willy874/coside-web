@@ -98,6 +98,8 @@ const MobileSwipeableDrawer = ({ title, content }) => {
           sx={{
             backgroundColor: "#fff",
             padding: "0 16px 16px 16px",
+            maxHeight: "calc(80vh)",
+            overflowY: "auto",
           }}
         >
           {content}

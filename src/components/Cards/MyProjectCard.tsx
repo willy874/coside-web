@@ -19,7 +19,7 @@ export interface MyProjectCardProps {
   categories: string[];
   duration: string;
   id: string;
-  isCreator: boolean;
+  is_creator: boolean;
   name: string;
   type: string;
 }
@@ -56,9 +56,9 @@ export const MyProjectCard = ({
 
           <CardContent sx={{ padding: "24px", display: "flex", flexDirection: "column", alignItems: "flex-start", flexGrow: 1 }}>
             <Box sx={{ marginBottom: "auto", width: "100%" }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                 <ProjectTag projectTag={project.type} />
-                {project.isCreator ?
+                {project.is_creator ?
                   <Typography sx={{ color: theme.figma.project_tags.sideproject_implement, fontSize: "16px", lineHeight: "19px", fontWeight: "bold" }}>發起人</Typography>
                   :
                   <Typography sx={{ color: theme.figma.neutral[60], fontSize: "16px", lineHeight: "19px" }}>參與者</Typography>

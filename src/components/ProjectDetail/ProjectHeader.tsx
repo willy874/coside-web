@@ -1,7 +1,7 @@
 "use client";
 
 import theme from "@/styles/theme";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme, Avatar as MuiAvatar } from "@mui/material";
 import Image from "next/image";
 import { CharacterTag } from "@/components/CharacterTag";
 import { ProjectTag } from "@/components/ProjectTag";
@@ -25,7 +25,9 @@ export default function ProjectHeader({
         sx={{
           position: "relative",
           width: "100%",
-          height: { xs: "217px", sm: "217px", md: "449px" },
+          height: {
+            xs: "217px", sm: "217px", md: "449px",
+          },
         }}
       >
         <Image
@@ -46,6 +48,7 @@ export default function ProjectHeader({
             e.currentTarget.src =
               `https://6181-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png`;
           }}
+          priority
         />
       </Box>
       <Box
@@ -87,14 +90,34 @@ export default function ProjectHeader({
               backgroundColor: theme.figma.neutral[100],
             }}
           >
-            <Image
-              src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
-              alt={project.creator.name}
-              width={32}
-              height={32}
-            />
+            {project.creator.avatar ? (
+              <MuiAvatar
+                src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                alt={project.creator.name}
+                sx={{ width: 32, height: 32 }}
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement;
+                  target.onerror = null; // 防止無限觸發
+                  target.src = ""; // 清空圖片，讓 fallback 出現
+                }}
+              />
+            ) : (
+              <MuiAvatar
+                sx={{
+                  bgcolor: theme.figma.neutral[90],
+                  color: "#656565",
+                  width: 32,
+                  height: 32,
+                  fontSize: "16px",
+                  lineHeight: "19px",
+                  fontWeight: "bold",
+                }}
+              >
+                {project.creator.name.charAt(0).toUpperCase()}
+              </MuiAvatar>
+            )}
           </Box>
-          <Typography sx={{ color: "#7C7C7C", fontWeight: "700" }}>
+          <Typography sx={{ color: theme.figma.neutral[50], fontSize: "16px", lineHeight: "19px" }}>
             {project.creator.name}
           </Typography>
         </Box>
@@ -146,8 +169,8 @@ export default function ProjectHeader({
             },
             width: { xs: "100%", sm: "100%", md: "50%" },
             gap: {
-              xs: "14px",
-              sm: "14px",
+              xs: "12px",
+              sm: "12px",
               md: 0,
             },
           }}
@@ -166,7 +189,9 @@ export default function ProjectHeader({
               sx={{
                 display: { xs: "block", sm: "block", md: "none" },
                 fontSize: "16px",
-                color: "#4F4F4F",
+                lineHeight: "19px",
+                color: theme.figma.neutral[30],
+                fontWeight: "bold",
                 mb: "14px",
               }}
             >
@@ -200,44 +225,64 @@ export default function ProjectHeader({
             >
               <Typography
                 sx={{
-                  fontSize: "16px",
-                  color: "#4F4F4F",
-                  marginRight: "6px",
+                  fontSize: { xs: "16px", md: "20px" },
+                  lineHeight: "26px",
+                  color: { xs: theme.figma.neutral[30], md: theme.figma.Primary.dark_gray },
+                  fontWeight: { xs: "bold", md: "normal" },
+                  marginRight: { xs: "16px", md: "6px" },
                 }}
               >
                 {TEXT_MAP.REQUIRE_TYPE}
               </Typography>
               <Typography
                 sx={{
-                  fontSize: "16px",
-                  color: "#4F4F4F",
+                  display: { xs: "none", sm: "none", md: "block" },
+                  fontSize: { xs: "16px", md: "20px" },
+                  lineHeight: "26px",
+                  color: { xs: theme.figma.neutral[30], md: theme.figma.Primary.dark_gray },
+                  fontWeight: { xs: "bold", md: "normal" },
                 }}
               >
                 ｜
               </Typography>
-              <Typography sx={{ color: "#7C7C7C", fontWeight: "700" }}>
+              <Typography sx={{
+                fontSize: { xs: "16px", md: "20px" },
+                lineHeight: "26px",
+                color: { xs: theme.figma.neutral[30], md: theme.figma.Primary.dark_gray },
+                fontWeight: "bold",
+              }}>
                 {project.categories.map((category) => category).join(" / ")}
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "center", marginTop: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", marginTop: { xs: "8px", md: "16px" } }}>
               <Typography
                 sx={{
-                  fontSize: "16px",
-                  color: "#4F4F4F",
-                  marginRight: "6px",
+                  fontSize: { xs: "16px", md: "20px" },
+                  lineHeight: "26px",
+                  color: { xs: theme.figma.neutral[30], md: theme.figma.Primary.dark_gray },
+                  fontWeight: { xs: "bold", md: "normal" },
+                  marginRight: { xs: "16px", md: "6px" },
                 }}
               >
                 {TEXT_MAP.REQUIRE_DURATION}
               </Typography>
               <Typography
                 sx={{
-                  fontSize: "16px",
-                  color: "#4F4F4F",
+                  display: { xs: "none", sm: "none", md: "block" },
+                  fontSize: { xs: "16px", md: "20px" },
+                  lineHeight: "26px",
+                  color: { xs: theme.figma.neutral[30], md: theme.figma.Primary.dark_gray },
+                  fontWeight: { xs: "bold", md: "normal" },
                 }}
               >
                 ｜
               </Typography>
-              <Typography sx={{ color: "#7C7C7C", fontWeight: "700" }}>
+              <Typography sx={{
+                fontSize: { xs: "16px", md: "20px" },
+                lineHeight: "26px",
+                color: { xs: theme.figma.neutral[30], md: theme.figma.Primary.dark_gray },
+                fontWeight: "bold",
+              }}>
                 {project.duration}
               </Typography>
             </Box>
@@ -251,8 +296,9 @@ export default function ProjectHeader({
           >
             <Typography
               sx={{
-                fontSize: "16px",
-                color: "#4F4F4F",
+                fontSize: "20px",
+                lineHeight: "26px",
+                color: theme.figma.Primary.dark_gray,
                 marginRight: "6px",
                 letterSpacing: "0.5em",
                 textWrap: "nowrap",
@@ -263,8 +309,9 @@ export default function ProjectHeader({
             </Typography>
             <Typography
               sx={{
-                fontSize: "16px",
-                color: "#4F4F4F",
+                fontSize: "20px",
+                lineHeight: "26px",
+                color: theme.figma.Primary.dark_gray,
               }}
             >
               ｜
@@ -289,14 +336,39 @@ export default function ProjectHeader({
                   marginRight: "12px",
                 }}
               >
-                <Image
-                  src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
-                  alt={project.creator.name}
-                  width={24}
-                  height={24}
-                />
+                {project.creator.avatar ? (
+                  <MuiAvatar
+                    src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                    alt={project.creator.name}
+                    sx={{ width: 24, height: 24 }}
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement;
+                      target.onerror = null; // 防止無限觸發
+                      target.src = ""; // 清空圖片，讓 fallback 出現
+                    }}
+                  />
+                ) : (
+                  <MuiAvatar
+                    sx={{
+                      bgcolor: theme.figma.neutral[90],
+                      color: "#656565",
+                      width: 24,
+                      height: 24,
+                      fontSize: "14px",
+                      lineHeight: "22px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {project.creator.name.charAt(0).toUpperCase()}
+                  </MuiAvatar>
+                )}
               </Box>
-              <Typography sx={{ color: "#7C7C7C", fontWeight: "700" }}>
+              <Typography sx={{
+                fontSize: "20px",
+                lineHeight: "26px",
+                color: theme.figma.Primary.dark_gray,
+                fontWeight: "bold"
+              }}>
                 {project.creator.name}
               </Typography>
             </Box>

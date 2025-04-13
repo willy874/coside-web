@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Box, Typography, Modal, Grid, Button } from "@mui/material";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, Modal, Grid, Button, useMediaQuery, useTheme, Avatar as MuiAvatar } from "@mui/material";
 import theme from "@/styles/theme";
 import Image from "next/image";
 import UserInfoProjectList from "@/components/ProjectDetail/UserInfoProjectList";
@@ -95,26 +94,57 @@ const ProjectCardModal = ({ creatorId, isOpen, onClose }: ProjectCardModalProps)
               position: "relative",
             }}
           >
-            {!loading &&
-              <Image
-                src={`https://6181-13-115-215-106.ngrok-free.app/${creatorData.avatar}`}
-                alt={creatorData.name}
-                width={isBelowMd ? 86 : 110}
-                height={isBelowMd ? 86 : 110}
-                style={{
-                  marginRight: "0.75rem",
-                  position: "absolute",
-                  bottom: "0",
-                  left: isBelowMd ? "50%" : "48px",
-                  transform: isBelowMd
-                    ? "translate(-50%, 50%)"
-                    : "translateY(50%)",
-                  outline: "4px solid #fff",
-                  borderRadius: "50%",
-                  backgroundColor: "#fff"
-                }}
-                priority
-              />
+            {(!loading && creatorData) &&
+              <>
+                {creatorData.avatar ? (
+                  <MuiAvatar
+                    src={`https://6181-13-115-215-106.ngrok-free.app/${creatorData.avatar}`}
+                    alt={creatorData.name}
+                    sx={{
+                      marginRight: "0.75rem",
+                      position: "absolute",
+                      bottom: "0",
+                      left: isBelowMd ? "50%" : "48px",
+                      transform: isBelowMd
+                        ? "translate(-50%, 50%)"
+                        : "translateY(50%)",
+                      outline: "4px solid #fff",
+                      borderRadius: "50%",
+                      backgroundColor: "#fff",
+                      width: isBelowMd ? 86 : 110,
+                      height: isBelowMd ? 86 : 110
+                    }}
+                    onError={(e) => {
+                      const target = e.currentTarget as HTMLImageElement;
+                      target.onerror = null; // 防止無限觸發
+                      target.src = ""; // 清空圖片，讓 fallback 出現
+                    }}
+                  />
+                ) : (
+                  <MuiAvatar
+                    sx={{
+                      marginRight: "0.75rem",
+                      position: "absolute",
+                      bottom: "0",
+                      left: isBelowMd ? "50%" : "48px",
+                      transform: isBelowMd
+                        ? "translate(-50%, 50%)"
+                        : "translateY(50%)",
+                      outline: "4px solid #fff",
+                      borderRadius: "50%",
+                      bgcolor: theme.figma.neutral[90],
+                      color: "#656565",
+                      width: isBelowMd ? 86 : 110,
+                      height: isBelowMd ? 86 : 110,
+                      fontSize: "32px",
+                      lineHeight: "42px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {creatorData.name.charAt(0).toUpperCase()}
+                  </MuiAvatar>
+                )}
+              </>
             }
             <Box
               onClick={onClose}
@@ -134,7 +164,7 @@ const ProjectCardModal = ({ creatorId, isOpen, onClose }: ProjectCardModalProps)
               ✕
             </Box>
           </Box>
-          {loading ?
+          {loading || !creatorData ?
             <Box sx={{ padding: "40px", textAlign: "center" }}>
               <Typography variant="body1">載入中...</Typography>
             </Box>
@@ -242,7 +272,7 @@ const ProjectCardModal = ({ creatorId, isOpen, onClose }: ProjectCardModalProps)
                       </Link>
                     }
                   </Box>
-                  {userInfo.id === creatorData.id &&
+                  {(userInfo && userInfo.id === creatorData.id) &&
                     <Button
                       component="a"
                       href="/profile"
@@ -324,7 +354,7 @@ const ProjectCardModal = ({ creatorId, isOpen, onClose }: ProjectCardModalProps)
                     {creatorData.intro}
                   </Typography>
                 </Grid>
-                {userInfo.id === creatorData.id &&
+                {(userInfo && userInfo.id === creatorData.id) &&
 
                   <Grid
                     item
@@ -394,7 +424,7 @@ const ProjectCardModal = ({ creatorId, isOpen, onClose }: ProjectCardModalProps)
                 >
                   參與專案
                 </Typography>
-                <UserInfoProjectList creatorData={creatorData}/>
+                <UserInfoProjectList creatorData={creatorData} />
               </Box>
             </Box>
           }

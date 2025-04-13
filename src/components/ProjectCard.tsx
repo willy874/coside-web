@@ -6,8 +6,8 @@ import {
   CardMedia,
   Grid,
   Typography,
+  Avatar as MuiAvatar,
 } from "@mui/material";
-import Image from "next/image";
 import Link from "next/link";
 
 import { ProjectTag } from "./ProjectTag";
@@ -35,42 +35,89 @@ const TEXT_MAP: Record<string, string> = {
   REQUIRE_DURATION: "時長｜",
 };
 
+const VisibleCharacterTags = ({ roles }: { roles: string[] }) => {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [visibleTags, setVisibleTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    const container = boxRef.current;
+    if (!container) return;
+  
+    const updateVisibleTags = () => {
+      const tagElements = Array.from(container.children) as HTMLDivElement[];
+  
+      let lineCount = 1;
+      let lastTop = tagElements[0]?.offsetTop ?? 0;
+      let fitTags: string[] = [];
+  
+      for (let i = 0; i < tagElements.length; i++) {
+        const el = tagElements[i];
+        const tagTop = el.offsetTop;
+  
+        if (tagTop > lastTop) {
+          lineCount++;
+          lastTop = tagTop;
+        }
+  
+        if (lineCount > 2) break;
+        fitTags.push(roles[i]);
+      }
+  
+      setVisibleTags(fitTags);
+    };
+  
+    const resizeObserver = new ResizeObserver(() => {
+      updateVisibleTags();
+    });
+  
+    resizeObserver.observe(container);
+  
+    // ⏱ 延遲初始執行，讓 tags 真實渲染完
+    const timeoutId = setTimeout(updateVisibleTags, 100);
+  
+    return () => {
+      clearTimeout(timeoutId);
+      resizeObserver.disconnect();
+    };
+  }, [roles]);
+  
+
+  return (
+    <Box
+      ref={boxRef}
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "6px",
+        maxHeight: "64px",
+        overflow: "hidden",
+      }}
+    >
+      {visibleTags.map((tag, index) => (
+        <CharacterTag key={`${tag}-${index}`} character={tag} data-character-tag />
+      ))}
+      {roles.length > 0 && visibleTags.length < roles.length && (
+        <Box
+          component="span"
+          sx={{
+            display: "inline-flex",
+            alignItems: "center",
+            height: "26px",
+            marginLeft: "4px",
+          }}
+        >
+          ...
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 export const ProjectCard = ({
   project,
 }: {
   project: ProjectCardProps;
 }) => {
-  const boxRef = useRef(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-
-  const checkOverflow = useCallback(() => {
-    if (boxRef.current) {
-      const isContentOverflowing = boxRef.current.scrollHeight > boxRef.current.clientHeight;
-      setIsOverflowing(isContentOverflowing);
-    }
-  }, []);
-
-  useEffect(() => {
-    // 初始檢查
-    checkOverflow();
-
-    // 添加視窗大小改變事件監聽器
-    window.addEventListener('resize', checkOverflow);
-
-    // 清理函數 
-    return () => {
-      window.removeEventListener('resize', checkOverflow);
-    };
-  }, [checkOverflow, project.roles]);
-
-  const renderCharacterTags = () => {
-    const tags = [];
-    project.roles.forEach((tag, index) => {
-      tags.push(<CharacterTag key={`${tag}-${index}`} character={tag} data-character-tag />);
-    });
-
-    return tags;
-  };
 
   return (
     <Grid item sx={{ height: "100%" }}>
@@ -88,7 +135,7 @@ export const ProjectCard = ({
             component="img"
             src={project.background_Path
               ? `https://6181-13-115-215-106.ngrok-free.app/${project.background_Path}`
-              : `/images/default/banner_coside_1.png`}
+              : `https://6181-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png`}
             sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.figma.neutral[80]}` }}
             onError={(e) => {
               e.currentTarget.src = `https://6181-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png`;
@@ -100,17 +147,36 @@ export const ProjectCard = ({
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <ProjectTag projectTag={project.type} />
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Image
-                    src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
-                    alt={project.creator.name}
-                    width={24}
-                    height={24}
-                    style={{
-                      display: "block",
-                      borderRadius: "50%",
-                      marginRight: "8px",
-                    }}
-                  />
+                  {project.creator.avatar ? (
+                    <MuiAvatar
+                      src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                      alt={project.creator.name}
+                      sx={{
+                        width: 24, height: 24,
+                        marginRight: "8px",
+                      }}
+                      onError={(e) => {
+                        const target = e.currentTarget as HTMLImageElement;
+                        target.onerror = null; // 防止無限觸發
+                        target.src = ""; // 清空圖片，讓 fallback 出現
+                      }}
+                    />
+                  ) : (
+                    <MuiAvatar
+                      sx={{
+                        bgcolor: theme.figma.neutral[90],
+                        color: "#656565",
+                        width: 24,
+                        height: 24,
+                        marginRight: "8px",
+                        fontSize: "14px",
+                        lineHeight: "22px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {project.creator.name.charAt(0).toUpperCase()}
+                    </MuiAvatar>
+                  )}
                   <Typography sx={{ color: "#7C7C7C" }}>{project.creator.name}</Typography>
                 </Box>
               </Box>
@@ -157,31 +223,7 @@ export const ProjectCard = ({
               >
                 <span>{TEXT_MAP.REQUIRE_POSITION}</span>
               </Typography>
-              <Box
-                ref={boxRef}
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "6px",
-                  maxHeight: "64px",
-                  overflow: "hidden",
-                }}
-              >
-                {renderCharacterTags()}
-                {isOverflowing && (
-                  <Box
-                    component="span"
-                    sx={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      height: "26px", // 與標籤高度一致
-                      marginLeft: "4px"
-                    }}
-                  >
-                    ...
-                  </Box>
-                )}
-              </Box>
+              <VisibleCharacterTags roles={project.roles} />
             </Box>
           </CardContent>
         </Card>

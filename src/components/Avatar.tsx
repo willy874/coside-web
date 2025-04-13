@@ -87,12 +87,28 @@ const Avatar = () => {
           src={`https://6181-13-115-215-106.ngrok-free.app/${userInfo.avatar}`}
           alt={userInfo.name}
           sx={{ width: isMobile ? 60 : 76, height: isMobile ? 60 : 76 }}
+          onError={(e) => {
+            const target = e.currentTarget as HTMLImageElement;
+            target.onerror = null; // 防止無限觸發
+            target.src = ""; // 清空圖片，讓 fallback 出現
+          }}
         />
       ) : (
-        <MuiAvatar sx={{ bgcolor: theme.figma.neutral[90], color: "#656565", width: isMobile ? 60 : 76, height: isMobile ? 60 : 76 }}>
+        <MuiAvatar
+          sx={{
+            bgcolor: theme.figma.neutral[90],
+            color: "#656565",
+            width: isMobile ? 60 : 76,
+            height: isMobile ? 60 : 76,
+            fontSize: "32px",
+            lineHeight: "42px",
+            fontWeight: "bold",
+          }}
+        >
           {userInfo?.name?.charAt(0).toUpperCase()}
         </MuiAvatar>
       )}
+
       <Box>
         <Typography variant="subtitle1" sx={{
           fontSize: "24px",
@@ -191,9 +207,24 @@ const Avatar = () => {
             src={`https://6181-13-115-215-106.ngrok-free.app/${userInfo.avatar}`}
             alt={userInfo.name}
             sx={{ width: 48, height: 48 }}
+            onError={(e) => {
+              const target = e.currentTarget as HTMLImageElement;
+              target.onerror = null; // 防止無限觸發
+              target.src = ""; // 清空圖片，讓 fallback 出現
+            }}
           />
         ) : (
-          <MuiAvatar sx={{ bgcolor: theme.figma.neutral[90], color: "#656565", width: 48, height: 48, fontSize: "36px", lineHeight: "46px" }}>
+          <MuiAvatar
+            sx={{
+              bgcolor: theme.figma.neutral[90],
+              color: "#656565",
+              width: 48,
+              height: 48,
+              fontSize: "32px",
+              lineHeight: "42px",
+              fontWeight: "bold",
+            }}
+          >
             {userInfo?.name?.charAt(0).toUpperCase()}
           </MuiAvatar>
         )}

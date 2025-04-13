@@ -76,7 +76,7 @@ const StyledImage = styled(Image)(() => ({
   },
 }));
 
-const cosideDefaultImages = ["/images/default/banner_coside_1.png"];
+const cosideDefaultImages = ["images/default/banner_coside_1.png"];
 
 const TabButton = ({ onClick, isActive, iconSrc, label }) => {
   return (
@@ -219,7 +219,6 @@ export default function UploadImage({
   const [isHover, setIsHover] = useState(false);
   const { token } = useLoginStore();
   const listRef = useRef(null);
-  const domain = process.env.NEXT_PUBLIC_API_URL;
 
   const stopDefault = (e: DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -495,7 +494,7 @@ export default function UploadImage({
             >
               <ImageGrid
                 images={cosideDefaultImages}
-                showImageSrc={(item) => `${domain}${item}`}
+                showImageSrc={(item) => `https://6181-13-115-215-106.ngrok-free.app/${item}`}
                 onImageClick={chooseImage}
                 activeIndex={activeCosideIndex}
                 setActiveIndex={setActiveCosideIndex}

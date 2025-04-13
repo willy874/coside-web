@@ -10,16 +10,15 @@ import {
   Box,
   Toolbar,
   IconButton,
-  Menu,
   Container,
   Button,
-  MenuItem,
   Drawer,
   List,
   ListItem,
   ListItemText,
   ListItemButton
 } from "@mui/material";
+import AnimatedHamburger from "./AnimatedHamburger";
 import { LoginDialogProvider } from "@/contexts/LoginDialogContext";
 import { usePathname } from "next/navigation";
 
@@ -62,9 +61,10 @@ export const Topbar = () => {
             <IconButton
               aria-label="navigation menu"
               onClick={handleOpenDrawer}
-              sx={{ p: 0 }}
+              sx={{ p: 0, position: "relative" }}
             >
               <Image src="/mobile_menu_btn.svg" alt="menu" width={48} height={48} />
+              {/* <AnimatedHamburger isOpen={openDrawer} toggle={() => setOpenDrawer(!openDrawer)} /> */}
             </IconButton>
 
             <Drawer
@@ -79,15 +79,16 @@ export const Topbar = () => {
               }}
               PaperProps={{
                 sx: {
-                  width: '100%',
-                  height: 'auto', // 根據內容自動延伸高度
-                  maxHeight: '100vh', // 避免超過螢幕
+                  width: "100%",
+                  height: "auto",
+                  maxHeight: "100vh",
                   boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
                   backgroundColor: theme.figma.Primary.white,
                   padding: "16px",
                 },
               }}
             >
+              {/* 關閉按鈕 */}
               <Image
                 onClick={handleCloseDrawer}
                 src="/mobile_menu_close.svg"
@@ -98,48 +99,52 @@ export const Topbar = () => {
                   cursor: "pointer",
                 }}
               />
-              <hr style={{
-                border: "none",
-                borderTop: `1px solid ${theme.figma.neutral[80]}`,
-                margin: "16px 0",
-              }} />
-              <Box sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "4px",
-              }}>
+
+              <hr
+                style={{
+                  border: "none",
+                  borderTop: `1px solid ${theme.figma.neutral[80]}`,
+                  margin: "16px 0",
+                }}
+              />
+
+              {/* 導覽列表 */}
+              <List>
                 {navItems.map((item) => (
                   <Link key={item.href} href={item.href} passHref>
-                    <Box
-                      component="span"
-                      onClick={handleCloseDrawer}
-                      sx={{
-                        textDecoration: "none",
-                        color:
-                          pathname === item.href
-                            ? theme.figma.Primary.normal_blue
-                            : theme.figma.Primary.black,
-                        fontSize: "20px",
-                        lineHeight: "23px",
-                        display: "block",
-                        cursor: "pointer",
-                        padding: "20px",
-                        textAlign: "center",
-                      }}
-                    >
-                      {item.label}
-                    </Box>
+                    <ListItem disablePadding onClick={handleCloseDrawer}>
+                      <ListItemButton
+                        sx={{
+                          justifyContent: "center",
+                          padding: "20px",
+                        }}
+                      >
+                        <ListItemText
+                          primary={item.label}
+                          primaryTypographyProps={{
+                            textAlign: "center",
+                            fontSize: "20px",
+                            lineHeight: "23px",
+                            color:
+                              pathname === item.href
+                                ? theme.figma.Primary.normal_blue
+                                : theme.figma.Primary.black,
+                          }}
+                        />
+                      </ListItemButton>
+                    </ListItem>
                   </Link>
                 ))}
-              </Box>
+              </List>
             </Drawer>
+
           </Box>
 
           {/* Logo - mobile (centered) */}
-          <Box 
-            sx={{ 
-              position: "absolute", 
-              left: "50%", 
+          <Box
+            sx={{
+              position: "absolute",
+              left: "50%",
               transform: "translateX(-50%)",
               display: { xs: "flex", md: "none" }
             }}

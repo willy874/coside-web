@@ -51,7 +51,7 @@ const UserInfoProjectList = ({ creatorData }) => {
                 }}
               >
                 <ProjectTag projectTag={project.type} />
-                {project.isCreator ?
+                {project.is_creator ?
                   <Typography sx={{ color: theme.figma.project_tags.sideproject_implement, fontSize: "14px", lineHeight: "16px", mb: 0 }}>發起人</Typography>
                   :
                   <Typography sx={{ color: theme.figma.neutral[60], fontSize: "14px", lineHeight: "16px" }}>參與者</Typography>
