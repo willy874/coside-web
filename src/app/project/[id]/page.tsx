@@ -129,11 +129,6 @@ export default function ProjectDetailPage() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            backgroundColor: {
-              xs: "#F1F7FF",
-              sm: "#F1F7FF",
-              md: "transparent",
-            },
             padding: "80px 4% 0",
           }}
         >
@@ -156,11 +151,7 @@ export default function ProjectDetailPage() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            padding: {
-              xs: "32px 4% 80px",
-              sm: "32px 4% 80px",
-              md: "0 4% 80px",
-            },
+            padding: "0 4% 80px",
           }}
         >
           <Box sx={{ width: "100%", maxWidth: "1224px" }}>
