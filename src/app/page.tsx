@@ -120,23 +120,23 @@ export default function Home() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: { xs: "40px", sm: "40px", md: "87px" },
-            marginBottom: { xs: "20px", sm: "20px", md: "44px" },
+            marginTop: { xs: "40px", md: "87px" },
+            marginBottom: { xs: "20px", md: "44px" },
           }}
         >
           <Typography
             sx={{
               margin: "8px 0",
               fontWeight: "700",
-              fontSize: { xs: "24px", sm: "24px", md: "32px" },
-              lineHeight: { xs: "28px", sm: "28px", md: "38px" },
+              fontSize: { xs: "24px", md: "32px" },
+              lineHeight: { xs: "28px", md: "38px" },
             }}
           >
             探索新專案
           </Typography>
           <FilterDropdownList onFilterApply={handleFilterApply} />
         </Box>
-        
+
         {/* 初始加載狀態 */}
         {!initialLoaded && (
           <Box sx={{
@@ -150,7 +150,7 @@ export default function Home() {
             <CircularProgress color="warning" />
           </Box>
         )}
-        
+
         {/* 已加載但沒有項目 */}
         {initialLoaded && projects.length === 0 && (
           <Box sx={{
@@ -168,9 +168,9 @@ export default function Home() {
               style={{ margin: "0 auto", display: "block" }} />
             <Typography sx={{
               color: "rgba(0, 125, 195, 0.5)",
-              mt: { xs: "19px", sm: "19px", md: "32px" },
-              fontSize: { xs: "16px", sm: "16px", md: "32px" },
-              lineHeight: { xs: "26px", sm: "26px", md: "45px" },
+              mt: { xs: "19px", md: "32px" },
+              fontSize: { xs: "16px", md: "32px" },
+              lineHeight: { xs: "26px", md: "45px" },
               fontWeight: "bold",
               textAlign: "center",
             }}>
@@ -179,13 +179,13 @@ export default function Home() {
             </Typography>
           </Box>
         )}
-        
+
         {/* 有項目時顯示項目列表 */}
         {initialLoaded && projects.length > 0 && (
           <Grid
             container
-            columns={{ xs: 1, sm: 1, md: 2, lg: 3 }}
-            rowSpacing={{ sm: 2.5, xs: 2.5, md: 4 }}
+            columns={{ xs: 1, md: 2, lg: 3 }}
+            rowSpacing={{ xs: 2.5, md: 4 }}
             columnSpacing={3}
           >
             {projects.map((project) => (
@@ -215,16 +215,16 @@ export default function Home() {
           <Typography
             sx={{
               textAlign: "center",
-              fontSize: "20px",
-              lineHeight: "23px",
+              fontSize: { xs: "16px", md: "20px" },
+              lineHeight: { xs: "19px", md: "23px" },
               mt: "66px",
             }}
           >你已經看完所有專案</Typography>
         )}
 
         <Box position="fixed" sx={{
-          bottom: { xs: "32px", sm: "32px", md: "5vh" },
-          right: { xs: "32px", sm: "32px", md: "4vw" },
+          bottom: { xs: "32px", md: "5vh" },
+          right: { xs: "32px", md: "4vw" },
           zIndex: 999,
         }}>
           <Button
@@ -235,20 +235,20 @@ export default function Home() {
             sx={{
               display: "flex",
               alignItems: "center",
-              padding: { xs: "14px", sm: "14px", md: "20px 33px" },
-              borderRadius: { xs: "50%", sm: "50%", md: "40px" },
+              padding: { xs: "14px", md: "20px 33px" },
+              borderRadius: { xs: "50%", md: "40px" },
               boxShadow: "4px 4px 12px rgba(0, 0, 0, 0.2)",
               color: theme.figma.form.text_default,
               bgcolor: theme.figma.Tertiary.yellow,
             }}
           >
             <AddIcon sx={{
-              width: { xs: "40px", sm: "40px", md: "24px" },
-              height: { xs: "40px", sm: "40px", md: "24px" },
-              marginRight: { xs: 0, sm: 0, md: "10px" },
+              width: { xs: "40px", md: "24px" },
+              height: { xs: "40px", md: "24px" },
+              marginRight: { xs: 0, md: "10px" },
             }} />
             <Typography sx={{
-              display: { xs: "none", sm: "none", md: "block" },
+              display: { xs: "none", md: "block" },
               fontSize: "20px",
               lineHeight: "24px",
               fontWeight: "400",

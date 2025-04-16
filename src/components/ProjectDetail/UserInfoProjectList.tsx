@@ -31,7 +31,7 @@ const UserInfoProjectList = ({ creatorData }) => {
               <Image
                 src={`https://6181-13-115-215-106.ngrok-free.app/${project.background_Path}`}
                 alt={project.name}
-                width={100}
+                width={500}
                 height={isBelowMd ? 149 : 96}
                 style={{
                   display: "block",
@@ -51,7 +51,7 @@ const UserInfoProjectList = ({ creatorData }) => {
                 }}
               >
                 <ProjectTag projectTag={project.type} />
-                {project.is_creator ?
+                {project.is_Creator ?
                   <Typography sx={{ color: theme.figma.project_tags.sideproject_implement, fontSize: "14px", lineHeight: "16px", mb: 0 }}>發起人</Typography>
                   :
                   <Typography sx={{ color: theme.figma.neutral[60], fontSize: "14px", lineHeight: "16px" }}>參與者</Typography>

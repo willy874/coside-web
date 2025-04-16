@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { userGetCreatorInfo } from "@/api/user";
-import styles from "../page.module.css";
+import styles from "../../page.module.css";
 import { Box, Grid, Typography, CircularProgress } from "@mui/material";
 import { MyProjectCard, MyProjectCardProps } from "@/components/Cards/MyProjectCard";
 import BackToTopButton from "@/components/BackToTopButton";
@@ -39,16 +39,16 @@ export default function MyProjects() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginTop: { xs: "40px", sm: "40px", md: "87px" },
-            marginBottom: { xs: "20px", sm: "20px", md: "44px" },
+            marginTop: { xs: "40px", md: "87px" },
+            marginBottom: { xs: "20px", md: "44px" },
           }}
         >
           <Typography
             sx={{
               margin: "8px 0",
               fontWeight: "700",
-              fontSize: { xs: "24px", sm: "24px", md: "32px" },
-              lineHeight: { xs: "28px", sm: "28px", md: "38px" },
+              fontSize: { xs: "24px",  md: "32px" },
+              lineHeight: { xs: "28px", md: "38px" },
             }}
           >
             我的專案
@@ -56,8 +56,8 @@ export default function MyProjects() {
         </Box>
         <Grid
           container
-          columns={{ xs: 1, sm: 1, md: 2, lg: 3 }}
-          rowSpacing={{ sm: 2.5, xs: 2.5, md: 4 }}
+          columns={{ xs: 1, md: 2, lg: 3 }}
+          rowSpacing={{ xs: 2.5, md: 4 }}
           columnSpacing={3}
         >
           {projects.map((project) => (

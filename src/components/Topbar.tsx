@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import theme from "@/styles/theme";
 import Link from "next/link";
 import Image from "next/image";
@@ -26,10 +26,11 @@ const Avatar = dynamic(() => import("./Avatar"), { ssr: false });
 
 export const Topbar = () => {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const containerRef = useRef(null);
   const pathname = usePathname();
 
-  const handleOpenDrawer = () => setOpenDrawer(true);
   const handleCloseDrawer = () => setOpenDrawer(false);
+  const handleToggleDrawer = () => setOpenDrawer(!openDrawer);
 
   const navItems = [
     { label: "探索新專案", href: "/" },
@@ -48,7 +49,7 @@ export const Topbar = () => {
       }}
     >
       <Container maxWidth={false} sx={{ maxWidth: "1224px", pl: "0 !important", pr: "0 !important" }}>
-        <Toolbar disableGutters sx={{ py: 2 }}>
+        <Toolbar disableGutters sx={{ py: 2 }} ref={containerRef}>
           {/* Logo - desktop */}
           <Box sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}>
             <Link href="/" passHref>
@@ -57,14 +58,14 @@ export const Topbar = () => {
           </Box>
 
           {/* Mobile menu burger */}
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", md: "none" }, position: "relative", zIndex: 9999 }}>
             <IconButton
               aria-label="navigation menu"
-              onClick={handleOpenDrawer}
+              onClick={handleToggleDrawer}
               sx={{ p: 0, position: "relative" }}
             >
-              <Image src="/mobile_menu_btn.svg" alt="menu" width={48} height={48} />
-              {/* <AnimatedHamburger isOpen={openDrawer} toggle={() => setOpenDrawer(!openDrawer)} /> */}
+              {/* <Image src="/mobile_menu_btn.svg" alt="menu" width={48} height={48} /> */}
+              <AnimatedHamburger isOpen={openDrawer} toggle={() => setOpenDrawer(!openDrawer)} />
             </IconButton>
 
             <Drawer
@@ -72,6 +73,7 @@ export const Topbar = () => {
               open={openDrawer}
               onClose={handleCloseDrawer}
               disableScrollLock
+              container={containerRef.current} 
               slotProps={{
                 backdrop: {
                   invisible: true,
@@ -89,7 +91,7 @@ export const Topbar = () => {
               }}
             >
               {/* 關閉按鈕 */}
-              <Image
+              {/* <Image
                 onClick={handleCloseDrawer}
                 src="/mobile_menu_close.svg"
                 alt="close"
@@ -98,13 +100,13 @@ export const Topbar = () => {
                 style={{
                   cursor: "pointer",
                 }}
-              />
+              /> */}
 
               <hr
                 style={{
                   border: "none",
                   borderTop: `1px solid ${theme.figma.neutral[80]}`,
-                  margin: "16px 0",
+                  margin: "64px 0 16px",
                 }}
               />
 
