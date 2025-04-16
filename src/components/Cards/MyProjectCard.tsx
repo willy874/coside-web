@@ -19,7 +19,7 @@ export interface MyProjectCardProps {
   categories: string[];
   duration: string;
   id: string;
-  is_creator: boolean;
+  is_Creator: boolean;
   name: string;
   type: string;
 }
@@ -33,7 +33,7 @@ export const MyProjectCard = ({
 
   return (
     <Grid item sx={{ height: "100%" }}>
-      <Link href={`/project/${project.id}`} style={{ display: "block", height: "100%" }}>
+      <Link href={`/project/${project.is_Creator ? "edit/" + project.id : project.id}`} style={{ display: "block", height: "100%" }}>
         <Card
           className="project-card"
           sx={{
@@ -58,7 +58,7 @@ export const MyProjectCard = ({
             <Box sx={{ marginBottom: "auto", width: "100%" }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
                 <ProjectTag projectTag={project.type} />
-                {project.is_creator ?
+                {project.is_Creator ?
                   <Typography sx={{ color: theme.figma.project_tags.sideproject_implement, fontSize: "16px", lineHeight: "19px", fontWeight: "bold" }}>發起人</Typography>
                   :
                   <Typography sx={{ color: theme.figma.neutral[60], fontSize: "16px", lineHeight: "19px" }}>參與者</Typography>

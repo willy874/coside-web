@@ -148,7 +148,7 @@ const Avatar = () => {
         marginRight: "10px",
       }} />個人資料
     </MenuItem>,
-    <MenuItem onClick={() => { router.push("/my-projects"); handleClose(); }} sx={{
+    <MenuItem onClick={() => { router.push("/project/own"); handleClose(); }} sx={{
       borderRadius: "12px",
       color: theme.figma.Primary.black,
       padding: "12px",
@@ -158,7 +158,7 @@ const Avatar = () => {
         color: theme.figma.Primary.normal_blue,
         backgroundColor: theme.figma.Primary.extra_light_blue,
       }
-    }} key="my-projects">
+    }} key="own-projects">
       <WebOutlinedIcon sx={{
         width: "24px",
         height: "24px",

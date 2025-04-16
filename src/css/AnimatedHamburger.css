@@ -1,53 +1,62 @@
 .animated-icon3 {
-  width: 30px;
-  height: 20px;
+  width: 48px;
+  height: 48px;
   position: relative;
   margin: 0px;
   transform: rotate(0deg);
   transition: 0.5s ease-in-out;
   cursor: pointer;
+  z-index: 9999;
 }
 
 .animated-icon3 span {
   display: block;
   position: absolute;
-  height: 3px;
-  width: 100%;
+  height: 6px;
   border-radius: 9px;
   opacity: 1;
-  left: 0;
-  background: #C91B68;
+  left: 3px;
   transition: 0.25s ease-in-out;
 }
 
 .animated-icon3 span:nth-child(1) {
-  top: 0px;
+  background: #9747FF;
+  width: 42px;
+  top: 7px;
   transform-origin: left center;
 }
 
 .animated-icon3 span:nth-child(2) {
-  top: 10px;
+  background: #F27F00;
+  width: 30px;
+  top: 21px;
   transform-origin: left center;
 }
 
 .animated-icon3 span:nth-child(3) {
-  top: 20px;
+  background: #F14296;
+  width: 18px;
+  top: 35px;
   transform-origin: left center;
 }
 
 .animated-icon3.open span:nth-child(1) {
   transform: rotate(45deg);
-  top: 0px;
+  width: 46px;
+  top: 6px;
   left: 8px;
 }
 
 .animated-icon3.open span:nth-child(2) {
-  width: 0%;
-  opacity: 0;
+  width: 6px;
+  top: 21px;
+  left: 21px;
+  z-index: 9;
 }
 
 .animated-icon3.open span:nth-child(3) {
   transform: rotate(-45deg);
-  top: 21px;
+  width: 46px;
+  top: 38px;
   left: 8px;
 }

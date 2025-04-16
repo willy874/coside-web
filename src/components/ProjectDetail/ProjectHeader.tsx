@@ -312,6 +312,7 @@ export default function ProjectHeader({
                 fontSize: "20px",
                 lineHeight: "26px",
                 color: theme.figma.Primary.dark_gray,
+                mr: "4px"
               }}
             >
               ｜

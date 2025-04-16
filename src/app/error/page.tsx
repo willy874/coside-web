@@ -35,9 +35,9 @@ export default function Error() {
             style={{ margin: "0 auto", display: "block" }} />
           <Typography sx={{
             color: "rgba(191, 143, 253, 0.8)",
-            mt: { xs: "19px", sm: "19px", md: "32px" },
-            fontSize: { xs: "16px", sm: "16px", md: "32px" },
-            lineHeight: { xs: "26px", sm: "26px", md: "45px" },
+            mt: { xs: "19px", md: "32px" },
+            fontSize: { xs: "16px", md: "32px" },
+            lineHeight: { xs: "26px", md: "45px" },
             fontWeight: "bold",
             textAlign: "center",
           }}>

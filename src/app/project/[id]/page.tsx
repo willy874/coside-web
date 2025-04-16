@@ -136,7 +136,7 @@ export default function ProjectDetailPage() {
             sx={{
               width: "100%",
               maxWidth: "1224px",
-              marginTop: { xs: "28px", sm: "28px", md: "40px" },
+              marginTop: { xs: "28px", md: "40px" },
             }}
           >
             <ProjectHeader
