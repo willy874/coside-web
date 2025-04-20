@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import style from "@/styles/theme"
 
 import Box from "@mui/material/Box";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -209,15 +210,15 @@ const LoginSetting = () => {
         //   transitionDuration: '300ms',
         "&.Mui-checked": {
           // transform: 'translateX(16px)',
-          color: disabled ? "#bdbdbd" : "#fff",
+          // color: "#fff",
           "& + .MuiSwitch-track": {
-            backgroundColor: disabled ? "#e0e0e0" : "#54B153",
+            backgroundColor: "#54B153",
             opacity: 1,
             border: 1,
-            borderColor: disabled ? "white" : "gray",
+            borderColor: "gray",
           },
           "& .MuiSwitch-thumb": {
-            backgroundColor: disabled ? "#bdbdbd" : "#2E7D32",
+            backgroundColor: "#2E7D32",
           },
         },
       },
@@ -225,11 +226,11 @@ const LoginSetting = () => {
         //   boxSizing: 'border-box',
         //   width: 20,
         //   height: 20,
-        backgroundColor: disabled ? "#e0e0e0" : "#e9e9ea",
+        backgroundColor: "#e9e9ea",
       },
       "& .MuiSwitch-track": {
         borderRadius: 13 / 2,
-        backgroundColor: disabled ? "#e0e0e0" : "#e9e9ea",
+        backgroundColor: "#e9e9ea",
         opacity: 1,
         transition: "background-color 500ms",
       },
@@ -290,7 +291,7 @@ const LoginSetting = () => {
                               onChange={async (event) => {
                                 setFileError("");
                                 const file = event.currentTarget.files?.[0];
-                                
+
                                 if (!file) {
                                   setFileError("請選擇檔案");
                                   return;
@@ -310,7 +311,7 @@ const LoginSetting = () => {
                                 }
 
                                 setFieldValue("image", file);
-                                
+
                                 const reader = new FileReader();
                                 reader.onload = () => {
                                   setFormData({
@@ -325,7 +326,7 @@ const LoginSetting = () => {
 
                                 const data = new FormData();
                                 data.append("file", file);
-                                
+
                                 try {
                                   const res = await axios.post(
                                     `/api/upload?type=images`,
@@ -376,9 +377,9 @@ const LoginSetting = () => {
                           </div>
                           {formData.previewImage && (
                             <div style={{ width: '200px', position: 'relative' }}>
-                              <Image 
-                                src={formData.previewImage} 
-                                alt="preview" 
+                              <Image
+                                src={formData.previewImage}
+                                alt="preview"
                                 width={200}
                                 height={0}
                                 sizes="200px"
@@ -560,7 +561,11 @@ const LoginSetting = () => {
                               label={values.emailPublic ? "公開" : "關閉"}
                               labelPlacement="top"
                               className={styles.switch}
-
+                              sx={{
+                                "& .MuiFormControlLabel-label.Mui-disabled": {
+                                  color: values.emailPublic ? "#54B153" : "rgba(0, 0, 0, 0.38)", // 綠 or 灰
+                                },
+                              }}
                             />
                           </div>
                           {/* <div className={styles.flexItem}>
@@ -641,6 +646,11 @@ const LoginSetting = () => {
                               label={values.facebookPublic ? "公開" : "關閉"}
                               labelPlacement="top"
                               className={styles.switch}
+                              sx={{
+                                "& .MuiFormControlLabel-label": {
+                                  color: values.facebookPublic ? "#54B153" : "rgba(0, 0, 0, 0.38)", // 綠 or 灰
+                                },
+                              }}
                             />
                           </div>
                           <div className={styles.flexItem}>
@@ -682,6 +692,11 @@ const LoginSetting = () => {
                               label={values.instagramPublic ? "公開" : "關閉"}
                               labelPlacement="top"
                               className={styles.switch}
+                              sx={{
+                                "& .MuiFormControlLabel-label": {
+                                  color: values.instagramPublic ? "#54B153" : "rgba(0, 0, 0, 0.38)", // 綠 or 灰
+                                },
+                              }}
                             />
                           </div>
                         </>
