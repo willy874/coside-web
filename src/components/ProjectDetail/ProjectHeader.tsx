@@ -205,14 +205,25 @@ export default function ProjectHeader({
                 gap: "12px",
               }}
             >
-              {groupedMembers.map((member, index) => (
-                <CharacterTag
-                  key={`member-${member.role}-${index}`}
-                  character={member.role}
-                  type={isBelowMd ? "square" : "detailInfo"}
-                  addText={isBelowMd ? `${member.count}名` : ""}
-                />
-              ))}
+              {groupedMembers.length > 0 ? <>
+                {groupedMembers.map((member, index) => (
+                  <CharacterTag
+                    key={`member-${member.role}-${index}`}
+                    character={member.role}
+                    type={isBelowMd ? "square" : "detailInfo"}
+                    addText={isBelowMd ? `${member.count}名` : ""}
+                  />
+                ))
+                }
+              </> :
+                <Typography sx={{
+                  display: { xs: "block", md: "none" },
+                  fontSize: "16px",
+                  lineHeight: "19px",
+                  color: theme.figma.form.placeholder_input,
+                  fontWeight: "bold"
+                }}>暫無缺額</Typography>
+              }
             </Box>
           </Box>
           <Box>

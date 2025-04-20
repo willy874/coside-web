@@ -15,7 +15,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useLoginStore from "@/stores/loginStore"; // 你的登入狀態 store
 import { useLoginDialog } from "@/contexts/LoginDialogContext"; // 開啟登入 dialog
-import { LoginDialog } from "@/components/LoginDialog"; // 登入 dialog
+import { LoginDialog } from "@/components/Dialog/LoginDialog"; // 登入 dialog
 import theme from "@/styles/theme";
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import WebOutlinedIcon from '@mui/icons-material/WebOutlined';

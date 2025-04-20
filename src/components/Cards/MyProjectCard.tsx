@@ -33,7 +33,7 @@ export const MyProjectCard = ({
 
   return (
     <Grid item sx={{ height: "100%" }}>
-      <Link href={`/project/${project.is_Creator ? "edit/" + project.id : project.id}`} style={{ display: "block", height: "100%" }}>
+      <Link href={`/project/${project.is_Creator ? project.id + "/edit" : project.id}`} style={{ display: "block", height: "100%" }}>
         <Card
           className="project-card"
           sx={{

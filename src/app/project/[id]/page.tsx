@@ -1,48 +1,25 @@
 "use client";
 
-import theme from "@/styles/theme";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import styles from "../../page.module.css";
 import { projectGetById } from "@/api/project";
-import { Box, Button } from "@mui/material";
+import { Box, Container, CircularProgress } from "@mui/material";
 import UserInfoModal from "@/components/ProjectDetail/userInfoModal";
 import MobileSwipeableDrawer from "@/components/MobileSwipeableDrawer";
 import ProjectAccordion from "@/components/ProjectDetail/ProjectAccordion";
 import ProjectHeader from "@/components/ProjectDetail/ProjectHeader";
 import ProjectInfo from "@/components/ProjectDetail/ProjectInfo";
+import RedirectAlert from "@/components/RedirectAlert";
 
 export default function ProjectDetailPage() {
+  const router = useRouter();
   const params = useParams(); // 取得動態路由參數
   const [project, setProject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [groupedMembers, setGroupedMembers] = useState([]);
-
-  const createMailtoLink = (project, userName) => {
-    const subject = `【${project.name}】Side project 合作詢問`;
-
-    const body = `Hi ${project.creator.name}，
-  
-  我是 {使用者名稱}，是 {使用者主要職位}
-  
-  我在 CoSide 上看到你發起的專案，對於(專案中感興趣的部分)特別感興趣/有共鳴，想進一步了解～
-  
-  我能協助的方向：
-  （技能＋具體貢獻）
-  （例：我有 2 年的資料分析經驗，能協助模型調校與數據視覺化呈現）
-  
-  方便的時間：
-  （可選 2-3 個時間或開放式詢問）
-  想請問以上哪個時間對你比較方便呢？或可提供你方便的時間
-  
-  希望有機會與你進一步交流，期待你的回覆！
-  
-  Best,
-  {使用者名稱}`;
-
-    return `mailto:${project.creator.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  };
 
   useEffect(() => {
     const fetchData = async (id: string) => {
@@ -109,94 +86,82 @@ export default function ProjectDetailPage() {
     setIsModalOpen(false);
   };
 
-  if (isLoading) {
-    return <div>Loading project details...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
-  if (!project) {
-    return <div>Project not found.</div>;
-  }
-
   return (
     <>
-      <Box sx={{ minHeight: "100vh" }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: "80px 4% 0",
-          }}
-        >
+      <main className={styles.main}>
+        {isLoading ?
           <Box
             sx={{
+              display: "flex",
+              justifyContent: "center",
               width: "100%",
-              maxWidth: "1224px",
               marginTop: { xs: "28px", md: "40px" },
             }}
           >
-            <ProjectHeader
-              project={project}
-              handleOpenModal={handleOpenModal}
-              groupedMembers={groupedMembers}
-            />
+            <CircularProgress color="warning" />
           </Box>
-        </Box>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            padding: "0 4% 80px",
-          }}
-        >
-          <Box sx={{ width: "100%", maxWidth: "1224px" }}>
-            <ProjectInfo project={project} />
-          </Box>
-        </Box>
-        <UserInfoModal
-          creatorId={project.creator.id}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-        />
-        <MobileSwipeableDrawer
-          title={"查看徵求職位"}
-          content={
+          :
+          project.status === "close" ?
+            <Container sx={{
+              width: "100%",
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+            }}>
+              <RedirectAlert
+                themeColor="blue"
+                imageSrc="/project_close.svg"
+                imageAlt="Project Close"
+                title={<>
+                  你好像太晚報到了！<br />
+                  這個專案已啟航，嶄開他全新的冒險
+                </>}
+                buttons={[
+                  {
+                    text: "探索其他專案",
+                    onClick: () => router.push("/"),
+                    variant: "fill",
+                  }
+                ]}
+              />
+            </Container > :
             <>
-              <ProjectAccordion project={project} />
-              <a
-                href={createMailtoLink(project, "test")}
-                style={{ textDecoration: "none" }}
+              <Box
+                sx={{
+                  width: "100%",
+                  maxWidth: "1224px",
+                  marginTop: { xs: "28px", md: "40px" },
+                }}
               >
-                <Button
-                  color="primary"
-                  variant="contained"
-                  sx={{
-                    width: "100%",
-                    color: theme.figma.btn.fill.content_default,
-                    bgcolor: theme.figma.btn.fill.bg_default_blue,
-                    borderRadius: "12px",
-                    textDecoration: "none",
-                    fontWeight: "bold",
-                    padding: "10px 16px",
-                    fontSize: "16px",
-                    lineHeight: "19px",
-                    "&:hover": {
-                      bgcolor: theme.figma.btn.fill.bg_hover_blue,
-                    },
-                  }}
-                >
-                  聯絡發起人
-                </Button>
-              </a>
+                <ProjectHeader
+                  project={project}
+                  handleOpenModal={handleOpenModal}
+                  groupedMembers={groupedMembers}
+                />
+              </Box>
+              <Box sx={{
+                width: "100%", maxWidth: "1224px",
+                marginBottom: { xs: groupedMembers.length > 0 ? "70px" : "0", md: "0" },
+              }}>
+                <ProjectInfo project={project} />
+              </Box>
+              <UserInfoModal
+                creatorId={project.creator.id}
+                isOpen={isModalOpen}
+                onClose={handleCloseModal}
+              />
+              {groupedMembers.length > 0 && (
+                <MobileSwipeableDrawer
+                  title={"查看徵求職位"}
+                  content={
+                    <ProjectAccordion project={project} />
+                  }
+                />
+              )}
             </>
-          }
-        />
-      </Box>
+        }
+      </main>
+
     </>
   );
 }

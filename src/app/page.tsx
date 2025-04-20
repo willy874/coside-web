@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import styles from "./page.module.css";
 import { ProjectCard, ProjectCardProps } from "@/components/ProjectCard";
 import HandleToken from "@/components/Auth/HandleToken";
@@ -13,7 +12,7 @@ import { Box, Button, Grid, Typography, CircularProgress } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { projectGetByFilter } from "@/api/project";
 import { Suspense } from "react";
-import theme from "@/styles/theme";
+import RedirectAlert from "@/components/RedirectAlert";
 
 export default function Home() {
   const [nowPage, setNowPage] = useState(1);
@@ -153,31 +152,15 @@ export default function Home() {
 
         {/* 已加載但沒有項目 */}
         {initialLoaded && projects.length === 0 && (
-          <Box sx={{
-            flexGrow: 1,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-            height: "100%"
-          }}>
-            <Image src="/project_empty.svg" alt="No Projects"
-              width={isMd ? 80 : 200} // 根據螢幕大小改變寬度
-              height={isMd ? 80 : 200} // 根據螢幕大小改變高度
-              style={{ margin: "0 auto", display: "block" }} />
-            <Typography sx={{
-              color: "rgba(0, 125, 195, 0.5)",
-              mt: { xs: "19px", md: "32px" },
-              fontSize: { xs: "16px", md: "32px" },
-              lineHeight: { xs: "26px", md: "45px" },
-              fontWeight: "bold",
-              textAlign: "center",
-            }}>
+          <RedirectAlert
+            themeColor="blue"
+            imageSrc="/project_empty.svg"
+            imageAlt="No Projects"
+            title={<>
               這裡還沒有專案<br />
               或許你的想法可以成為第一個！
-            </Typography>
-          </Box>
+            </>}
+          />
         )}
 
         {/* 有項目時顯示項目列表 */}
@@ -217,7 +200,7 @@ export default function Home() {
               textAlign: "center",
               fontSize: { xs: "16px", md: "20px" },
               lineHeight: { xs: "19px", md: "23px" },
-              mt: "66px",
+              mt: { xs: "24px", md: "66px" },
             }}
           >你已經看完所有專案</Typography>
         )}

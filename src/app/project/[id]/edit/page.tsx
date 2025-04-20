@@ -14,7 +14,7 @@ export default function About() {
           width: "100%", display: "flex", flexDirection: "column", alignItems: "center", marginTop: "87px", mb: "44px"
         }}>
           <Box sx={{ maxWidth: "805px", margin: "69px auto 0", borderRadius: "12px", padding: "32px", border: `1px solid gray` }}>
-            <Typography sx={{ mb: "32px", fontWeight: "700", fontSize: "28px", textAlign: "center" }}>關於我們</Typography>
+            <Typography sx={{ mb: "32px", fontWeight: "700", fontSize: "28px", textAlign: "center" }}>編輯專案</Typography>
             <Box>
               <Typography paragraph>
                 {params.id}
