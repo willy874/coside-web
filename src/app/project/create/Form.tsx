@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import useLoginStore from "@/stores/loginStore";
 
@@ -28,10 +29,10 @@ import {
   ErrorMessage,
   FormikHelpers,
   FormikErrors,
-  getIn
+  getIn,
 } from "formik";
 import { toFormikValidationSchema } from "zod-formik-adapter";
-import { z } from "zod";
+import { set, z } from "zod";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
@@ -45,16 +46,17 @@ import styles from "./Form.module.scss";
 import { convertSelectionToNode$ } from "@mdxeditor/editor";
 
 type PartnerType = {
-  id: string;
+  // id: string;
   number: number;
   jobPosition: string;
+  otherJobPosition: string;
   projectRequirement: string;
   members: string[];
-}
+};
 
 type bannerUnsplash = {
   [key: string]: any;
-}
+};
 
 type FormValues = {
   title: string;
@@ -69,6 +71,8 @@ type FormValues = {
   partners: PartnerType[];
   submit: string;
 };
+
+
 
 const steps = ["專案基本資訊", "專案說明", "組員需求"];
 
@@ -109,7 +113,7 @@ export default function Form() {
     projectType: "",
   });
 
-  const [mkVariable, setMkVariable] = useState("aa11");
+  const [mkVariable, setMkVariable] = useState("");
   const { token } = useLoginStore();
   const [previewImage, setPreviewImage] = useState("");
   const [imageType, setImageType] = useState("upload");
@@ -119,10 +123,12 @@ export default function Form() {
   const [activeUnsplashIndex, setActiveUnsplashIndex] = useState<number | null>(
     -1
   );
+
   const [unsplashImages, setUnsplashImages] = useState<string[]>([]);
   const currentPage = useRef(1);
 
   const theme = useTheme();
+  const router = useRouter();
 
   const initialValues: FormValues = {
     titleType: "",
@@ -136,24 +142,19 @@ export default function Form() {
     bannerUnsplash: undefined,
     partners: [
       {
-        id: uuidv4(),
+        // id: uuidv4(),
         number: 1,
         jobPosition: "",
+        otherJobPosition: "",
         projectRequirement: "",
         members: [""],
       },
     ],
-    submit: ""
+    submit: "",
+  };
 
-  }
-
-  useEffect(() => {
-    console.log(mkVariable);
-  }, [mkVariable]);
 
   const handleEditorChange = (markdown: string) => {
-    console.log(JSON.stringify(markdown));
-
     setMkVariable(markdown);
   };
 
@@ -163,13 +164,13 @@ export default function Form() {
 
   const step0ValidationSchema = z
     .object({
-      titleType: z.string().min(1, { message: "必選" }),
-      projectType: z.string().min(1, { message: "必選" }),
+      titleType: z.string({required_error: "必選"}).min(1, { message: "必選" }),
+      projectType: z.string({required_error: "必選"}).min(1, { message: "必選" }),
       title: z
-        .string()
+        .string({required_error: "勿少於3個字"})
         .min(3, { message: "勿少於3個字" })
         .max(40, { message: "不多於40個字" }),
-      projectDuration: z.string().min(1, { message: "必選" }),
+      projectDuration: z.string({message: "必選"}).min(1, { message: "必選" }),
       imageType: z.string(),
       bannerUpload: z.object({}).optional(),
       bannerCoside: z.string().optional(),
@@ -215,22 +216,39 @@ export default function Form() {
   const step2ValidationSchema = z.object({
     partners: z
       .array(
-        z.object({
-          jobPosition: z.string().min(1, { message: "必選" }),
-          projectRequirement: z.string().optional(),
-          // member: z
-          // .array(z.string().email({message: "請輸入正確的電子郵件地址"})),
-          members: z.array(
-            z.string().email({ message: "請輸入有效的 Email 地址" }).or(z.literal(""))
-          ),
-        })
+        z
+          .object({
+            jobPosition: z.string().min(1, { message: "必選" }),
+            projectRequirement: z.string().optional(),
+            members: z.array(
+              z
+                .string()
+                .email({ message: "請輸入有效的 Email 地址" })
+                .or(z.literal(""))
+                .optional()
+            ),
+            otherJobPosition: z.string().optional(),
+          })
+          .superRefine((data, ctx) => {
+            if (data.jobPosition === "其他" && !data.otherJobPosition?.trim()) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "請輸入職位名稱",
+                path: ["otherJobPosition"],
+              });
+            }
+          })
+          
       )
       .min(1, { message: "至少需要一名組員" }),
   });
-
+  const schema = [step0ValidationSchema, step1ValidationSchema, step2ValidationSchema];
   const handlePrevious = () => {
     setActiveStep((preStep) => {
-      if (preStep > 0) return preStep - 1;
+      if (preStep > 0) {
+        return preStep - 1
+      };
+      
       return preStep;
     });
   };
@@ -240,56 +258,51 @@ export default function Form() {
     validationSchema: any
   ): Promise<object | false> => {
     const formikSchema = toFormikValidationSchema(validationSchema);
-    // const formikSchemaTest = validationSchema.safeParse(values);
-    // if(!formikSchemaTest.success) {
-    //   console.log('error 新嘗試', formikSchemaTest.error);
-    //   // return formikSchemaTest.error;
-    // }
     try {
       await formikSchema.validate(values);
       return false;
     } catch (error: any) {
       const errors: Record<string, string> = {};
       error.inner.forEach((e: any) => {
-        console.log("舊的", error);
-        console.log(e.path)
         errors[e.path] = e.message;
-        console.log(e)
-
       });
-      console.log("errors: ", errors);
       return errors;
     }
   };
 
-  const goNextOrErrors = (validateResult: object | boolean, setErrors: any) => {
-    console.log("validateResult", validateResult);
-    if (validateResult === false) {
-      if (activeStep === 2) {
-      }
-      setActiveStep((preStep) => {
+  const handleNext = async () => {
+    // let validationSchema;
+    if (activeStep === 0) {
+      // validationSchema = step0ValidationSchema;
+      return setActiveStep((preStep) => {
         return preStep + 1;
       });
-    } else {
-      setErrors(validateResult);
-    }
-  };
-
-  const handleNext = async (values: FormValues, setErrors: any) => {
-    if (activeStep === 0) {
-      const validateResult = await doValidate(values, step0ValidationSchema);
-      goNextOrErrors(validateResult, setErrors);
     } else if (activeStep === 1) {
-      const validateResult = await doValidate(values, step1ValidationSchema);
-      console.log(validateResult);
-      goNextOrErrors(validateResult, setErrors);
-    } else if (activeStep === 2) {
-      const validateResult = await doValidate(values, step2ValidationSchema);
-      goNextOrErrors(validateResult, setErrors);
+      return setActiveStep((preStep) => {
+        return preStep + 1;
+      });
+      // validationSchema = step1ValidationSchema;
+    } else {
+      return setActiveStep((preStep) => {
+        return preStep + 1;
+      });
     }
+
+    // const validateResult = await doValidate(values, validationSchema);
+
+    // if (validateResult === false) {
+    //   setActiveStep((preStep) => {
+    //     return preStep + 1;
+    //   });
+    // } else {
+    //   setErrors(validateResult);
+    // }
   };
 
-  const uploadImageBeforeSubmit = async (formValues: FormValues, token: string) => {
+  const uploadImageBeforeSubmit = async (
+    formValues: FormValues,
+    token: string
+  ) => {
     try {
       switch (formValues.imageType) {
         case "upload": {
@@ -300,16 +313,12 @@ export default function Form() {
           const data = new FormData();
           data.append("file", formValues.bannerUpload as Blob);
 
-          const response = await axios.post(
-            `/api/upload?type=images`,
-            data,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          const response = await axios.post(`/api/upload?type=images`, data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
           return response.data.data;
         }
 
@@ -318,7 +327,7 @@ export default function Form() {
         }
 
         case "unsplash": {
-          console.log(formValues.bannerUnsplash);
+          // console.log(formValues.bannerUnsplash);
 
           try {
             if (!formValues.bannerUnsplash) {
@@ -334,13 +343,13 @@ export default function Form() {
             const minQuality = 60; // 最低品質 
             const fileSizeLimit = 3 * 1024 * 1024; // 3MB 
 
-            // 建立壓縮後的圖片 URL 
-            const getCompressedUrl = (url: string, width: number, quality: number) => {
+            // 建立壓縮後的圖片 URL
+            const getCompressedUrl = (url: any, width: any, quality: any) => {
               return `${url}?w=${width}&q=${quality}&fm=jpg&fit=max`;
             };
 
-            // 用 axios 獲取圖片 Blob 並檢查大小 
-            const compressAndGetQuality = async (url: string) => {
+            // 用 axios 獲取圖片 Blob 並檢查大小
+            const compressAndGetQuality = async (url: any) => {
               let compressedUrl = getCompressedUrl(url, width, quality);
 
               while (true) {
@@ -379,16 +388,12 @@ export default function Form() {
             const data = new FormData();
             data.append("file", file);
 
-            const res = await axios.post(
-              `/api/upload?type=images`,
-              data,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
+            const res = await axios.post(`/api/upload?type=images`, data, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+              },
+            });
             return res.data.data;
           } catch (e) {
             console.error("處理圖片或上傳時發生錯誤:", e);
@@ -404,78 +409,90 @@ export default function Form() {
     }
   };
 
-  const handleSubmit = async (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => {
-    const { setErrors, setSubmitting } = formikHelpers
-    try {
-      setSubmitting(true);
+  const handleSubmit = async (
+    values: FormValues,
+    formikHelpers: FormikHelpers<FormValues>
+  ) => {
 
-      // 1. Validate the form data－
-      const validateResult = await doValidate(values, step2ValidationSchema);
-      if (validateResult) {
-        setErrors(validateResult);
-        return;
-      }
+    if (activeStep === 2) {
+      const { setErrors, setSubmitting } = formikHelpers;
+      try {
+        setSubmitting(true);
 
-      // 2. Upload the image
-      const imgPath = await uploadImageBeforeSubmit(values, token);
+        // 1. Validate the form data－
+        const validateResult = await doValidate(values, step2ValidationSchema);
+        if (validateResult) {
+          setErrors(validateResult);
+          return;
+        }
 
-      // 3. Transform members data
-      if (!values.partners) {
-        throw new Error("No partner");
-      }
-      const members = values.partners.flatMap((partner) =>
-        partner.members.map((member) => ({
-          role: partner.jobPosition,
-          skill: partner.projectRequirement || "",
-          email: member.trim() === "" ? null : member,
-          group: partner.jobPosition,
-        }))
-      );
+        // 2. Upload the image
+        const imgPath = await uploadImageBeforeSubmit(values, token);
 
-      // 4. Prepare the request body
-      const bodyData = {
-        name: values.title,
-        type: values.titleType,
-        duration: values.projectDuration,
-        background_Path: imgPath,
-        description: values.MKContent,
-        categories: [values.projectType],
-        members,
-        industry: "未分類",
-        tags: ["未分類"],
-      };
+        // 3. Transform members data
+        if (!values.partners) {
+          throw new Error("No partner");
+        }
+        const members = values.partners.flatMap((partner) =>
+          partner.members.map((member) => ({
+            role: partner.jobPosition,
+            skill: partner.projectRequirement || "",
+            email: member.trim() === "" ? null : member,
+            group: partner.jobPosition,
+          }))
+        );
 
-      console.log(bodyData)
+        // 4. Prepare the request body
+        const bodyData = {
+          name: values.title,
+          type: values.titleType,
+          duration: values.projectDuration,
+          background_Path: imgPath,
+          description: values.MKContent,
+          categories: [values.projectType],
+          members,
+          industry: "未分類",
+          tags: ["未分類"],
+        };
 
-      // 5. Submit the project
-      const response = await axios.post(
-        `/api/project`,
-        bodyData,
-        {
+
+        // 5. Submit the project
+        await axios.post(`/api/project`, bodyData, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
+        });
+
+        // 6. Handle success (you might want to add navigation or success message here)
+        // console.log("Project created successfully:", response.data);
+        router.push("/")
+      } catch (error: any) {
+        console.error("Submit error:", error);
+
+        // Handle specific error cases
+        if (error.response?.status === 401) {
+          setErrors({ submit: "請重新登入" });
+        } else if (error.response?.status === 413) {
+          setErrors({ submit: "圖片檔案過大，請選擇較小的檔案" });
+        } else {
+          setErrors({ submit: "發生錯誤，請稍後再試" });
         }
-      );
-
-      // 6. Handle success (you might want to add navigation or success message here)
-      console.log("Project created successfully:", response.data);
-    } catch (error: any) {
-      console.error("Submit error:", error);
-
-      // Handle specific error cases
-      if (error.response?.status === 401) {
-        setErrors({ submit: "請重新登入" });
-      } else if (error.response?.status === 413) {
-        setErrors({ submit: "圖片檔案過大，請選擇較小的檔案" });
-      } else {
-        setErrors({ submit: "發生錯誤，請稍後再試" });
+      } finally {
+        setSubmitting(false);
+        router.push("/");
       }
-    } finally {
-      setSubmitting(false);
+    }else {
+      handleNext();
     }
   };
+
+  const currentValidationSchema: any =
+  activeStep === 0
+    ? step0ValidationSchema
+    : activeStep === 1
+    ? step1ValidationSchema
+    : step2ValidationSchema;
 
   return (
     <Box
@@ -517,10 +534,20 @@ export default function Form() {
       </Box>
       <Formik
         initialValues={initialValues}
+        validationSchema={toFormikValidationSchema(currentValidationSchema)}
         onSubmit={handleSubmit}
       >
-        {(props) => (
-          <FormFormik onSubmit={props.handleSubmit} className={styles.form}>
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          setErrors,
+          setFieldValue,
+        }) => (
+          <FormFormik onSubmit={handleSubmit} className={styles.form}>
             <Box
               width="100%"
               mx="auto"
@@ -537,24 +564,24 @@ export default function Form() {
                     label="發起類型"
                     color="secondary"
                     options={titleType}
-                    value={props.values.titleType}
-                    onChange={props.handleChange}
+                    value={values.titleType}
+                    onChange={handleChange}
                     name="titleType"
                     fullWidth
-                    error={Boolean(props.errors?.titleType ?? false)}
-                    helperText={props.errors?.titleType ?? ""}
+                    error={Boolean(touched.titleType && errors?.titleType)}
+                    helperText={touched.titleType && errors?.titleType}
                   />
                   <Field
                     as={Select}
                     label="專案類型"
                     color="secondary"
-                    value={props.values.projectType}
-                    onChange={props.handleChange}
+                    value={values.projectType}
+                    onChange={handleChange}
                     options={projectType}
                     name="projectType"
                     fullWidth
-                    error={Boolean(props.errors?.projectType ?? false)}
-                    helperText={props.errors?.projectType ?? ""}
+                    error={Boolean(touched.projectType && errors?.projectType)}
+                    helperText={touched.projectType && errors?.projectType}
                   />
 
                   <Field
@@ -563,20 +590,20 @@ export default function Form() {
                     label="主題名稱"
                     color="secondary"
                     fullWidth
-                    value={props.values.title}
-                    onChange={props.handleChange}
+                    value={values.title}
+                    onChange={handleChange}
                     name="title"
-                    error={Boolean(props.errors?.title ?? false)}
-                    helperText={props.errors?.title ?? ""}
+                    error={Boolean(touched.title && errors?.title)}
+                    helperText={touched.title && errors?.title }
                   />
                   {/* <TextField
                     label="主題名稱"
                     color="secondary"
                     fullWidth
-                    value={props.values.title}
-                    onChange={props.handleChange}
+                    value={values.title}
+                    onChange={handleChange}
                     name="title"
-                    helperText={props.errors.title}
+                    helperText={errors.title}
                   /> */}
                   {/* <Select label="主題/產業類別" color="secondary" fullWidth /> */}
                   <UploadImage
@@ -595,23 +622,23 @@ export default function Form() {
                     unsplashImages={unsplashImages}
                     setUnsplashImages={setUnsplashImages}
                     currentPage={currentPage}
-                    setFieldValue={props.setFieldValue}
+                    setFieldValue={setFieldValue}
                     errorStatus={Boolean(
                       imageType === "upload"
-                        ? props.errors?.bannerUpload
+                        ? errors?.bannerUpload
                         : imageType === "coside"
-                          ? props.errors?.bannerCoside
+                          ? errors?.bannerCoside
                           : imageType === "unsplash"
-                            ? props.errors?.bannerUnsplash
+                            ? errors?.bannerUnsplash
                             : false
                     )}
                     helperText={
                       imageType === "upload"
-                        ? props.errors?.bannerUpload
+                        ? errors?.bannerUpload
                         : imageType === "coside"
-                          ? props.errors?.bannerCoside
+                          ? errors?.bannerCoside
                           : imageType === "unsplash"
-                            ? props.errors?.bannerUnsplash
+                            ? errors?.bannerUnsplash
                             : ""
                     }
                   />
@@ -620,12 +647,12 @@ export default function Form() {
                     id="projectDuration"
                     label="專案預計進行時間"
                     color="secondary"
-                    value={props.values.projectDuration}
-                    onChange={props.handleChange}
+                    value={values.projectDuration}
+                    onChange={handleChange}
                     name="projectDuration"
                     options={duration}
-                    error={Boolean(props.errors?.projectDuration ?? false)}
-                    helperText={props.errors?.projectDuration ?? ""}
+                    error={Boolean(touched.projectDuration && errors?.projectDuration)}
+                    helperText={touched.projectDuration && errors?.projectDuration}
                     fullWidth
                   />
                 </>
@@ -649,10 +676,11 @@ export default function Form() {
                     label="專案構想"
                     markdown={mkVariable}
                     onChange={(markdown: string) => {
-                      props.setFieldValue("MKContent", markdown);
+                      setFieldValue("MKContent", markdown);
+                      setMkVariable(markdown);
                     }}
-                    helperText={props.errors?.MKContent ?? ""}
-                    error={Boolean(props.errors?.MKContent ?? false)}
+                    helperText={touched.MKContent && errors?.MKContent}
+                    error={Boolean(touched.MKContent && errors?.MKContent)}
                   />
                 </>
               )}
@@ -661,13 +689,13 @@ export default function Form() {
                 <FieldArray name="partners">
                   {(arrayHelpers) => (
                     <>
-                      {props.values.partners.map((partner, index) => (
+                      {values.partners.map((partner, index) => (
                         <Card key={index}>
                           <Box alignSelf="flex-end">
-                            {props.values.partners.length > 1 && (
+                            {values.partners.length > 1 && (
                               <IconButton
                                 onClick={() => {
-                                  if (props.values.partners.length > 1)
+                                  if (values.partners.length > 1)
                                     arrayHelpers.remove(index);
                                   else {
                                   }
@@ -687,8 +715,8 @@ export default function Form() {
                               label="組員職位"
                               color="secondary"
                               options={jobPosition}
-                              value={props.values.partners[index].jobPosition}
-                              onChange={props.handleChange}
+                              value={values.partners[index].jobPosition}
+                              onChange={handleChange}
                               name={`partners[${index}].jobPosition`}
                               fullWidth
                             /> */}
@@ -697,42 +725,71 @@ export default function Form() {
                               label="組員職位"
                               color="secondary"
                               options={jobPosition}
-                              value={props.values.partners[index].jobPosition}
-                              onChange={props.handleChange}
-                              name={`partners.${index}.jobPosition`}
+                              value={values.partners[index].jobPosition}
+                              onChange={handleChange}
+                              name={`partners[${index}].jobPosition`}
                               fullWidth
                               error={Boolean(
-                                getIn(props.touched, `partners.${index}.jobPosition`) &&
-                                getIn(props.errors, `partners.${index}.jobPosition`)
+                                getIn(errors, `partners.${index}.jobPosition`)
                               )}
                               helperText={
-                                getIn(props.touched, `partners.${index}.jobPosition`) &&
-                                  getIn(props.errors, `partners.${index}.jobPosition`)
-                                  ? getIn(props.errors, `partners.${index}.jobPosition`)
-                                  : ""
+                                getIn(
+                                  errors,
+                                  `partners.${index}.jobPosition`
+                                ) || ""
                               }
                             />
                           </Box>
+                          {values.partners[index].jobPosition === "其他" && (
+                            <Box>
+                              <Field
+                                as={TextField}
+                                label="其他職位"
+                                placeholder="請輸入職位"
+                                color="secondary"
+                                value={values.partners[index].otherJobPosition}
+                                onChange={handleChange}
+                                name={`partners[${index}].otherJobPosition`}
+                                fullWidth
+                                error={Boolean(
+                                  getIn(
+                                    errors,
+                                    `partners.${index}.otherJobPosition`
+                                  )
+                                )}
+                                helperText={
+                                  getIn(
+                                    errors,
+                                    `partners.${index}.otherJobPosition`
+                                  )
+                                    ? getIn(
+                                        errors,
+                                        `partners.${index}.otherJobPosition`
+                                      )
+                                    : ""
+                                }
+                              />
+                            </Box>
+                          )}
+
                           <TextField
                             label="能力要求"
                             placeholder="若無，可不填"
                             color="secondary"
-                            value={
-                              props.values.partners[index].projectRequirement
-                            }
-                            onChange={props.handleChange}
+                            value={values.partners[index].projectRequirement}
+                            onChange={handleChange}
                             name={`partners[${index}].projectRequirement`}
                             minRows={3}
                             fullWidth
                             multiline
                           />
-                          {/* {props.values.partners[index].members.map((_ ,emailIndex) => (
+                          {/* {values.partners[index].members.map((_ ,emailIndex) => (
                             <TextField
                               key={emailIndex}
                               label="組員Email"
                               placeholder="請輸入Email"
-                              value= {props.values.partners[index].members[emailIndex]}
-                              onChange={props.handleChange}
+                              value= {values.partners[index].members[emailIndex]}
+                              onChange={handleChange}
                               name={`partners[${index}].members[${emailIndex}]`}
                               color="secondary"
                               fullWidth
@@ -743,7 +800,7 @@ export default function Form() {
                           <FieldArray name={`partners[${index}].members`}>
                             {(memberArrayHelpers) => (
                               <>
-                                {props.values.partners[index].members.map(
+                                {values.partners[index].members.map(
                                   (_, emailIndex) => (
                                     <div
                                       key={emailIndex}
@@ -754,21 +811,26 @@ export default function Form() {
                                         label="組員Email"
                                         placeholder="請輸入Email"
                                         value={
-                                          props.values.partners[index].members[
-                                          emailIndex
+                                          values.partners[index].members[
+                                            emailIndex
                                           ]
                                         }
-                                        onChange={props.handleChange}
+                                        onChange={handleChange}
                                         name={`partners.${index}.members[${emailIndex}]`}
                                         color="secondary"
                                         fullWidth
-                                        error={Boolean(getIn(props.errors, `partners.${index}.members.${emailIndex}`))}
-                                        // helperText={
-                                        //   props.errors[
-                                        //     `partners.${index}.members.${emailIndex}`
-                                        //   ] ?? ""
-                                        // }
-                                        helperText={getIn(props.errors, `partners.${index}.members.${emailIndex}`) ?? ""}
+                                        error={Boolean(
+                                          getIn(
+                                            errors,
+                                            `partners.${index}.members.${emailIndex}`
+                                          )
+                                        )}
+                                        helperText={
+                                          getIn(
+                                            errors,
+                                            `partners.${index}.members.${emailIndex}`
+                                          ) ?? ""
+                                        }
                                       />
                                       {/*                                       
                                       <TextField
@@ -776,11 +838,11 @@ export default function Form() {
                                         label="組員Email"
                                         placeholder="請輸入Email"
                                         value={
-                                          props.values.partners[index].members[
+                                          values.partners[index].members[
                                             emailIndex
                                           ]
                                         }
-                                        onChange={props.handleChange}
+                                        onChange={handleChange}
                                         name={`partners[${index}].members[${emailIndex}]`}
                                         color="secondary"
                                         fullWidth
@@ -788,7 +850,7 @@ export default function Form() {
                                       {/* delete icon */}
                                       <IconButton
                                         disabled={
-                                          props.values.partners[index].members
+                                          values.partners[index].members
                                             .length < 2
                                         }
                                         onClick={() => {
@@ -821,8 +883,8 @@ export default function Form() {
                                             <path
                                               d="M7 21C6.45 21 5.97917 20.8042 5.5875 20.4125C5.19583 20.0208 5 19.55 5 19V6C4.71667 6 4.47917 5.90417 4.2875 5.7125C4.09583 5.52083 4 5.28333 4 5C4 4.71667 4.09583 4.47917 4.2875 4.2875C4.47917 4.09583 4.71667 4 5 4H9C9 3.71667 9.09583 3.47917 9.2875 3.2875C9.47917 3.09583 9.71667 3 10 3H14C14.2833 3 14.5208 3.09583 14.7125 3.2875C14.9042 3.47917 15 3.71667 15 4H19C19.2833 4 19.5208 4.09583 19.7125 4.2875C19.9042 4.47917 20 4.71667 20 5C20 5.28333 19.9042 5.52083 19.7125 5.7125C19.5208 5.90417 19.2833 6 19 6V19C19 19.55 18.8042 20.0208 18.4125 20.4125C18.0208 20.8042 17.55 21 17 21H7ZM17 6H7V19H17V6ZM10 17C10.2833 17 10.5208 16.9042 10.7125 16.7125C10.9042 16.5208 11 16.2833 11 16V9C11 8.71667 10.9042 8.47917 10.7125 8.2875C10.5208 8.09583 10.2833 8 10 8C9.71667 8 9.47917 8.09583 9.2875 8.2875C9.09583 8.47917 9 8.71667 9 9V16C9 16.2833 9.09583 16.5208 9.2875 16.7125C9.47917 16.9042 9.71667 17 10 17ZM14 17C14.2833 17 14.5208 16.9042 14.7125 16.7125C14.9042 16.5208 15 16.2833 15 16V9C15 8.71667 14.9042 8.47917 14.7125 8.2875C14.5208 8.09583 14.2833 8 14 8C13.7167 8 13.4792 8.09583 13.2875 8.2875C13.0958 8.47917 13 8.71667 13 9V16C13 16.2833 13.0958 16.5208 13.2875 16.7125C13.4792 16.9042 13.7167 17 14 17Z"
                                               fill={
-                                                props.values.partners[index]
-                                                  .members.length > 1
+                                                values.partners[index].members
+                                                  .length > 1
                                                   ? "#FF5D5D"
                                                   : theme.palette.grey[100]
                                               }
@@ -841,9 +903,6 @@ export default function Form() {
                                     color="secondary"
                                     sx={{ cursor: "pointer" }}
                                     onClick={() => {
-                                      console.log(
-                                        props.values.partners[index].members
-                                      );
                                       memberArrayHelpers.push("");
                                     }}
                                   />
@@ -893,8 +952,8 @@ export default function Form() {
                     sx={{ color: "white" }}
                     endIcon={<ChevronRightIcon />}
                     fullWidth
-                    onClick={() => handleNext(props.values, props.setErrors)}
-                    type="button"
+                    // onClick={() => handleNext(values, setErrors)}
+                    type="submit"
                   >
                     下一步
                   </Button>
@@ -906,7 +965,7 @@ export default function Form() {
                     color="secondary"
                     sx={{ color: "white" }}
                     fullWidth
-                    // onClick={() => handleNext(props.values, props.setErrors)}
+                    // onClick={() => handleNext(values, setErrors)}
                     type="submit"
                   >
                     發布
@@ -914,6 +973,7 @@ export default function Form() {
                 )}
               </Box>
             </Box>
+            {/* <pre>{JSON.stringify({ values, errors, touched }, null, 2)}</pre> */}
           </FormFormik>
         )}
       </Formik>

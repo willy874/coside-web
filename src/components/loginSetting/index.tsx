@@ -61,6 +61,7 @@ const LoginSetting = () => {
     instagram: "",
     instagramPublic: false,
     imgPath: "",
+    otherPosition: "",
   });
 
   const [fileError, setFileError] = useState<string>("");
@@ -77,7 +78,6 @@ const LoginSetting = () => {
   const nextStep = async () => {
     if (activeStep === 0) {
       // 檢查是否有
-      console.log(activeStep, " step 1 檢查");
       setActiveStep(1);
     } else if (activeStep === 1) {
       // 檢查是否有填完全部內容
@@ -89,10 +89,11 @@ const LoginSetting = () => {
         isfacebookpublic: formData.facebookPublic,
         instagram: formData.instagram,
         isinstagrampublic: formData.instagramPublic,
-        role: formData.position,
+        role: formData.position === "其他" ? "其他" : formData.position,
+        otherRole: formData.position === "其他" ? formData.otherPosition : "",
         intro: formData.describe,
         link: formData.projectUrl,
-        imgPath: formData.imgPath,
+        avatar: formData.imgPath,
         password: "Aa1@bc",
       });
       try {
@@ -107,11 +108,11 @@ const LoginSetting = () => {
           }
         );
         if (res.data.success) {
-          const userInfo = await userGetSelf(token);
+          const userInfo = await userGetSelf(res.data.data.token);
           setUserInfo(res.data.data.token, userInfo.data); // 儲存進 store
           router.push("/")
         } else {
-          console.log(res.data.message)
+          console.error(res.data.message)
         }
 
 
@@ -124,10 +125,46 @@ const LoginSetting = () => {
 
 
   const step1ValidationSchema = z.object({
-    name: z.string({ message: "名稱是必填項" }).min(1),
-    describe: z.string({ message: "個人簡介是必填項" }).min(1),
-    position: z.string({ message: "選擇是必選項" }).min(1),
+    name: z.string().optional(),
+    describe: z.string().optional(),
+    position: z.string().optional(),
+    otherPosition: z.string().optional(),
     projectUrl: z.string().url({ message: "無效的網址" }).optional(),
+  }).superRefine((data, ctx) => {
+    if (!data.name) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "名稱是必填項",
+        path: ["name"],
+      });
+    }
+    if (!data.describe) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "個人簡介是必填項",
+        path: ["describe"],
+      });
+    } else if (data.describe.length > 100) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "個人簡介不能超過 100 個字元",
+        path: ["describe"],
+      });
+    }
+    if (!data.position) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "職位是必選項",
+        path: ["position"],
+      });
+    }
+    if (data.position === "其他" && !data.otherPosition) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "請輸入其他職位",
+        path: ["otherPosition"],
+      });
+    }
   });
 
   const step2ValidationSchema = z
@@ -204,7 +241,6 @@ const LoginSetting = () => {
     );
 
   const switchSetting = (disabled = false) => {
-    console.log(disabled)
     return {
       "& .MuiSwitch-switchBase": {
         //   transitionDuration: '300ms',
@@ -264,7 +300,6 @@ const LoginSetting = () => {
                 )}
                 // validationSchema={toFormikValidationSchema(validationSchema)}
                 onSubmit={(values) => {
-                  console.log("Form Data:", values.name);
                   setFormData({ ...formData, ...values });
                   nextStep();
                 }}
@@ -338,6 +373,7 @@ const LoginSetting = () => {
                                       },
                                     }
                                   );
+                                  // console.log(res.data.data, '成功上傳')
                                   setFormData({
                                     ...formData,
                                     imgPath: res.data.data,
@@ -346,6 +382,7 @@ const LoginSetting = () => {
                                     "imgPath",
                                     res.data.data
                                   );
+
                                 } catch (e) {
                                   setFileError("上傳失敗，請稍後再試");
                                   setFormData({
@@ -431,6 +468,24 @@ const LoginSetting = () => {
                             error={touched.position && Boolean(errors.position)}
                             helperText={touched.position && errors.position}
                           />
+                          {values.position === "其他" && (
+                            <Field
+                              as={TextField}
+                              id="otherPosition"
+                              name="otherPosition"
+                              label="請輸入其他職位"
+                              fullWidth
+                              onChange={handleChange}
+                              value={values.otherPosition}
+                              error={touched.otherPosition && Boolean(errors.otherPosition)}
+                              helperText={touched.otherPosition && errors.otherPosition}
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: "12px",
+                                },
+                              }}
+                            />
+                          )}
                           <Field
                             as={TextField}
                             id="describe"
@@ -504,7 +559,6 @@ const LoginSetting = () => {
                 )}
                 // validationSchema={toFormikValidationSchema(validationSchema)}
                 onSubmit={(values) => {
-                  console.log("Form Data:", values.name);
                   setFormData({ ...formData, ...values });
                   nextStep();
                 }}
@@ -729,7 +783,7 @@ const LoginSetting = () => {
                               className={styles.btn}
                               endIcon={<ArrowForwardIosIcon />}
                             >
-                              下一步
+                              完成
                             </Button>
                           )}
                         </div>
