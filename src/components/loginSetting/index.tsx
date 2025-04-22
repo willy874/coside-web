@@ -349,14 +349,14 @@ const LoginSetting = () => {
 
                                 const reader = new FileReader();
                                 reader.onload = () => {
-                                  setFormData({
-                                    ...formData,
-                                    previewImage: (reader.result as string) || "",
-                                  });
-                                  setFieldValue(
-                                    "previewImage",
-                                    (reader.result as string) || ""
-                                  )
+                                  // setFormData({
+                                  //   ...formData,
+                                  //   previewImage: (reader.result as string) || "",
+                                  // });
+                                  // setFieldValue(
+                                  //   "previewImage",
+                                  //   (reader.result as string) || ""
+                                  // )
                                 };
 
                                 const data = new FormData();
@@ -385,6 +385,10 @@ const LoginSetting = () => {
 
                                 } catch (e) {
                                   setFileError("上傳失敗，請稍後再試");
+                                  setFieldValue(
+                                    "previewImage",
+                                    ""
+                                  )
                                   setFormData({
                                     ...formData,
                                     previewImage: "",
