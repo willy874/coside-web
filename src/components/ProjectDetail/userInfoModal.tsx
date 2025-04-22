@@ -98,7 +98,7 @@ const ProjectCardModal = ({ creatorId, isOpen, onClose }: ProjectCardModalProps)
               <>
                 {creatorData.avatar ? (
                   <MuiAvatar
-                    src={`https://6181-13-115-215-106.ngrok-free.app/${creatorData.avatar}`}
+                    src={`https://583c090012ea.ngrok.app/${creatorData.avatar}`}
                     alt={creatorData.name}
                     sx={{
                       marginRight: "0.75rem",

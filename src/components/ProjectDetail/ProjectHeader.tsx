@@ -33,7 +33,7 @@ export default function ProjectHeader({
         <Image
           src={
             project.background_Path
-              ? `https://6181-13-115-215-106.ngrok-free.app/${project.background_Path}`
+              ? `https://583c090012ea.ngrok.app/${project.background_Path}`
               : `/images/default/banner_coside_1.png`
           }
           alt={project.name}
@@ -46,7 +46,7 @@ export default function ProjectHeader({
           }}
           onError={(e) => {
             e.currentTarget.src =
-              `https://6181-13-115-215-106.ngrok-free.app/images/default/banner_coside_1.png`;
+              `https://583c090012ea.ngrok.app/images/default/banner_coside_1.png`;
           }}
           priority
         />
@@ -92,7 +92,7 @@ export default function ProjectHeader({
           >
             {project.creator.avatar ? (
               <MuiAvatar
-                src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                src={`https://583c090012ea.ngrok.app/${project.creator.avatar}`}
                 alt={project.creator.name}
                 sx={{ width: 32, height: 32 }}
                 onError={(e) => {
@@ -350,7 +350,7 @@ export default function ProjectHeader({
               >
                 {project.creator.avatar ? (
                   <MuiAvatar
-                    src={`https://6181-13-115-215-106.ngrok-free.app/${project.creator.avatar}`}
+                    src={`https://583c090012ea.ngrok.app/${project.creator.avatar}`}
                     alt={project.creator.name}
                     sx={{ width: 24, height: 24 }}
                     onError={(e) => {

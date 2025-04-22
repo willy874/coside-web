@@ -84,7 +84,7 @@ const Avatar = () => {
     >
       {userInfo?.avatar ? (
         <MuiAvatar
-          src={`https://6181-13-115-215-106.ngrok-free.app/${userInfo.avatar}`}
+          src={`https://583c090012ea.ngrok.app/${userInfo.avatar}`}
           alt={userInfo.name}
           sx={{ width: isMobile ? 60 : 76, height: isMobile ? 60 : 76 }}
           onError={(e) => {
@@ -204,7 +204,7 @@ const Avatar = () => {
       <Box sx={{ marginLeft: "48px", cursor: "pointer" }} onClick={handleClick}>
         {userInfo?.avatar ? (
           <MuiAvatar
-            src={`https://6181-13-115-215-106.ngrok-free.app/${userInfo.avatar}`}
+            src={`https://583c090012ea.ngrok.app/${userInfo.avatar}`}
             alt={userInfo.name}
             sx={{ width: 48, height: 48 }}
             onError={(e) => {

@@ -17,7 +17,7 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    domains: [`6181-13-115-215-106.ngrok-free.app`],
+    domains: [`583c090012ea.ngrok.app`],
   },
 };
 
