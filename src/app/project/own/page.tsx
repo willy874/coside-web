@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { userGetCreatorInfo } from "@/api/user";
 import styles from "../../page.module.css";
 import { Box, Grid, Typography, CircularProgress } from "@mui/material";
-import { MyProjectCard, MyProjectCardProps } from "@/components/Cards/MyProjectCard";
+import { ProjectCard, ProjectCardProps } from "@/components/ProjectCard";
 import BackToTopButton from "@/components/BackToTopButton";
 import useLoginStore from "@/stores/loginStore";
 
 export default function MyProjects() {
-  const [projects, setProjects] = useState<MyProjectCardProps[]>([]);
+  const [projects, setProjects] = useState<ProjectCardProps[]>([]);
   const [loading, setLoading] = useState(false);
   const { userInfo } = useLoginStore(); // 你自己的登入 store
 
@@ -62,7 +62,7 @@ export default function MyProjects() {
         >
           {projects.map((project) => (
             <Grid item xs={1} key={project.id}>
-              <MyProjectCard project={project} />
+              <ProjectCard project={project} variant="own" />
             </Grid>
           ))}
         </Grid>
