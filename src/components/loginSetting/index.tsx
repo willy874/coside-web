@@ -38,7 +38,7 @@ const LoginSetting = () => {
 
   const params = useSearchParams();;
   const email = params.get("email");
-  const name = params.get("name");
+  const name = params.get("name"); 
   const settingToken = params.get("token");
 
   const { setUserInfo, token, isAuthenticated } = useLoginStore();
@@ -361,19 +361,17 @@ const LoginSetting = () => {
 
                                 const data = new FormData();
                                 data.append("file", file);
-
                                 try {
                                   const res = await axios.post(
                                     `/api/upload?type=images`,
                                     data,
                                     {
                                       headers: {
-                                        Authorization: `Bearer ${token}`,
+                                        Authorization: `Bearer ${settingToken}`,
                                         "Content-Type": "multipart/form-data",
                                       },
                                     }
                                   );
-                                  // console.log(res.data.data, '成功上傳')
                                   setFormData({
                                     ...formData,
                                     imgPath: res.data.data,
@@ -416,10 +414,10 @@ const LoginSetting = () => {
                               <p className={styles.errorText}>{fileError}</p>
                             )}
                           </div>
-                          {formData.previewImage && (
+                          {formData.imgPath && (
                             <div style={{ width: '200px', position: 'relative' }}>
                               <Image
-                                src={formData.previewImage}
+                                src={`${process.env.NEXT_PUBLIC_API_URL}/${formData.imgPath}`}
                                 alt="preview"
                                 width={200}
                                 height={0}
