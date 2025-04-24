@@ -64,7 +64,6 @@ export const Topbar = () => {
               onClick={handleToggleDrawer}
               sx={{ p: 0, position: "relative" }}
             >
-              {/* <Image src="/mobile_menu_btn.svg" alt="menu" width={48} height={48} /> */}
               <AnimatedHamburger isOpen={openDrawer} toggle={() => setOpenDrawer(!openDrawer)} />
             </IconButton>
 

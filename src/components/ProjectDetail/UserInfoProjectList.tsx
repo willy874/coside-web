@@ -29,7 +29,7 @@ const UserInfoProjectList = ({ creatorData }) => {
               }}
             >
               <Image
-                src={`https://coside-api.zeabur.app/${project.background_Path}`}
+                src={`https://558f30e55fa7.ngrok.app/${project.background_Path}`}
                 alt={project.name}
                 width={500}
                 height={isBelowMd ? 149 : 96}
@@ -39,6 +39,10 @@ const UserInfoProjectList = ({ creatorData }) => {
                   borderRadius: "0.5rem",
                   objectFit: "cover",
                   width: "100%",
+                }}
+                onError={(e) => {
+                  e.currentTarget.src =
+                    "/banner_coside_1.png";
                 }}
               />
               <Box
