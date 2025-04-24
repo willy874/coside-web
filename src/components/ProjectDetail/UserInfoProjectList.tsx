@@ -29,7 +29,7 @@ const UserInfoProjectList = ({ creatorData }) => {
               }}
             >
               <Image
-                src={`https://583c090012ea.ngrok.app/${project.background_Path}`}
+                src={`https://145f2cdec067.ngrok.app/${project.background_Path}`}
                 alt={project.name}
                 width={500}
                 height={isBelowMd ? 149 : 96}

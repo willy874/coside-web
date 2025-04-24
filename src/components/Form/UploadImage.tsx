@@ -529,7 +529,7 @@ export default function UploadImage() {
               <ImageGrid
                 images={cosideDefaultImages}
                 showImageSrc={(item) =>
-                  `https://583c090012ea.ngrok.app/${item}`
+                  `https://145f2cdec067.ngrok.app/${item}`
                 }
                 onImageClick={chooseImage}
                 activeIndex={formControl.activeCosideIndex}
