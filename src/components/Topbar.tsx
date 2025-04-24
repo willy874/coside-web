@@ -163,6 +163,7 @@ export const Topbar = () => {
                 <Button
                   disableRipple
                   sx={{
+                    textTransform: 'none',
                     position: "relative",
                     color:
                       pathname === item.href

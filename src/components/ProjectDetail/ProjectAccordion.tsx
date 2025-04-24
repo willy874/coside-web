@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { CharacterTag } from "@/components/CharacterTag";
-import { CustomDialog } from "@/components/Dialog/CustomDialog";
+import CustomDialog from "@/components/Dialog/CustomDialog";
 
 const ContactButton = ({ project }: {
   project: any;

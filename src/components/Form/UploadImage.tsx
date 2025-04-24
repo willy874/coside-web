@@ -1,3 +1,4 @@
+import { useFormikContext } from "formik";
 import {
   ChangeEventHandler,
   DragEvent,
@@ -9,14 +10,22 @@ import {
 } from "react";
 import Image from "next/image";
 import { styled } from "@mui/material/styles";
-import { Box, Typography, Button, ButtonGroup, Grid, FormHelperText } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  ButtonGroup,
+  Grid,
+  FormHelperText,
+} from "@mui/material";
 import InputBase from "@mui/material/InputBase";
 import SearchIcon from "@mui/icons-material/Search";
-import useLoginStore from "@/stores/loginStore";
-import theme from "@/styles/theme";
+import CachedIcon from "@mui/icons-material/Cached";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import { getPhotosByQuery } from "@/api/unsplash";
-import CachedIcon from '@mui/icons-material/Cached';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import theme from "@/styles/theme";
+import { FormValues } from "@/hooks/useFormControl";
+import { useFormControlContext } from "@/contexts/FormControlContext";
 
 const StyledUploadWrapper = styled("div")(() => ({
   position: "relative",
@@ -195,29 +204,36 @@ const ImageGrid = ({
   );
 };
 
-export default function UploadImage({
-  previewImage,
-  setPreviewImage,
-  imageType,
-  setImageType,
-  searchValue,
-  setSearchValue,
-  filterValue,
-  setFilterValue,
-  activeCosideIndex,
-  setActiveCosideIndex,
-  activeUnsplashIndex,
-  setActiveUnsplashIndex,
-  unsplashImages,
-  setUnsplashImages,
-  currentPage,
-  setFieldValue,
-  errorStatus,
-  helperText,
-}) {
+export default function UploadImage() {
+  const { errors, setFieldValue } =
+    useFormikContext<FormValues>();
+  const formControl = useFormControlContext();
+  const errorStatus = Boolean(
+    formControl.imageType === "upload"
+      ? errors?.bannerUpload
+      : formControl.imageType === "coside"
+        ? errors?.bannerCoside
+        : formControl.imageType === "unsplash"
+          ? errors?.bannerUnsplash
+          : false
+  );
+  const helperText =
+    formControl.imageType === "upload"
+      ? typeof errors?.bannerUpload === "string"
+        ? errors.bannerUpload
+        : (errors?.bannerUpload as any)?.message || ""
+      : formControl.imageType === "coside"
+        ? typeof errors?.bannerCoside === "string"
+          ? errors.bannerCoside
+          : (errors?.bannerCoside as any)?.message || ""
+        : formControl.imageType === "unsplash"
+          ? typeof errors?.bannerUnsplash === "string"
+            ? errors.bannerUnsplash
+            : (errors?.bannerUnsplash as any)?.message || ""
+          : "";
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [isHover, setIsHover] = useState(false);
-  const { token } = useLoginStore();
   const listRef = useRef(null);
 
   const stopDefault = (e: DragEvent<HTMLDivElement>) => {
@@ -227,8 +243,6 @@ export default function UploadImage({
 
   const handleFile = async (_file: File | null = null) => {
     if (!_file) {
-      // setPreviewImage("");
-      // setFieldValue("bannerUpload", undefined);
       return;
     }
 
@@ -236,7 +250,7 @@ export default function UploadImage({
     const fileReader = new FileReader();
     fileReader.onload = () => {
       if (typeof fileReader.result === "string") {
-        setPreviewImage(fileReader.result);
+        formControl.setPreviewImage(fileReader.result);
       }
     };
 
@@ -244,7 +258,7 @@ export default function UploadImage({
   };
 
   const deleteImage = () => {
-    setPreviewImage("");
+    formControl.setPreviewImage("");
     setFieldValue("bannerUpload", undefined);
   };
 
@@ -258,7 +272,7 @@ export default function UploadImage({
   };
 
   const handleSearchChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setSearchValue(e.target.value);
+    formControl.setSearchValue(e.target.value);
   };
 
   const onSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -266,52 +280,63 @@ export default function UploadImage({
     if (value === "") {
       alert("請輸入搜尋內容");
     } else {
-      setFilterValue(value);
-      setActiveUnsplashIndex(-1);
-      setUnsplashImages([]);
+      formControl.setFilterValue(value);
+      formControl.setActiveUnsplashIndex(-1);
+      formControl.setUnsplashImages([]);
       setFieldValue("bannerUnsplash", undefined);
     }
   };
 
-  const getPhotos = useCallback(async (page = 1, isNew = true) => {
-    try {
-      const data = await getPhotosByQuery(filterValue, page, 12);
-      const photos = data?.results || data;
-      setUnsplashImages((prevData) =>
-        isNew ? photos : [...prevData, ...photos]
-      );
-      currentPage.current = page;
-    } catch (error) {
-      console.error(error);
-    }
-  }, [filterValue, currentPage, setUnsplashImages]);
+  const getPhotos = useCallback(
+    async (page = 1, isNew = true) => {
+      try {
+        const data = await getPhotosByQuery(formControl.filterValue, page, 12);
+        const photos = data?.results || data;
+        formControl.setUnsplashImages((prevData) =>
+          isNew ? photos : [...prevData, ...photos]
+        );
+        formControl.currentPage.current = page;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [
+      formControl.filterValue,
+      formControl.currentPage,
+      formControl.setUnsplashImages,
+    ]
+  );
 
-  const scrollEvent = useCallback((evt: React.UIEvent<HTMLDivElement>) => {
-    const target = evt.target as HTMLElement;
-    const height = target.scrollHeight - target.clientHeight;
-    if (target.scrollTop >= height && filterValue !== "") {
-      currentPage.current++;
-      getPhotos(currentPage.current, false);
-    }
-  }, [filterValue, currentPage, getPhotos]);
+  const scrollEvent = useCallback(
+    (evt: React.UIEvent<HTMLDivElement>) => {
+      const target = evt.target as HTMLElement;
+      const height = target.scrollHeight - target.clientHeight;
+      if (target.scrollTop >= height && formControl.filterValue !== "") {
+        formControl.currentPage.current++;
+        getPhotos(formControl.currentPage.current, false);
+      }
+    },
+    [formControl.filterValue, formControl.currentPage, getPhotos]
+  );
 
   useEffect(() => {
-    if (filterValue === "" || currentPage.current > 1) return;
+    if (formControl.filterValue === "" || formControl.currentPage.current > 1)
+      return;
     getPhotos(1, true);
-  }, [filterValue, currentPage, getPhotos]);
+  }, [formControl.filterValue, formControl.currentPage, getPhotos]);
 
   useEffect(() => {
-    if (imageType === "unsplash" && listRef.current) {
+    if (formControl.imageType === "unsplash" && listRef.current) {
       const scrollContainer = listRef.current;
       scrollContainer.addEventListener("scroll", scrollEvent);
       return () => scrollContainer.removeEventListener("scroll", scrollEvent);
     }
-  }, [imageType, filterValue, scrollEvent]);
+  }, [formControl.imageType, formControl.filterValue, scrollEvent]);
 
   const chooseImage = (item) => {
-    if (imageType === "coside") {
+    if (formControl.imageType === "coside") {
       setFieldValue("bannerCoside", item);
-    } else if (imageType === "unsplash") {
+    } else if (formControl.imageType === "unsplash") {
       setFieldValue("bannerUnsplash", item);
     }
   };
@@ -345,28 +370,28 @@ export default function UploadImage({
         >
           <TabButton
             onClick={() => {
-              setImageType("upload");
+              formControl.setImageType("upload");
               setFieldValue("imageType", "upload");
             }}
-            isActive={imageType === "upload"}
+            isActive={formControl.imageType === "upload"}
             iconSrc="/upload_icon.svg"
             label="從電腦上傳"
           />
           <TabButton
             onClick={() => {
-              setImageType("coside");
+              formControl.setImageType("coside");
               setFieldValue("imageType", "coside");
             }}
-            isActive={imageType === "coside"}
+            isActive={formControl.imageType === "coside"}
             iconSrc="/coside_icon.svg"
             label="CoSide"
           />
           <TabButton
             onClick={() => {
-              setImageType("unsplash");
+              formControl.setImageType("unsplash");
               setFieldValue("imageType", "unsplash");
             }}
-            isActive={imageType === "unsplash"}
+            isActive={formControl.imageType === "unsplash"}
             iconSrc="/unsplash_icon.svg"
             label="Unsplash"
           />
@@ -378,54 +403,60 @@ export default function UploadImage({
             overflow: "hidden",
           }}
         >
-          {imageType === "upload" && (
+          {formControl.imageType === "upload" && (
             <Box sx={{ width: "100%", height: "100%" }}>
               <StyledUploadWrapper>
-                {previewImage ? (
+                {formControl.previewImage ? (
                   <Box
                     sx={{
                       position: "relative",
                       width: "100%",
                       height: "100%",
                       padding: 0,
-
                     }}
                   >
                     <Image
-                      src={previewImage}
+                      src={formControl.previewImage}
                       alt="upload image"
                       fill
                       style={{ objectFit: "cover" }}
                     />
-                    <ButtonGroup variant="contained" aria-label="Basic button group" sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      boxShadow: "none",
-                      "& .MuiButtonGroup-firstButton, & .MuiButtonGroup-middleButton": {
-                        borderColor: `${theme.figma.btn.outline.bg_default} !important`,
-                      },
-                      "& .MuiButtonGroup-firstButton": {
-                        borderRadius: "6px 0 0 6px",
-                      },
-                      "& .MuiButtonGroup-lastButton": {
-                        borderRadius: "0 6px 6px 0",
-                      }
-                    }}
-                    >
-                      <Button sx={{
-                        padding: "4px 10px",
-                        bgcolor: "rgba(31, 31, 31, 0.7)",
-                        "&:hover": {
-                          backgroundColor: "rgba(31, 31, 31, 0.8)",
+                    <ButtonGroup
+                      variant="contained"
+                      aria-label="Basic button group"
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        boxShadow: "none",
+                        "& .MuiButtonGroup-firstButton, & .MuiButtonGroup-middleButton":
+                          {
+                            borderColor: `${theme.figma.btn.outline.bg_default} !important`,
+                          },
+                        "& .MuiButtonGroup-firstButton": {
+                          borderRadius: "6px 0 0 6px",
+                        },
+                        "& .MuiButtonGroup-lastButton": {
+                          borderRadius: "0 6px 6px 0",
                         },
                       }}
+                    >
+                      <Button
+                        sx={{
+                          padding: "4px 10px",
+                          bgcolor: "rgba(31, 31, 31, 0.7)",
+                          "&:hover": {
+                            backgroundColor: "rgba(31, 31, 31, 0.8)",
+                          },
+                        }}
                         onClick={() => inputRef.current?.click()}
                       >
-                        <CachedIcon sx={{
-                          width: "16px",
-                          height: "16px",
-                        }} />
+                        <CachedIcon
+                          sx={{
+                            width: "16px",
+                            height: "16px",
+                          }}
+                        />
                       </Button>
                       <Button
                         sx={{
@@ -437,11 +468,14 @@ export default function UploadImage({
                         }}
                         onClick={deleteImage}
                       >
-                        <DeleteOutlineOutlinedIcon sx={{
-                          width: "16px",
-                          height: "16px",
-                          color: theme.figma.status.normal_red,
-                        }} /></Button>
+                        <DeleteOutlineOutlinedIcon
+                          sx={{
+                            width: "16px",
+                            height: "16px",
+                            color: theme.figma.status.normal_red,
+                          }}
+                        />
+                      </Button>
                     </ButtonGroup>
                   </Box>
                 ) : (
@@ -488,20 +522,22 @@ export default function UploadImage({
               </StyledUploadWrapper>
             </Box>
           )}
-          {imageType === "coside" && (
+          {formControl.imageType === "coside" && (
             <Box
               sx={{ height: "260px", overflowY: "auto", overflowX: "hidden" }}
             >
               <ImageGrid
                 images={cosideDefaultImages}
-                showImageSrc={(item) => `https://583c090012ea.ngrok.app/${item}`}
+                showImageSrc={(item) =>
+                  `https://583c090012ea.ngrok.app/${item}`
+                }
                 onImageClick={chooseImage}
-                activeIndex={activeCosideIndex}
-                setActiveIndex={setActiveCosideIndex}
+                activeIndex={formControl.activeCosideIndex}
+                setActiveIndex={formControl.setActiveCosideIndex}
               />
             </Box>
           )}
-          {imageType === "unsplash" && (
+          {formControl.imageType === "unsplash" && (
             <Box sx={{ height: "100%" }}>
               <Search>
                 <SearchIconWrapper>
@@ -510,9 +546,11 @@ export default function UploadImage({
                 <StyledInputBase
                   placeholder="搜尋圖片..."
                   inputProps={{ "aria-label": "search" }}
-                  value={searchValue} // 綁定 value
+                  value={formControl.searchValue} // 綁定 value
                   onChange={handleSearchChange} // 處理輸入變化
-                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && onSearch(e)}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) =>
+                    e.key === "Enter" && onSearch(e)
+                  }
                   sx={{ color: theme.palette.grey[400] }}
                 />
               </Search>
@@ -526,11 +564,11 @@ export default function UploadImage({
                 ref={listRef}
               >
                 <ImageGrid
-                  images={unsplashImages}
+                  images={formControl.unsplashImages}
                   showImageSrc={(item) => item.urls.thumb}
                   onImageClick={chooseImage}
-                  activeIndex={activeUnsplashIndex}
-                  setActiveIndex={setActiveUnsplashIndex}
+                  activeIndex={formControl.activeUnsplashIndex}
+                  setActiveIndex={formControl.setActiveUnsplashIndex}
                 />
               </Box>
             </Box>

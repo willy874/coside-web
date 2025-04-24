@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import styles from "../../page.module.css";
 import { projectGetById } from "@/api/project";
 import { Box, Container, CircularProgress } from "@mui/material";
-import UserInfoModal from "@/components/ProjectDetail/userInfoModal";
+import UserInfoModal from "@/components/ProjectDetail/UserInfoModal";
 import MobileSwipeableDrawer from "@/components/MobileSwipeableDrawer";
 import ProjectAccordion from "@/components/ProjectDetail/ProjectAccordion";
 import ProjectHeader from "@/components/ProjectDetail/ProjectHeader";
