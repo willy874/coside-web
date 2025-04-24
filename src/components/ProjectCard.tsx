@@ -155,11 +155,11 @@ export const ProjectCard = ({
           <CardMedia
             component="img"
             src={project.background_Path
-              ? `https://145f2cdec067.ngrok.app/${project.background_Path}`
-              : `https://145f2cdec067.ngrok.app/images/default/banner_coside_1.png`}
+              ? `https://coside-api.zeabur.app/${project.background_Path}`
+              : `https://coside-api.zeabur.app/images/default/banner_coside_1.png`}
             sx={{ height: "190px", width: "100%", borderBottom: `1px solid ${theme.figma.neutral[80]}` }}
             onError={(e) => {
-              e.currentTarget.src = `https://145f2cdec067.ngrok.app/images/default/banner_coside_1.png`;
+              e.currentTarget.src = `https://coside-api.zeabur.app/images/default/banner_coside_1.png`;
             }}
           />
 
@@ -198,7 +198,7 @@ export const ProjectCard = ({
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       {project.creator.avatar ? (
                         <MuiAvatar
-                          src={`https://145f2cdec067.ngrok.app/${project.creator.avatar}`}
+                          src={`https://coside-api.zeabur.app/${project.creator.avatar}`}
                           alt={project.creator.name}
                           sx={{
                             width: 24, height: 24,
