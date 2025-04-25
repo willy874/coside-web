@@ -85,7 +85,7 @@ const StyledImage = styled(Image)(() => ({
   },
 }));
 
-const cosideDefaultImages = ["images/default/banner_coside_1.png"];
+const cosideDefaultImages = ["/banner_coside_1.png"];
 
 const TabButton = ({ onClick, isActive, iconSrc, label }) => {
   return (
@@ -430,9 +430,9 @@ export default function UploadImage() {
                         right: 8,
                         boxShadow: "none",
                         "& .MuiButtonGroup-firstButton, & .MuiButtonGroup-middleButton":
-                          {
-                            borderColor: `${theme.figma.btn.outline.bg_default} !important`,
-                          },
+                        {
+                          borderColor: `${theme.figma.btn.outline.bg_default} !important`,
+                        },
                         "& .MuiButtonGroup-firstButton": {
                           borderRadius: "6px 0 0 6px",
                         },
@@ -528,9 +528,7 @@ export default function UploadImage() {
             >
               <ImageGrid
                 images={cosideDefaultImages}
-                showImageSrc={(item) =>
-                  `https://558f30e55fa7.ngrok.app/${item}`
-                }
+                showImageSrc={(item) => item}
                 onImageClick={chooseImage}
                 activeIndex={formControl.activeCosideIndex}
                 setActiveIndex={formControl.setActiveCosideIndex}
