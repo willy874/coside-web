@@ -5,12 +5,20 @@ export function jwtDecode(token: string) {
 }
 
 export function expToMaxAge(token: string) {
-  const payload = jwtDecode(token) as { exp: number }
-  const now = Math.floor(Date.now())
-  return payload.exp * 1000 - now
+  try {
+    const payload = jwtDecode(token) as { exp: number }
+    const now = Math.floor(Date.now())
+    return payload.exp * 1000 - now
+  } catch (error) {
+    return 0
+  }
 }
 
 export function isJwtTokenExpired(token: string, early = 0) {
-  const payload = jwtDecode(token) as { exp: number }
-  return payload.exp * 1000 + early < Date.now()
+  try {
+    const payload = jwtDecode(token) as { exp: number }
+    return payload.exp * 1000 + early < Date.now()
+  } catch (error) {
+    return false
+  }
 }
