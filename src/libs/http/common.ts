@@ -125,20 +125,3 @@ export async function axiosResponseToFetchResponse(response: AxiosResponse): Pro
     headers,
   })
 }
-
-export async function getReferer() {
-  const { headers } = await import('next/headers')
-  const referer = headers().get('referer')
-  const host = headers().get('host')
-  const forwardedHost = headers().get('x-forwarded-host')
-  const forwardedProto = headers().get('x-forwarded-proto')
-  if (referer) {
-    return referer
-  }
-  if (host) {
-    return `http://${host}`
-  } 
-  if (forwardedProto && forwardedHost) {
-    return `${forwardedProto}://${forwardedHost}`
-  }
-}

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { expToMaxAge } from "@/utils/jwt";
-import { API_SERVER_URL, IS_DEV } from "@/constant";
+import { API_SERVER_URL } from "@/constant";
 import { proxyMiddleware, responseToNextResponse } from "@/libs/http/server";
 
 export async function POST(request: NextRequest) {

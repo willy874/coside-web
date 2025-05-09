@@ -1,6 +1,5 @@
+import { API_SERVER_URL, IS_SERVER } from "@/constant";
 import axios from "axios";
-import type { NextRequest } from "next/server";
-import { API_SERVER_URL, IS_DEV } from "@/constant";
 
 export function requestQueueFactory<Key, Context, Req, Res>(
   createContext: (req: Req, resolve: (res: Res) => void, reject: (error: unknown) => void) => Context,
@@ -37,8 +36,12 @@ export function requestQueueFactory<Key, Context, Req, Res>(
   }
 }
 
+interface RefreshTokenRequestDTO {
+  accessToken: string,
+  refreshToken: string,
+}
 
-interface RefreshTokenResponse {
+interface RefreshTokenResponseDTO {
   success: boolean,
   message: string,
   data: {
@@ -46,52 +49,20 @@ interface RefreshTokenResponse {
   }
 }
 
-const fetchRefreshToken = async (info: {
-  accessToken: string
-  refreshToken: string
-}) => {
-  const response = await axios.request({
+export const fetchRefreshToken = async ({ accessToken, refreshToken }: RefreshTokenRequestDTO): Promise<RefreshTokenResponseDTO> => {
+  const instance = axios.create()
+  if (!IS_SERVER) {
+    throw new Error('This function can only be used in server side')
+  }
+  const response = await instance.request({
     baseURL: API_SERVER_URL,
     method: 'POST',
-    url: '/auth/refresh',
+    url: '/RefreshToken',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${info.accessToken}`,
+      'Authorization': `Bearer ${accessToken}`,
     },
-    data: { refreshToken: info.refreshToken },
+    data: { refreshToken },
   })
-  return response.data as RefreshTokenResponse
-}
-
-export async function onTokenExpiredCheck(request: NextRequest) {
-  if (!request.headers.get('cookie')) {
-    return
-  }
-  if (request.headers.get('authorization')) {
-    return
-  }
-  const { cookies } = await import('next/headers')
-  const cookieStore = await cookies()
-  const accessToken = cookieStore.get('access_token')?.value
-  const refreshToken = cookieStore.get('refresh_token')?.value
-  if (!accessToken || !refreshToken) {
-    return
-  }
-  const onTokenExpired = requestQueueFactory(
-    (_req: null, resolve: (res: null) => void, reject) => ({ resolve, reject }),
-    async (queue) => {
-      try {
-        const result = await fetchRefreshToken({ accessToken, refreshToken })
-        // set
-      } catch (error) {
-        // remove
-      }
-    }
-  )
-  // if (isJwtTokenExpired(accessToken, 60_000)) {
-  //   if (isJwtTokenExpired(refreshToken)) {
-  //     await onTokenExpired(refreshToken, null)
-  //     return
-  //   }
-  // }
+  return response.data
 }

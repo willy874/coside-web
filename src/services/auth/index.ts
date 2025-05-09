@@ -71,3 +71,9 @@ export function fetchLogout() {
   })
 }
 
+export function fetchRefreshToken() {
+  return http().request({
+    url: '/api/auth/refresh',
+    method: 'POST',
+  })
+}

@@ -1,41 +1,27 @@
-import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, isAxiosError, Method } from 'axios'
 import { InitClientArgs, initContract } from '@ts-rest/core'
 import { z } from 'zod'
 import { IS_DEV, IS_SERVER } from '@/constant'
 import { deepMerge } from '@/utils/deepMerge'
-import { flattenAxiosConfigHeaders, getReferer } from './common'
+import { flattenAxiosConfigHeaders } from './common'
+import { refreshTokenPlugin, requestValidationPlugin, responseValidationPlugin, serverAuthorizationPlugin } from './interceptors'
+import { RedirectError } from '../errors/RedirectError'
 
-const createClientAxios = () => {
-  const instance = axios.create({})
-  instance.interceptors.request.use(
-    async (config) => {
-      if (IS_SERVER) {
-        try {
-          const { cookies, headers } = await import('next/headers')
-          let Authorization = null
-          const accessTokenByHeader = headers().get('Authorization')
-          if (accessTokenByHeader) {
-            Authorization = headers().get('Authorization')
-          }
-          const accessTokenByCookie = cookies().get('access_token')?.value
-          if (accessTokenByCookie) {
-            Authorization = `Bearer ${accessTokenByCookie}`
-          }
-          if (Authorization) {
-            config.headers['Authorization'] = Authorization
-          }
-        } catch {
-          // 
-        }
-        const referer = await getReferer().catch(() => undefined)
-        if (referer) {
-          config.baseURL = referer
-        } 
-      }
-      return config
+async function errorRedirectHandler(error: unknown): Promise<unknown> {
+  const { redirect } = await import('next/navigation')
+  let redirectUrl = null
+  if (isAxiosError(error)) {
+    if (error instanceof RedirectError) {
+      redirectUrl = error.redirectUrl
     }
-  )
-  return instance
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      redirectUrl = '/'
+    }
+  }
+  if (redirectUrl) {
+    redirect(redirectUrl)
+  }
+  return Promise.reject(error)
 }
 
 interface CreateHttpOptions<RequestDTO extends z.ZodType = z.AnyZodObject, ResponseDTO extends z.ZodType = z.AnyZodObject> {
@@ -44,45 +30,55 @@ interface CreateHttpOptions<RequestDTO extends z.ZodType = z.AnyZodObject, Respo
   responseSchema?: ResponseDTO
 }
 
+interface UseEvent {
+  (type: 'request', fn: (p: AxiosRequestConfig) => Promise<AxiosRequestConfig>): void
+  (type: 'response', fn: (p: AxiosResponse) => Promise<AxiosResponse>): void
+  (type: 'requestError', fn: (p: AxiosError) => Promise<AxiosError>): void
+  (type: 'responseError', fn: (p: AxiosError) => Promise<AxiosError>): void
+  (type: string, fn: (...args: any[]) => any): void
+}
+
 interface HttpClient<RequestDTO extends z.ZodType = z.ZodAny, ResponseDTO extends z.ZodType = z.AnyZodObject> {
   request: (config: AxiosRequestConfig<z.infer<RequestDTO>>) => Promise<AxiosResponse<z.infer<ResponseDTO>, z.infer<RequestDTO>>>
+  use: UseEvent
 }
 
 export function http<RequestDTO extends z.ZodType, ResponseDTO extends z.ZodType>(options: CreateHttpOptions<RequestDTO, ResponseDTO>): HttpClient<RequestDTO, ResponseDTO>
 export function http(): HttpClient
 export function http(options: CreateHttpOptions = {}): HttpClient {
-  const instance = createClientAxios()
-  instance.interceptors.request.use((config) => {
-    const { requestSchema } = options
-    if (requestSchema && IS_DEV) {
-      const data = ['POST', 'PUT', 'PATCH'].includes(config.method || 'get') ? config.data : config.params
-      const result = requestSchema.safeParse(data)
-      if (result.success) {
-        return result as unknown as AxiosRequestConfig['data']
-      }
-      else {
-        console.warn('requestSchema', result.error.format())
-      }
-    }
-    return config
-  })
-  instance.interceptors.response.use((response) => {
-    const { responseSchema } = options
-    if (responseSchema && IS_DEV) {
-      const result = responseSchema.safeParse(response.data)
-      if (result.success) {
-        return result as unknown as AxiosResponse<z.infer<z.ZodAny>>
-      }
-      else {
-        console.warn('responseSchema', result.error.format())
-      }
-    }
-    return response
-  })
+  const plugins: ((instance: AxiosInstance) => void)[] = []
+  const { requestSchema, responseSchema } = options
+  if (IS_DEV && requestSchema) {
+    plugins.push(requestValidationPlugin(requestSchema))
+  }
+  if (IS_DEV && responseSchema) {
+    plugins.push(responseValidationPlugin(responseSchema))
+  }
+  if (IS_SERVER) {
+    plugins.push(serverAuthorizationPlugin())
+  }
+  plugins.push(refreshTokenPlugin())
   return {
-    request: (config: AxiosRequestConfig) => {
-      return instance.request(deepMerge(options.axiosOptions || {}, config))
+    request: async (config) => {
+      const instance = axios.create()
+      plugins.forEach((plugin) => {
+        plugin(instance)
+      })
+      try {
+        const response = await instance.request(deepMerge(options.axiosOptions || {}, config))
+        return response
+      } catch (error) {
+        return Promise.reject(errorRedirectHandler(error))
+      }
     },
+    use: (type, fn) => {
+      plugins.push((instance) => {
+        if (type === 'request') instance.interceptors.request.use(fn as any)
+        if (type === 'response') instance.interceptors.response.use(fn as any)
+        if (type === 'requestError') instance.interceptors.response.use(null, fn as any)
+        if (type === 'responseError') instance.interceptors.response.use(null, fn as any)
+      })
+    }
   }
 }
 

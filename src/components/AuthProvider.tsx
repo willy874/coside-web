@@ -2,7 +2,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { prefetchGetUser } from "@/services";
 import { AUTH_PAGES } from "@/constant";
 import { fetchLogin, fetchLogout, fetchPreSignup } from "@/services/auth";
 
@@ -23,9 +22,9 @@ function AuthProvider({ accessToken, children }: AuthProviderProps) {
   const searchParams = useSearchParams()
   const [isLogin] = useState(!!accessToken)
   const router = useRouter()
-
+  
   useEffect(() => {
-    const redirectPath = searchParams.get('redirect_path')
+    const redirectPath = searchParams.get('login_redirect_url')
     if (redirectPath) {
       location.href = redirectPath
     }
@@ -42,9 +41,9 @@ function AuthProvider({ accessToken, children }: AuthProviderProps) {
     },
     onSuccess: async () => {
       const params = new URLSearchParams({
-        redirect_path: pathname,
+        login_redirect_url: pathname,
       })
-      router.replace(`/login?${params}`);
+      router.replace(`/?${params}`);
     }
   })
 
