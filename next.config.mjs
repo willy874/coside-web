@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "https",
+        hostname: "coside-api-dev.zeabur.app",
+      }
     ],
     domains: [`coside-api.zeabur.app`],
   },
