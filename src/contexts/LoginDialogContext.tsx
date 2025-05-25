@@ -1,6 +1,5 @@
-"use client";
-
-import React, { createContext, useContext, useState } from "react";
+"use client"; 
+import { createContext, useContext, useState } from "react";
 
 interface LoginDialogProvider {
   openState: boolean;
@@ -18,7 +17,11 @@ export const useLoginDialog = () => {
   return context;
 };
 
-export const LoginDialogProvider = ({ children }) => {
+interface LoginDialogProviderProps {
+  children: React.ReactNode;
+}
+
+export const LoginDialogProvider = ({ children }: LoginDialogProviderProps) => {
   const [openState, setOpen] = useState(false);
 
   const openDialog = () => { 
