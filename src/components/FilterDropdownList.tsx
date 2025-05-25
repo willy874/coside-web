@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Chip,
@@ -9,27 +9,29 @@ import {
   useTheme,
   useMediaQuery,
   Drawer,
-  IconButton
 } from "@mui/material";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import CloseIcon from "@mui/icons-material/Close";
 import { jobPositionTag, projectType } from "@/constant";
 import theme from "@/styles/theme";
 
-const FilterComponent = ({ onFilterApply }) => {
+export interface FilterComponentProps {
+  onFilterApply?: (filters: { roles: string[]; categories: string[] }) => void;
+}
+
+const FilterComponent = ({ onFilterApply }: FilterComponentProps) => {
   const muiTheme = useTheme();
   const isMobile = useMediaQuery(muiTheme.breakpoints.down("md"));
 
   // State for selected filters
-  const [selectedPositions, setSelectedPositions] = useState([]);
-  const [selectedProjectTypes, setSelectedProjectTypes] = useState([]);
+  const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+  const [selectedProjectTypes, setSelectedProjectTypes] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false); // State for filter dropdown visibility
   const [isDrawerOpen, setIsDrawerOpen] = useState(false); // State for mobile drawer
   const [isFilterApplied, setIsFilterApplied] = useState(false);
 
   // Toggle selection for positions
-  const handlePositionToggle = (value) => {
+  const handlePositionToggle = (value: string) => {
     if (selectedPositions.includes(value)) {
       setSelectedPositions(selectedPositions.filter((item) => item !== value));
     } else {
@@ -38,7 +40,7 @@ const FilterComponent = ({ onFilterApply }) => {
   };
 
   // Toggle selection for project types
-  const handleProjectTypeToggle = (value) => {
+  const handleProjectTypeToggle = (value: string) => {
     if (selectedProjectTypes.includes(value)) {
       setSelectedProjectTypes(
         selectedProjectTypes.filter((item) => item !== value)
@@ -63,8 +65,6 @@ const FilterComponent = ({ onFilterApply }) => {
       roles: selectedPositions,
       categories: selectedProjectTypes,
     };
-
-    console.log("Applied filters:", filters);
 
     // Call the callback function from parent with filter data
     if (onFilterApply) {

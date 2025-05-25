@@ -80,13 +80,34 @@ export function http(options: CreateHttpOptions = {}): HttpClient {
 
 export const contract = initContract()
 
+function toURLSearchParams(value: unknown): URLSearchParams {
+  const result = new URLSearchParams();
+  if (typeof value === 'object' && value) {
+    for (const key in value) {
+      const val = (value as Record<string, unknown>)[key];
+      if (Array.isArray(val)) {
+        val.forEach((v) => result.append(key, String(v)));
+      }
+      if (typeof val === 'undefined' || val === null) {
+        continue
+      }
+      result.append(key, String(val));
+    }
+  }
+  return result
+}
+
+
+
 export const defaultOptions = {
   baseUrl: '/api',
-  api: async ({ path, method, headers, body, fetchOptions }) => {
+  api: async ({ path, method, headers, body, fetchOptions, rawQuery }) => {
+    const params = toURLSearchParams(rawQuery)
+    const url = path.split('?')[0]
     try {
       const result = await http().request({
         method: method as Method,
-        url: path,
+        url: params.size ? `${url}?${params}` : url,
         headers,
         data: body,
         fetchOptions,
